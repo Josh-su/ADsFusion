@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,59 @@ namespace ADsFusion
         private ServerAndAdminLogin _login;
         private int _selectedListBoxIndex;
 
+        private string _repositoryFilesPath;
+
+        private string _userList1;
+        private string _userList2;
+        private string _mergedUserList;
+
+
         public DisplayAccounts()
         {
             InitializeComponent();
+
+            // Define the path to the repository
+            _repositoryFilesPath = "C:\\ADsFusion\\Files";
+
+            // Check and create the repository directory if it doesn't exist
+            CheckAndCreateDirectory(_repositoryFilesPath);
+
+            // Define the list of files with their paths and default content
+            List<(string filePath, string defaultContent)> files = new List<(string filePath, string defaultContent)>
+            {
+                (Path.Combine(_repositoryFilesPath, "MergedUserList.csv"), ""),
+                (Path.Combine(_repositoryFilesPath, "UserList1.csv"), ""),
+                (Path.Combine(_repositoryFilesPath, "UserList2.csv"), ""),
+                (Path.Combine(_repositoryFilesPath, "ServersSettings.csv"), ""),
+                // Add more files here if needed
+            };
+
+            // Check and create each file if it doesn't exist
+            foreach (var file in files)
+            {
+                CheckAndCreateFile(file.filePath, file.defaultContent);
+            }
+        }
+
+        private void CheckAndCreateDirectory(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                // Create the directory
+                DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
+            }
+        }
+
+        private void CheckAndCreateFile(string filePath, string defaultContent)
+        {
+            if (!File.Exists(filePath))
+            {
+                // Create the file with default content
+                using (StreamWriter writer = File.CreateText(filePath))
+                {
+                    writer.Write(defaultContent);
+                }
+            }
         }
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
@@ -103,17 +154,23 @@ namespace ADsFusion
 
         private void button2_Click(object sender, EventArgs e)
         {
-            UpdateUserlist1();
-            UpdateUserlist2();
-
+            UpdateUserList1();
+            UpdateUserList2();
+            MergeUserList();
+            label1.Text = "Last : " + File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "MergedUserList.csv")).Date.ToString("dd.MM.yyyy");
         }
 
-        private void UpdateUserlist1()
+        private void UpdateUserList1()
         {
 
         }
 
-        private void UpdateUserlist2()
+        private void UpdateUserList2()
+        {
+
+        }
+
+        private void MergeUserList()
         {
 
         }
