@@ -11,3 +11,16 @@ C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADs
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.pdb
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Settings.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.ServerAndAdminLogin.resources
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\ADsFusion.exe.config
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\ADsFusion.exe
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\ADsFusion.pdb
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.AssemblyReference.cache
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.SuggestedBindingRedirects.cache
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.DisplayAccounts.resources
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Properties.Resources.resources
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.ServerAndAdminLogin.resources
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Settings.resources
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.GenerateResource.cache
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.CoreCompileInputs.cache
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.exe
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.pdb
