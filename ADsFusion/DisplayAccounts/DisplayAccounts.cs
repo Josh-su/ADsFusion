@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,13 @@ namespace ADsFusion
 
         private string _repositoryFilesPath;
 
+        private string _server1;
+        private string _server2;
+        private string _serverLogin1;
+        private string _serverLogin2;
+        private string _serverPassword1;
+        private string _serverPassword2;
+
         private string _userList1;
         private string _userList2;
         private string _mergedUserList;
@@ -27,6 +35,9 @@ namespace ADsFusion
         public DisplayAccounts()
         {
             InitializeComponent();
+
+            _settings = new Settings();
+            _login = new ServerAndAdminLogin();
 
             // Define the path to the repository
             _repositoryFilesPath = "C:\\ADsFusion\\Files";
@@ -51,6 +62,54 @@ namespace ADsFusion
             }
         }
 
+        private void DisplayAccounts_Load(object sender, EventArgs e)
+        {
+            if (CheckIfLogged())
+            {
+                UpdateAll();
+                DisplayUserList();
+            }
+            else
+            {
+                _login.ShowDialog();
+            }
+        }
+
+        private bool CheckIfLogged()
+        {
+            return true;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            DisplayUserList();
+        }
+
+        private void DisplayUserList()
+        {
+            listBox1.Items.Clear();
+            /*
+            foreach (MergedUser user in _allUsers)
+            {
+                if (textBox1.Text == "$")
+                {
+                    if (user.AdresseElectronique21 == "-")
+                    {
+                        //ajout de l'utilisateur dans la textbox
+                        listBox1.Items.Add(user.NomComplet1 + " / " + user.Identifiant2);
+                    }
+                }
+                else if (user.Nom2.ToString().Normalize().Trim().ToLower().Contains(textBox1.Text.ToString().Normalize().Trim().ToLower()) || textBox1.Text.ToString().Normalize().Trim().ToLower().Contains(user.Nom2.ToString().Normalize().Trim().ToLower()) ||
+                    user.Prenom2.ToString().Normalize().Trim().ToLower().Contains(textBox1.Text.ToString().Normalize().Trim().ToLower()) || textBox1.Text.ToString().Normalize().Trim().ToLower().Contains(user.Prenom2.ToString().Normalize().Trim().ToLower()) ||
+                    user.Identifiant2.ToString().Normalize().Trim().ToLower().Contains(textBox1.Text.ToString().Normalize().Trim().ToLower()) || textBox1.Text.ToString().Normalize().Trim().ToLower().Contains(user.Identifiant2.ToString().Normalize().Trim().ToLower()))
+                {
+                    //ajout de l'utilisateur dans la textbox
+                    listBox1.Items.Add(user.NomComplet1 + " / " + user.Identifiant2);
+                }
+            }
+             */
+        }
+
         private void CheckAndCreateDirectory(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
@@ -70,12 +129,6 @@ namespace ADsFusion
                     writer.Write(defaultContent);
                 }
             }
-        }
-
-        private void DisplayAccounts_Load(object sender, EventArgs e)
-        {
-            _settings = new Settings();
-            _login = new ServerAndAdminLogin();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -154,6 +207,11 @@ namespace ADsFusion
 
         private void button2_Click(object sender, EventArgs e)
         {
+            UpdateAll();
+        }
+
+        private void UpdateAll()
+        {
             UpdateUserList1();
             UpdateUserList2();
             MergeUserList();
@@ -173,6 +231,22 @@ namespace ADsFusion
         private void MergeUserList()
         {
 
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string readmeFilePath = @"C:\ADsFusion\README.txt";
+
+            // Check if the file exists before trying to open it
+            if (System.IO.File.Exists(readmeFilePath))
+            {
+                // Start the default text editor process and open the README.txt file
+                Process.Start(readmeFilePath);
+            }
+            else
+            {
+                MessageBox.Show("The README.txt file does not exist.");
+            }
         }
     }
 }

@@ -83,6 +83,16 @@ namespace ADsFusion.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap question_20 {
+            get {
+                object obj = ResourceManager.GetObject("question_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap rafraichir_20 {
             get {
                 object obj = ResourceManager.GetObject("rafraichir_20", resourceCulture);
