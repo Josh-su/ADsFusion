@@ -43,7 +43,6 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.aZToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
@@ -122,11 +121,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(367, 13);
+            this.label1.Location = new System.Drawing.Point(264, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 15);
+            this.label1.Size = new System.Drawing.Size(205, 15);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Last : dd.MM.yyyy";
+            this.label1.Text = "Last Update : dd.MM.yyyy HH:mm:ss";
             // 
             // button5
             // 
@@ -158,14 +157,6 @@
             this.zAToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.zAToolStripMenuItem.Text = "Z -> A";
             this.zAToolStripMenuItem.Click += new System.EventHandler(this.zAToolStripMenuItem_Click);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(228, 6);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(30, 30);
-            this.button7.TabIndex = 14;
-            this.button7.UseVisualStyleBackColor = true;
             // 
             // button8
             // 
@@ -204,7 +195,7 @@
             // button4
             // 
             this.button4.Image = global::ADsFusion.Properties.Resources.profil_20;
-            this.button4.Location = new System.Drawing.Point(48, 6);
+            this.button4.Location = new System.Drawing.Point(12, 6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(30, 30);
             this.button4.TabIndex = 10;
@@ -224,7 +215,7 @@
             // button2
             // 
             this.button2.Image = global::ADsFusion.Properties.Resources.rafraichir_20;
-            this.button2.Location = new System.Drawing.Point(331, 6);
+            this.button2.Location = new System.Drawing.Point(228, 6);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(30, 30);
             this.button2.TabIndex = 2;
@@ -234,7 +225,7 @@
             // button3
             // 
             this.button3.Image = global::ADsFusion.Properties.Resources.reglages_20;
-            this.button3.Location = new System.Drawing.Point(12, 6);
+            this.button3.Location = new System.Drawing.Point(48, 6);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(30, 30);
             this.button3.TabIndex = 0;
@@ -249,7 +240,6 @@
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
-            this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -289,7 +279,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem aZToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zAToolStripMenuItem;
-        private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button10;

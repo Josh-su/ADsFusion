@@ -16,9 +16,6 @@ namespace ADsFusion
 {
     public partial class ServerAndAdminLogin : Form
     {
-        private bool server1Test;
-        private bool server2Test;
-
         public ServerAndAdminLogin()
         {
             InitializeComponent();
@@ -38,94 +35,160 @@ namespace ADsFusion
         }
 
         /// <summary>
-        /// Login
+        /// Login button click event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
+        private void btnLogin_Click(object sender, EventArgs e)
         {
-            TestCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
-            if (server1Test && server2Test)
+            List<string> server1Informations = new List<string>
             {
-                SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
+                txtbDomain1.Text,
+                txtbUsername1.Text,
+                txtbPassword1.Text,
+                txtbGroup1.Text
+            };
+            List<string> server2Informations = new List<string>
+            {
+                txtbDomain2.Text,
+                txtbUsername2.Text,
+                txtbPassword2.Text,
+                txtbGroup2.Text
+            };
+
+            int server1NotEmptyInformations = 0;
+            int server2NotEmptyInformations = 0;
+
+            bool domain1Success = false;
+            bool domain2Success = false;
+
+            foreach (string information1 in server1Informations)
+            {
+                if (!string.IsNullOrEmpty(information1))
+                {
+                    server1NotEmptyInformations++;
+                }
+            }
+            foreach (string information2 in server2Informations)
+            {
+                if (!string.IsNullOrEmpty(information2))
+                {
+                    server2NotEmptyInformations++;
+                }
+            }
+
+            if (server1NotEmptyInformations > 0 && server1NotEmptyInformations < server1Informations.Count)
+            {
+                MessageBox.Show("Veuillez écrire toute les informations pour le serveur 1");
+            }
+            else if (server1NotEmptyInformations == server1Informations.Count)
+            {
+                domain1Success = LoginDomain1(txtbDomain1.Text, txtbUsername1.Text, txtbPassword1.Text, txtbGroup1.Text);
+            }
+            if (server2NotEmptyInformations > 0 && server2NotEmptyInformations < server2Informations.Count)
+            {
+                MessageBox.Show("Veuillez écrire toute les informations pour le serveur 2");
+            }
+            else if (server2NotEmptyInformations == server2Informations.Count)
+            {
+                domain2Success = LoginDomain2(txtbDomain2.Text, txtbUsername2.Text, txtbPassword2.Text, txtbGroup2.Text);
+            }
+
+            if (domain1Success && domain2Success)
+            {
+                // Check if at least one domain's login is successful before saving credentials
+                if (domain1Success || domain2Success)
+                {
+                    if (domain1Success && !domain2Success)
+                    {
+                        SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
+                    }
+
+                    if (domain2Success || !domain1Success)
+                    {
+                        SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
+                    }
+
+                    if (domain1Success && domain2Success)
+                    {
+                        SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
+                    }
+                }
             }
         }
 
-        private void TestCredentials(string domain1, string domain2, string username1, string username2, string password1, string password2, string group1, string group2)
+        // Login for Domain1
+        private bool LoginDomain1(string domain, string username, string password, string groupName)
         {
             try
             {
-                // Create a PrincipalContext object for the specified domain
-                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain1))
+                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain))
                 {
-                    // Authenticate the user credentials against the domain
-                    bool isAuthenticated = context.ValidateCredentials(username1, password1);
+                    bool isAuthenticated = context.ValidateCredentials(username, password);
 
                     if (isAuthenticated)
                     {
-                        // Get the user's Principal object
-                        UserPrincipal user = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, username1);
+                        UserPrincipal user = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, username);
 
-                        // Check if the user is a member of the administrators group
-                        if (user.IsMemberOf(context, IdentityType.Name, group1))
+                        if (user.IsMemberOf(context, IdentityType.Name, groupName))
                         {
-                            // If the user is an administrator, show a message box indicating success
-                            MessageBox.Show("Login successful for 'ceol.gyre.ch' domain as an administrator!");
-                            server1Test = true;
+                            MessageBox.Show($"Login successful for {domain} domain as an administrator!");
+                            return true;
                         }
                         else
                         {
-                            // If the user is not an administrator, show an error message
                             MessageBox.Show("You are not authorized to login to this application.");
-                            server1Test = false;
                         }
                     }
                     else
                     {
-                        // If the credentials are not valid, show an error message
-                        MessageBox.Show("Invalid username or password for 'ceol.gyre.ch' domain.");
-                        server1Test = false;
-                    }
-                }
-
-                // Create a PrincipalContext object for the specified domain
-                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain2))
-                {
-                    // Authenticate the user credentials against the domain
-                    bool isAuthenticated = context.ValidateCredentials(username2, password2);
-
-                    if (isAuthenticated)
-                    {
-                        // Get the user's Principal object
-                        UserPrincipal user = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, username2);
-
-                        // Check if the user is a member of the administrators group
-                        if (user.IsMemberOf(context, IdentityType.Name, group2))
-                        {
-                            // If the user is an administrator, show a message box indicating success
-                            MessageBox.Show("Login successful for 'dgep.edu-vaud.ch' domain as an administrator!");
-                            server2Test = true;
-                        }
-                        else
-                        {
-                            // If the user is not an administrator, show an error message
-                            MessageBox.Show("You are not authorized to login to this application.");
-                            server2Test = false;
-                        }
-                    }
-                    else
-                    {
-                        // If the credentials are not valid, show an error message
-                        MessageBox.Show("Invalid username or password for 'dgep.edu-vaud.ch' domain.");
-                        server2Test = false;
+                        MessageBox.Show($"Invalid username or password for {domain} domain.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                // If an error occurs during authentication, show an error message
                 MessageBox.Show("An error occurred: " + ex.Message);
             }
+
+            return false;
+        }
+
+        // Login for Domain2
+        private bool LoginDomain2(string domain, string username, string password, string groupName)
+        {
+            try
+            {
+                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain))
+                {
+                    bool isAuthenticated = context.ValidateCredentials(username, password);
+
+                    if (isAuthenticated)
+                    {
+                        UserPrincipal user = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, username);
+
+                        if (user.IsMemberOf(context, IdentityType.Name, groupName))
+                        {
+                            MessageBox.Show($"Login successful for {domain} domain as an administrator!");
+                            return true;
+                        }
+                        else
+                        {
+                            MessageBox.Show("You are not authorized to login to this application.");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Invalid username or password for {domain} domain.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+
+            return false;
         }
 
         private void SaveCredentials(string domain1, string domain2, string username1, string username2, string password1, string password2, string group1, string group2)
@@ -145,11 +208,11 @@ namespace ADsFusion
         }
 
         /// <summary>
-        /// Logout
+        /// Logout button click event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button2_Click(object sender, EventArgs e)
+        private void btnLogout_Click(object sender, EventArgs e)
         {
             // Clear all the saved information by resetting the user settings
             Properties.Settings.Default.Reset();
@@ -158,6 +221,9 @@ namespace ADsFusion
             ClearAllTextBoxes();
         }
 
+        /// <summary>
+        /// Clear all textboxes on the form and its nested containers
+        /// </summary>
         private void ClearAllTextBoxes()
         {
             foreach (System.Windows.Forms.Control c in this.Controls)

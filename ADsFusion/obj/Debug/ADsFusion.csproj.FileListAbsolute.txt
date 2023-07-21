@@ -24,11 +24,9 @@ C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.GenerateResource.cache
 C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.CoreCompileInputs.cache
 C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.exe
 C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.pdb
-C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Configuration.ConfigurationManager.dll
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.AccessControl.dll
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.Permissions.dll
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.Principal.Windows.dll
-C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Configuration.ConfigurationManager.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.AccessControl.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.Permissions.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.Principal.Windows.xml

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -64,20 +66,36 @@ namespace ADsFusion
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            if (CheckIfLogged())
-            {
-                UpdateAll();
-                DisplayUserList();
-            }
-            else
+            if (CheckIfLogged() == 0)
             {
                 _login.ShowDialog();
             }
+            else 
+            {
+                UpdateAll(CheckIfLogged());
+                DisplayUserList();
+            }
         }
 
-        private bool CheckIfLogged()
+        private int CheckIfLogged()
         {
-            return true;
+            if (string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
+            {
+                return 0;
+            }
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
+            {
+                return 1;
+            }
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain2) && string.IsNullOrEmpty(Properties.Settings.Default.Domain1))
+            {
+                return 2;
+            }
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && !string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
+            {
+                return 3;
+            }
+            return 0;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -207,20 +225,103 @@ namespace ADsFusion
 
         private void button2_Click(object sender, EventArgs e)
         {
-            UpdateAll();
+            UpdateAll(CheckIfLogged());
         }
 
-        private void UpdateAll()
+        private void UpdateAll(int x)
         {
-            UpdateUserList1();
-            UpdateUserList2();
-            MergeUserList();
-            label1.Text = "Last : " + File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "MergedUserList.csv")).Date.ToString("dd.MM.yyyy");
+            switch (x)
+            {
+                case 0:
+                    _login.ShowDialog();
+                    break;
+                case 1:
+                    UpdateUserList1();
+                    DateTime lastWriteTime1 = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "UserList1.csv"));
+                    DateTime localTime1 = lastWriteTime1.ToLocalTime();
+                    label1.Text = "Last update: " + localTime1.ToString("dd.MM.yyyy HH:mm:ss");
+                    break;
+                case 2:
+                    UpdateUserList2();
+                    DateTime lastWriteTime2 = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "UserList2.csv"));
+                    DateTime localTime2 = lastWriteTime2.ToLocalTime();
+                    label1.Text = "Last update: " + localTime2.ToString("dd.MM.yyyy HH:mm:ss");
+                    break;
+                case 3:
+                    UpdateUserList1();
+                    UpdateUserList2();
+                    MergeUserList();
+                    DateTime lastWriteTime = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "MergedUserList.csv"));
+                    DateTime localTime = lastWriteTime.ToLocalTime();
+                    label1.Text = "Last update: " + localTime.ToString("dd.MM.yyyy HH:mm:ss");
+                    break;
+            }
         }
 
         private void UpdateUserList1()
         {
+            /*using (var context = new PrincipalContext(ContextType.Domain, "dgep.edu-vaud.ch", "OU=Groups,OU=GYREN,OU=EDU,DC=dgep,DC=edu-vaud,DC=ch"))
+            {
+                GroupPrincipal group = GroupPrincipal.FindByIdentity(context, IdentityType.Name, "UUS_GYREN");
 
+                var allUsers = new List<UserPrincipal>();
+
+                if (group != null)// Get all the users in the groups
+                {
+                    var members = group.GetMembers(true);
+
+                    foreach (var member in members)
+                    {
+                        if (member is UserPrincipal user && user != null && user.Enabled.HasValue && user.Enabled.Value)
+                        {
+                            // Check if the user already exists in the list
+                            if (allUsers.Any(u => u.SamAccountName == user.SamAccountName))
+                            {
+                                continue; // Skip adding the user
+                            }
+                            else
+                            {
+                                allUsers.Add(user);
+                            }
+                        }
+                    }
+                }
+
+                // Clear the list before updating it
+                _allEduvaudUsers.Clear();
+
+                var progressCounter = 0;
+                var totalUsers = allUsers.Count;
+
+                // Convert the UserPrincipal objects to EduvaudUser objects and add them to 
+                foreach (var user in allUsers)
+                {
+                    var groupsMembership = user.GetGroups();
+                    var groups = new List<string>();
+                    foreach (var groupMembership in groupsMembership)
+                    {
+                        groups.Add(groupMembership.Name);
+                    }
+
+                    // Get the underlying DirectoryEntry object
+                    var de = user.GetUnderlyingObject() as DirectoryEntry;
+
+                    EduvaudUser userToAdd = new(
+                        Convert.ToString(user.GivenName),
+                        Convert.ToString(user.Surname),
+                        Convert.ToString(user.Name),
+                        Convert.ToString(user.SamAccountName),
+                        Convert.ToString(user.EmailAddress),
+                        Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                        groups);
+
+                    _allEduvaudUsers.Add(userToAdd);
+
+                    progressCounter++;
+                    backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
+                }
+            }
+            WriteJson(_allEduvaudUsers, filePath);*/
         }
 
         private void UpdateUserList2()
