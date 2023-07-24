@@ -80,7 +80,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomNames.Designer.cs">
+    <Compile Include="Properties\CustomNames.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>CustomNames.settings</DependentUpon>
@@ -125,7 +125,7 @@
     <EmbeddedResource Include="Settings\Setting.resx">
       <DependentUpon>Setting.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="CustomNames.settings">
+    <None Include="Properties\CustomNames.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>CustomNames.Designer.cs</LastGenOutput>
     </None>

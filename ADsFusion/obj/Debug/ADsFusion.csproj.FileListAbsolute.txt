@@ -31,3 +31,10 @@ C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\Sys
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.Permissions.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Security.Principal.Windows.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.CopyComplete
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\System.Security.AccessControl.dll
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\System.Security.Permissions.dll
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\System.Security.Principal.Windows.dll
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\System.Security.AccessControl.xml
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\System.Security.Permissions.xml
+C:\CPNV\ADsFusion\ADsFusion\bin\Debug\System.Security.Principal.Windows.xml
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.CopyComplete

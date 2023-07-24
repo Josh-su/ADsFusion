@@ -16,9 +16,13 @@ namespace ADsFusion
 {
     public partial class ServerAndAdminLogin : Form
     {
+        private Settings _settings;
+
         public ServerAndAdminLogin()
         {
             InitializeComponent();
+
+            _settings = new Settings();
         }
 
         private void ServerAndAdminLogin_Load(object sender, EventArgs e)
@@ -115,6 +119,7 @@ namespace ADsFusion
                     }
                 }
             }
+            _settings.ShowDialog();
         }
 
         // Login for Domain1

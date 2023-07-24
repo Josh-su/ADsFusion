@@ -53,7 +53,6 @@ namespace ADsFusion
                 (Path.Combine(_repositoryFilesPath, "MergedUserList.csv"), ""),
                 (Path.Combine(_repositoryFilesPath, "UserList1.csv"), ""),
                 (Path.Combine(_repositoryFilesPath, "UserList2.csv"), ""),
-                (Path.Combine(_repositoryFilesPath, "ServersSettings.csv"), ""),
                 // Add more files here if needed
             };
 
@@ -336,17 +335,16 @@ namespace ADsFusion
 
         private void button6_Click(object sender, EventArgs e)
         {
-            string readmeFilePath = @"C:\ADsFusion\README.txt";
+            string websiteUrl = "https://github.com/Josh-su/ADsFusion";
 
-            // Check if the file exists before trying to open it
-            if (System.IO.File.Exists(readmeFilePath))
+            try
             {
-                // Start the default text editor process and open the README.txt file
-                Process.Start(readmeFilePath);
+                Process.Start(websiteUrl);
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("The README.txt file does not exist.");
+                // Handle any exceptions that may occur (e.g., if the default web browser is not found).
+                MessageBox.Show("Error opening website: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
