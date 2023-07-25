@@ -22,16 +22,22 @@ namespace ADsFusion
 
         private string _repositoryFilesPath;
 
-        private string _server1;
-        private string _server2;
+        private string _domain1;
+        private string _domain2;
         private string _serverLogin1;
         private string _serverLogin2;
         private string _serverPassword1;
         private string _serverPassword2;
+        private string _adminGroup1;
+        private string _adminGroup2;
 
-        private string _userList1;
-        private string _userList2;
-        private string _mergedUserList;
+        private List<User> _userList1;
+        private List<User> _userList2;
+        private List<User> _mergedUserList;
+
+        private string _userList1Path;
+        private string _userList2Path;
+        private string _mergedUserListPath;
 
 
         public DisplayAccounts()
@@ -61,37 +67,38 @@ namespace ADsFusion
             {
                 CheckAndCreateFile(file.filePath, file.defaultContent);
             }
+
+            // Save the path of the files
+            _userList1Path = Path.Combine(_repositoryFilesPath, "MergedUserList.csv");
+            _userList2Path = Path.Combine(_repositoryFilesPath, "UserList1.csv");
+            _mergedUserListPath = Path.Combine(_repositoryFilesPath, "UserList2.csv");
         }
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            if (CheckIfLogged() == 0)
-            {
-                _login.ShowDialog();
-            }
-            else 
-            {
-                UpdateAll(CheckIfLogged());
-                DisplayUserList();
-            }
+            UpdateAll(CheckIfLogged());
         }
 
         private int CheckIfLogged()
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
             {
+                label2.Visible = true;
                 return 0;
             }
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
             {
+                label2.Visible = false;
                 return 1;
             }
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain2) && string.IsNullOrEmpty(Properties.Settings.Default.Domain1))
             {
+                label2.Visible = false;
                 return 2;
             }
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && !string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
             {
+                label2.Visible = false;
                 return 3;
             }
             return 0;
@@ -229,6 +236,15 @@ namespace ADsFusion
 
         private void UpdateAll(int x)
         {
+            _domain1 = Properties.Settings.Default.Domain1;
+            _domain2 = Properties.Settings.Default.Domain2;
+            _serverLogin1 = Properties.Settings.Default.Username1;
+            _serverLogin2 = Properties.Settings.Default.Username2;
+            _serverPassword1 = Properties.Settings.Default.Password1;
+            _serverPassword2 = Properties.Settings.Default.Password2;
+            _adminGroup1 = Properties.Settings.Default.Group1;
+            _adminGroup2 = Properties.Settings.Default.Group2;
+
             switch (x)
             {
                 case 0:
@@ -239,12 +255,14 @@ namespace ADsFusion
                     DateTime lastWriteTime1 = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "UserList1.csv"));
                     DateTime localTime1 = lastWriteTime1.ToLocalTime();
                     label1.Text = "Last update: " + localTime1.ToString("dd.MM.yyyy HH:mm:ss");
+                    DisplayUserList();
                     break;
                 case 2:
                     UpdateUserList2();
                     DateTime lastWriteTime2 = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "UserList2.csv"));
                     DateTime localTime2 = lastWriteTime2.ToLocalTime();
                     label1.Text = "Last update: " + localTime2.ToString("dd.MM.yyyy HH:mm:ss");
+                    DisplayUserList();
                     break;
                 case 3:
                     UpdateUserList1();
@@ -253,41 +271,19 @@ namespace ADsFusion
                     DateTime lastWriteTime = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "MergedUserList.csv"));
                     DateTime localTime = lastWriteTime.ToLocalTime();
                     label1.Text = "Last update: " + localTime.ToString("dd.MM.yyyy HH:mm:ss");
+                    DisplayUserList();
                     break;
             }
         }
 
         private void UpdateUserList1()
         {
-            /*using (var context = new PrincipalContext(ContextType.Domain, "dgep.edu-vaud.ch", "OU=Groups,OU=GYREN,OU=EDU,DC=dgep,DC=edu-vaud,DC=ch"))
+            using (var context = new PrincipalContext(ContextType.Domain, _domain1))
             {
-                GroupPrincipal group = GroupPrincipal.FindByIdentity(context, IdentityType.Name, "UUS_GYREN");
-
                 var allUsers = new List<UserPrincipal>();
 
-                if (group != null)// Get all the users in the groups
-                {
-                    var members = group.GetMembers(true);
-
-                    foreach (var member in members)
-                    {
-                        if (member is UserPrincipal user && user != null && user.Enabled.HasValue && user.Enabled.Value)
-                        {
-                            // Check if the user already exists in the list
-                            if (allUsers.Any(u => u.SamAccountName == user.SamAccountName))
-                            {
-                                continue; // Skip adding the user
-                            }
-                            else
-                            {
-                                allUsers.Add(user);
-                            }
-                        }
-                    }
-                }
-
                 // Clear the list before updating it
-                _allEduvaudUsers.Clear();
+                _userList1.Clear();
 
                 var progressCounter = 0;
                 var totalUsers = allUsers.Count;
@@ -305,7 +301,7 @@ namespace ADsFusion
                     // Get the underlying DirectoryEntry object
                     var de = user.GetUnderlyingObject() as DirectoryEntry;
 
-                    EduvaudUser userToAdd = new(
+                    /*User userToAdd = new(
                         Convert.ToString(user.GivenName),
                         Convert.ToString(user.Surname),
                         Convert.ToString(user.Name),
@@ -314,13 +310,13 @@ namespace ADsFusion
                         Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
                         groups);
 
-                    _allEduvaudUsers.Add(userToAdd);
+                    _allEduvaudUsers.Add(userToAdd);*/
 
                     progressCounter++;
                     backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
                 }
             }
-            WriteJson(_allEduvaudUsers, filePath);*/
+            WriteToCsv(_userList1, _userList1Path);
         }
 
         private void UpdateUserList2()
@@ -329,6 +325,11 @@ namespace ADsFusion
         }
 
         private void MergeUserList()
+        {
+
+        }
+
+        private void WriteToCsv(List<User> list, string path)
         {
 
         }
