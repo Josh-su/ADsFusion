@@ -7,10 +7,13 @@ using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices;
 using System.Drawing;
 using System.IO;
+using CsvHelper;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.Remoting.Contexts;
 
 namespace ADsFusion
 {
@@ -48,17 +51,22 @@ namespace ADsFusion
             _login = new ServerAndAdminLogin();
 
             // Define the path to the repository
-            _repositoryFilesPath = "C:\\ADsFusion\\Files";
+            _repositoryFilesPath = "C:\\ADsFusion\\UsersLists";
 
             // Check and create the repository directory if it doesn't exist
             CheckAndCreateDirectory(_repositoryFilesPath);
 
+            // Save the path of the files
+            _userList1Path = Path.Combine(_repositoryFilesPath, "MergedUserList.json");
+            _userList2Path = Path.Combine(_repositoryFilesPath, "UserList1.json");
+            _mergedUserListPath = Path.Combine(_repositoryFilesPath, "UserList2.json");
+
             // Define the list of files with their paths and default content
             List<(string filePath, string defaultContent)> files = new List<(string filePath, string defaultContent)>
             {
-                (Path.Combine(_repositoryFilesPath, "MergedUserList.csv"), ""),
-                (Path.Combine(_repositoryFilesPath, "UserList1.csv"), ""),
-                (Path.Combine(_repositoryFilesPath, "UserList2.csv"), ""),
+                (_userList1Path, ""),
+                (_userList2Path, ""),
+                (_mergedUserListPath, ""),
                 // Add more files here if needed
             };
 
@@ -67,16 +75,11 @@ namespace ADsFusion
             {
                 CheckAndCreateFile(file.filePath, file.defaultContent);
             }
-
-            // Save the path of the files
-            _userList1Path = Path.Combine(_repositoryFilesPath, "MergedUserList.csv");
-            _userList2Path = Path.Combine(_repositoryFilesPath, "UserList1.csv");
-            _mergedUserListPath = Path.Combine(_repositoryFilesPath, "UserList2.csv");
         }
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            UpdateAll(CheckIfLogged());
+            //UpdateAll(CheckIfLogged());
         }
 
         private int CheckIfLogged()
@@ -252,14 +255,14 @@ namespace ADsFusion
                     break;
                 case 1:
                     UpdateUserList1();
-                    DateTime lastWriteTime1 = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "UserList1.csv"));
+                    DateTime lastWriteTime1 = File.GetLastWriteTime(_userList1Path);
                     DateTime localTime1 = lastWriteTime1.ToLocalTime();
                     label1.Text = "Last update: " + localTime1.ToString("dd.MM.yyyy HH:mm:ss");
                     DisplayUserList();
                     break;
                 case 2:
                     UpdateUserList2();
-                    DateTime lastWriteTime2 = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "UserList2.csv"));
+                    DateTime lastWriteTime2 = File.GetLastWriteTime(_userList2Path);
                     DateTime localTime2 = lastWriteTime2.ToLocalTime();
                     label1.Text = "Last update: " + localTime2.ToString("dd.MM.yyyy HH:mm:ss");
                     DisplayUserList();
@@ -268,7 +271,7 @@ namespace ADsFusion
                     UpdateUserList1();
                     UpdateUserList2();
                     MergeUserList();
-                    DateTime lastWriteTime = File.GetLastWriteTime(Path.Combine(_repositoryFilesPath, "MergedUserList.csv"));
+                    DateTime lastWriteTime = File.GetLastWriteTime(_mergedUserListPath);
                     DateTime localTime = lastWriteTime.ToLocalTime();
                     label1.Text = "Last update: " + localTime.ToString("dd.MM.yyyy HH:mm:ss");
                     DisplayUserList();
@@ -278,50 +281,106 @@ namespace ADsFusion
 
         private void UpdateUserList1()
         {
-            using (var context = new PrincipalContext(ContextType.Domain, _domain1))
+            List<User> ActiveUsersAD1 = new List<User>();
+            // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
+            var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, _domain1)));
+            // Perform the search and get a collection of UserPrincipal objects.
+            var userPrincipals = principalSearcher.FindAll();
+
+            var progressCounter = 0;
+            var totalUsers = userPrincipals.Count();
+            progressBar1.Visible = true;
+
+            // Loop through the collection of UserPrincipal objects to process each user.
+            foreach (UserPrincipal userPrincipal in userPrincipals)
             {
-                var allUsers = new List<UserPrincipal>();
-
-                // Clear the list before updating it
-                _userList1.Clear();
-
-                var progressCounter = 0;
-                var totalUsers = allUsers.Count;
-
-                // Convert the UserPrincipal objects to EduvaudUser objects and add them to 
-                foreach (var user in allUsers)
+                // Check if the user is active in Active Directory.
+                if (userPrincipal != null && userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value)
                 {
-                    var groupsMembership = user.GetGroups();
-                    var groups = new List<string>();
+                    // The user is active. You can now proceed to retrieve user data and create User objects.
+                    var groupsMembership = userPrincipal.GetGroups();
+                    List<string> groups = new List<string>();
                     foreach (var groupMembership in groupsMembership)
                     {
                         groups.Add(groupMembership.Name);
                     }
 
-                    // Get the underlying DirectoryEntry object
-                    var de = user.GetUnderlyingObject() as DirectoryEntry;
-
-                    /*User userToAdd = new(
-                        Convert.ToString(user.GivenName),
-                        Convert.ToString(user.Surname),
-                        Convert.ToString(user.Name),
-                        Convert.ToString(user.SamAccountName),
-                        Convert.ToString(user.EmailAddress),
+                    // Get the underlying DirectoryEntry object.
+                    var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
+                    User userToAdd = new User(
+                        Convert.ToString(userPrincipal.SamAccountName),
+                        Convert.ToString(userPrincipal.DisplayName),
+                        Convert.ToString(userPrincipal.GivenName),
+                        Convert.ToString(userPrincipal.Surname),
+                        Convert.ToString(userPrincipal.EmailAddress),
                         Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                        Convert.ToString(userPrincipal.Description),
                         groups);
 
-                    _allEduvaudUsers.Add(userToAdd);*/
-
-                    progressCounter++;
-                    backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
+                    // Add the user to the list of active users.
+                    ActiveUsersAD1.Add(userToAdd);
                 }
+                progressCounter++;
+                progressBar1.Value = (int)(((double)progressCounter / totalUsers) * 100);
+                //backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
+
+                // If the user is not active, simply skip and continue to the next user.
             }
-            WriteToCsv(_userList1, _userList1Path);
+            // 'ActiveUsersAD1' now contains the list of User objects for active users in Active Directory.
+            SaveToJson(_userList1, _userList1Path);
+            _userList1 = ReadFromJson(_userList1Path);
         }
 
         private void UpdateUserList2()
         {
+            List<User> ActiveUsersAD2 = new List<User>();
+            // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
+            var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, _domain2)));
+            // Perform the search and get a collection of UserPrincipal objects.
+            var userPrincipals = principalSearcher.FindAll();
 
+            var progressCounter = 0;
+            var totalUsers = userPrincipals.Count();
+            progressBar1.Visible = true;
+
+            // Loop through the collection of UserPrincipal objects to process each user.
+            foreach (UserPrincipal userPrincipal in userPrincipals)
+            {
+                // Check if the user is active in Active Directory.
+                if (userPrincipal != null && userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value)
+                {
+                    // The user is active. You can now proceed to retrieve user data and create User objects.
+                    var groupsMembership = userPrincipal.GetGroups();
+                    List<string> groups = new List<string>();
+                    foreach (var groupMembership in groupsMembership)
+                    {
+                        groups.Add(groupMembership.Name);
+                    }
+
+                    // Get the underlying DirectoryEntry object.
+                    var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
+                    User userToAdd = new User(
+                        Convert.ToString(userPrincipal.SamAccountName),
+                        Convert.ToString(userPrincipal.DisplayName),
+                        Convert.ToString(userPrincipal.GivenName),
+                        Convert.ToString(userPrincipal.Surname),
+                        Convert.ToString(userPrincipal.EmailAddress),
+                        Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                        Convert.ToString(userPrincipal.Description),
+                        groups);
+
+                    // Add the user to the list of active users.
+                    ActiveUsersAD2.Add(userToAdd);
+                }
+                progressCounter++;
+                progressBar1.Value = (int)(((double)progressCounter / totalUsers) * 100);
+                //backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
+
+                // If the user is not active, simply skip and continue to the next user.
+            }
+            // 'ActiveUsersAD1' now contains the list of User objects for active users in Active Directory.
+            SaveToJson(_userList2, _userList2Path);
+            _userList2 = ReadFromJson(_userList2Path);
         }
 
         private void MergeUserList()
@@ -329,9 +388,18 @@ namespace ADsFusion
 
         }
 
-        private void WriteToCsv(List<User> list, string path)
+        private void SaveToJson(List<User> users, string path)
         {
+            string filePath = path;
+            JsonManager.SaveToJson(users, filePath);
+        }
 
+        private List<User> ReadFromJson(string path)
+        {
+            string filePath = path;
+            List<User> users = JsonManager.ReadFromJson(filePath);
+            // Now, 'users' will contain the list of User objects from the JSON file.
+            return users;
         }
 
         private void button6_Click(object sender, EventArgs e)
