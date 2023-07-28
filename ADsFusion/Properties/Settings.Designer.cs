@@ -118,5 +118,29 @@ namespace ADsFusion.Properties {
                 this["Group2"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OU1 {
+            get {
+                return ((string)(this["OU1"]));
+            }
+            set {
+                this["OU1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OU2 {
+            get {
+                return ((string)(this["OU2"]));
+            }
+            set {
+                this["OU2"] = value;
+            }
+        }
     }
 }

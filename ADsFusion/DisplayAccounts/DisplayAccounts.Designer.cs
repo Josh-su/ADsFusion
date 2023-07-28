@@ -124,11 +124,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(264, 13);
+            this.label1.Location = new System.Drawing.Point(262, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(205, 15);
+            this.label1.Size = new System.Drawing.Size(211, 15);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Last Update : dd.MM.yyyy HH:mm:ss";
+            this.label1.Text = "Dernière Maj : dd.MM.yyyy HH:mm:ss";
             // 
             // button5
             // 
@@ -250,7 +250,7 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(264, 10);
+            this.progressBar1.Location = new System.Drawing.Point(265, 9);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(204, 23);
             this.progressBar1.Step = 3;

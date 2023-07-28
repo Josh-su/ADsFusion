@@ -33,6 +33,8 @@ namespace ADsFusion
         private string _serverPassword2;
         private string _adminGroup1;
         private string _adminGroup2;
+        private string _ou1;
+        private string _ou2;
 
         private List<User> _userList1;
         private List<User> _userList2;
@@ -57,9 +59,9 @@ namespace ADsFusion
             CheckAndCreateDirectory(_repositoryFilesPath);
 
             // Save the path of the files
-            _userList1Path = Path.Combine(_repositoryFilesPath, "MergedUserList.json");
-            _userList2Path = Path.Combine(_repositoryFilesPath, "UserList1.json");
-            _mergedUserListPath = Path.Combine(_repositoryFilesPath, "UserList2.json");
+            _userList1Path = Path.Combine(_repositoryFilesPath, "UserList1.json");
+            _userList2Path = Path.Combine(_repositoryFilesPath, "UserList2.json");
+            _mergedUserListPath = Path.Combine(_repositoryFilesPath, "MergedUserList.json");
 
             // Define the list of files with their paths and default content
             List<(string filePath, string defaultContent)> files = new List<(string filePath, string defaultContent)>
@@ -234,10 +236,10 @@ namespace ADsFusion
 
         private void button2_Click(object sender, EventArgs e)
         {
-            UpdateAll(CheckIfLogged());
+            UpdateAllAsync(CheckIfLogged());
         }
 
-        private void UpdateAll(int x)
+        private async Task UpdateAllAsync(int x)
         {
             _domain1 = Properties.Settings.Default.Domain1;
             _domain2 = Properties.Settings.Default.Domain2;
@@ -247,6 +249,8 @@ namespace ADsFusion
             _serverPassword2 = Properties.Settings.Default.Password2;
             _adminGroup1 = Properties.Settings.Default.Group1;
             _adminGroup2 = Properties.Settings.Default.Group2;
+            _ou1 = Properties.Settings.Default.OU1;
+            _ou2 = Properties.Settings.Default.OU2;
 
             switch (x)
             {
@@ -254,42 +258,57 @@ namespace ADsFusion
                     _login.ShowDialog();
                     break;
                 case 1:
-                    UpdateUserList1();
-                    DateTime lastWriteTime1 = File.GetLastWriteTime(_userList1Path);
-                    DateTime localTime1 = lastWriteTime1.ToLocalTime();
-                    label1.Text = "Last update: " + localTime1.ToString("dd.MM.yyyy HH:mm:ss");
+                    progressBar1.Visible = true;
+                    await Task.Run(() => UpdateUserList(_userList1, _userList1Path, _domain1, _ou1, 1));
+                    progressBar1.Visible = false;
+                    UpdateLastUpdateTime(_userList1Path);
                     DisplayUserList();
                     break;
                 case 2:
-                    UpdateUserList2();
-                    DateTime lastWriteTime2 = File.GetLastWriteTime(_userList2Path);
-                    DateTime localTime2 = lastWriteTime2.ToLocalTime();
-                    label1.Text = "Last update: " + localTime2.ToString("dd.MM.yyyy HH:mm:ss");
+                    progressBar1.Visible = true;
+                    await Task.Run(() => UpdateUserList(_userList2, _userList2Path, _domain2, _ou2, 2));
+                    progressBar1.Visible = false;
+                    UpdateLastUpdateTime(_userList2Path);
                     DisplayUserList();
                     break;
                 case 3:
-                    UpdateUserList1();
-                    UpdateUserList2();
-                    MergeUserList();
-                    DateTime lastWriteTime = File.GetLastWriteTime(_mergedUserListPath);
-                    DateTime localTime = lastWriteTime.ToLocalTime();
-                    label1.Text = "Last update: " + localTime.ToString("dd.MM.yyyy HH:mm:ss");
+                    progressBar1.Visible = true;
+                    await Task.Run(() => UpdateUserList(_userList1, _userList1Path, _domain1, _ou1, 1));
+                    await Task.Run(() => UpdateUserList(_userList2, _userList2Path, _domain2, _ou2, 2));
+                    progressBar1.Visible = false;
+                    MergeUserList(); // No need to run in the background, as it's not a lengthy operation.
+                    UpdateLastUpdateTime(_mergedUserListPath);
                     DisplayUserList();
                     break;
             }
         }
 
-        private void UpdateUserList1()
+        private void UpdateUserList(List<User> userlist, string userListPath, string domain, string ou, int selectedList)
         {
-            List<User> ActiveUsersAD1 = new List<User>();
+            // Create an empty list to store the active users.
+            List<User> ActiveUsersAD = new List<User>();
+
+            // Check if the JSON file exists and delete it to start with a fresh file.
+            if (File.Exists(userListPath))
+            {
+                File.Delete(userListPath);
+            }
+
             // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
-            var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, _domain1)));
+            var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, domain)));
+            if (!string.IsNullOrEmpty(ou))
+            {
+                principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, domain, ou)));
+            }
+            
             // Perform the search and get a collection of UserPrincipal objects.
             var userPrincipals = principalSearcher.FindAll();
 
             var progressCounter = 0;
             var totalUsers = userPrincipals.Count();
-            progressBar1.Visible = true;
+
+            // Define the batch size (e.g., 10 users at a time).
+            const int batchSize = 10;
 
             // Loop through the collection of UserPrincipal objects to process each user.
             foreach (UserPrincipal userPrincipal in userPrincipals)
@@ -307,7 +326,27 @@ namespace ADsFusion
 
                     // Get the underlying DirectoryEntry object.
                     var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
-                    User userToAdd = new User(
+
+                    User userToAdd = new User(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+                    if (selectedList == 1)
+                    {
+                        userToAdd = new User(
+                            Convert.ToString(userPrincipal.SamAccountName),
+                            Convert.ToString(userPrincipal.DisplayName),
+                            Convert.ToString(userPrincipal.GivenName),
+                            Convert.ToString(userPrincipal.Surname),
+                            Convert.ToString(userPrincipal.EmailAddress),
+                            Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                            Convert.ToString(userPrincipal.Description),
+                            groups,
+                            null, null, null, null, null, null, null, null);
+
+                    }
+                    if (selectedList == 2)
+                    {
+                        userToAdd = new User(
+                        null, null, null, null, null, null, null, null,
                         Convert.ToString(userPrincipal.SamAccountName),
                         Convert.ToString(userPrincipal.DisplayName),
                         Convert.ToString(userPrincipal.GivenName),
@@ -316,76 +355,86 @@ namespace ADsFusion
                         Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
                         Convert.ToString(userPrincipal.Description),
                         groups);
-
-                    // Add the user to the list of active users.
-                    ActiveUsersAD1.Add(userToAdd);
-                }
-                progressCounter++;
-                progressBar1.Value = (int)(((double)progressCounter / totalUsers) * 100);
-                //backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
-
-                // If the user is not active, simply skip and continue to the next user.
-            }
-            // 'ActiveUsersAD1' now contains the list of User objects for active users in Active Directory.
-            SaveToJson(_userList1, _userList1Path);
-            _userList1 = ReadFromJson(_userList1Path);
-        }
-
-        private void UpdateUserList2()
-        {
-            List<User> ActiveUsersAD2 = new List<User>();
-            // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
-            var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, _domain2)));
-            // Perform the search and get a collection of UserPrincipal objects.
-            var userPrincipals = principalSearcher.FindAll();
-
-            var progressCounter = 0;
-            var totalUsers = userPrincipals.Count();
-            progressBar1.Visible = true;
-
-            // Loop through the collection of UserPrincipal objects to process each user.
-            foreach (UserPrincipal userPrincipal in userPrincipals)
-            {
-                // Check if the user is active in Active Directory.
-                if (userPrincipal != null && userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value)
-                {
-                    // The user is active. You can now proceed to retrieve user data and create User objects.
-                    var groupsMembership = userPrincipal.GetGroups();
-                    List<string> groups = new List<string>();
-                    foreach (var groupMembership in groupsMembership)
-                    {
-                        groups.Add(groupMembership.Name);
                     }
 
-                    // Get the underlying DirectoryEntry object.
-                    var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
-                    User userToAdd = new User(
-                        Convert.ToString(userPrincipal.SamAccountName),
-                        Convert.ToString(userPrincipal.DisplayName),
-                        Convert.ToString(userPrincipal.GivenName),
-                        Convert.ToString(userPrincipal.Surname),
-                        Convert.ToString(userPrincipal.EmailAddress),
-                        Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
-                        Convert.ToString(userPrincipal.Description),
-                        groups);
-
                     // Add the user to the list of active users.
-                    ActiveUsersAD2.Add(userToAdd);
+                    ActiveUsersAD.Add(userToAdd);
+
+                    // Check if the batch size is reached or if we processed all users.
+                    if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalUsers - 1)
+                    {
+                        // Save the current batch to the JSON file.
+                        SaveToJson(ActiveUsersAD, userListPath);
+
+                        // Clear the list to free up memory for the next batch.
+                        ActiveUsersAD.Clear();
+                    }
                 }
                 progressCounter++;
-                progressBar1.Value = (int)(((double)progressCounter / totalUsers) * 100);
-                //backgroundWorker1.ReportProgress((int)(((double)progressCounter / totalUsers) * 100));
-
-                // If the user is not active, simply skip and continue to the next user.
+                // Update the progress bar on the UI thread.
+                this.Invoke(new Action(() =>
+                {
+                    progressBar1.Value = (int)((double)progressCounter / totalUsers * 100);
+                }));
             }
-            // 'ActiveUsersAD1' now contains the list of User objects for active users in Active Directory.
-            SaveToJson(_userList2, _userList2Path);
-            _userList2 = ReadFromJson(_userList2Path);
+            // Read the data back from the JSON file into _userList1.
+            userlist = ReadFromJson(userListPath);
         }
 
         private void MergeUserList()
         {
+            if (!string.IsNullOrEmpty(Properties.CustomNames.Default.MergeParameter))
+            {
+                string matchingParameter = Properties.CustomNames.Default.MergeParameter;
 
+                foreach (var user1 in _userList1)
+                {
+                    var matchingValue = user1.GetType().GetProperty(matchingParameter)?.GetValue(user1);
+
+                    var matchingUser = _userList2.FirstOrDefault(user2 =>
+                        user2.GetType().GetProperty(matchingParameter)?.GetValue(user2)?.Equals(matchingValue) ?? false);
+
+                    if (matchingUser != null)
+                    {
+                        var mergedUser = new User(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+                        foreach (var property in typeof(User).GetProperties())
+                        {
+                            var value1 = property.GetValue(user1);
+                            var value2 = property.GetValue(matchingUser);
+
+                            // If the property is from the matching parameter, use the value from list2
+                            if (property.Name == matchingParameter)
+                                property.SetValue(mergedUser, value2);
+                            // If the property is not from the matching parameter, use the value from list1
+                            else if (value1 != null)
+                                property.SetValue(mergedUser, value1);
+                            // If the property is null in list1, use the value from list2
+                            else
+                                property.SetValue(mergedUser, value2);
+
+                        }
+                        _mergedUserList.Add(mergedUser);
+                    }
+                }
+
+                // Add any remaining users from list2 that don't have a match in list1
+                foreach (var user2 in _userList2)
+                {
+                    var matchingValue = user2.GetType().GetProperty(matchingParameter)?.GetValue(user2);
+
+                    var userExists = _userList1.Any(user1 =>
+                        user1.GetType().GetProperty(matchingParameter)?.GetValue(user1)?.Equals(matchingValue) ?? false);
+
+                    if (!userExists)
+                        _mergedUserList.Add(user2);
+                }
+            }
+            else
+            {
+                _settings.ShowDialog();
+                MessageBox.Show("Veuillez sélectionner quel sera le paramètre afin de poursuivre la fusion des deux listes d'utilisateurs");
+            }
         }
 
         private void SaveToJson(List<User> users, string path)
@@ -400,6 +449,13 @@ namespace ADsFusion
             List<User> users = JsonManager.ReadFromJson(filePath);
             // Now, 'users' will contain the list of User objects from the JSON file.
             return users;
+        }
+
+        private void UpdateLastUpdateTime(string filePath)
+        {
+            DateTime lastWriteTime = File.GetLastWriteTime(filePath);
+            DateTime localTime = lastWriteTime.ToLocalTime();
+            label1.Text = "Last update: " + localTime.ToString("dd.MM.yyyy HH:mm:ss");
         }
 
         private void button6_Click(object sender, EventArgs e)

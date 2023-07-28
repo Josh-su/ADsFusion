@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.Windows.Controls;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using System.Reflection.Emit;
 
 namespace ADsFusion
 {
@@ -36,6 +37,8 @@ namespace ADsFusion
             txtbPassword2.Text = Properties.Settings.Default.Password2;
             txtbGroup1.Text = Properties.Settings.Default.Group1;
             txtbGroup2.Text = Properties.Settings.Default.Group2;
+            txtbOU1.Text = Properties.Settings.Default.OU1;
+            txtbOU2.Text = Properties.Settings.Default.OU2;
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace ADsFusion
             }
             else if (server1NotEmptyInformations == server1Informations.Count)
             {
-                domain1Success = LoginDomain1(txtbDomain1.Text, txtbUsername1.Text, txtbPassword1.Text, txtbGroup1.Text);
+                domain1Success = LoginDomain(txtbDomain1.Text, txtbUsername1.Text, txtbPassword1.Text, txtbGroup1.Text);
             }
             if (server2NotEmptyInformations > 0 && server2NotEmptyInformations < server2Informations.Count)
             {
@@ -95,7 +98,7 @@ namespace ADsFusion
             }
             else if (server2NotEmptyInformations == server2Informations.Count)
             {
-                domain2Success = LoginDomain2(txtbDomain2.Text, txtbUsername2.Text, txtbPassword2.Text, txtbGroup2.Text);
+                domain2Success = LoginDomain(txtbDomain2.Text, txtbUsername2.Text, txtbPassword2.Text, txtbGroup2.Text);
             }
 
             if (domain1Success && domain2Success)
@@ -105,17 +108,17 @@ namespace ADsFusion
                 {
                     if (domain1Success && !domain2Success)
                     {
-                        SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
+                        SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null, txtbOU1.Text, null);
                     }
 
                     if (domain2Success || !domain1Success)
                     {
-                        SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
+                        SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text, null, txtbOU2.Text);
                     }
 
                     if (domain1Success && domain2Success)
                     {
-                        SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
+                        SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text, txtbOU1.Text, txtbOU2.Text);
                     }
                 }
             }
@@ -123,7 +126,7 @@ namespace ADsFusion
         }
 
         // Login for Domain1
-        private bool LoginDomain1(string domain, string username, string password, string groupName)
+        private bool LoginDomain(string domain, string username, string password, string groupName)
         {
             try
             {
@@ -159,44 +162,7 @@ namespace ADsFusion
             return false;
         }
 
-        // Login for Domain2
-        private bool LoginDomain2(string domain, string username, string password, string groupName)
-        {
-            try
-            {
-                using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain))
-                {
-                    bool isAuthenticated = context.ValidateCredentials(username, password);
-
-                    if (isAuthenticated)
-                    {
-                        UserPrincipal user = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, username);
-
-                        if (user.IsMemberOf(context, IdentityType.Name, groupName))
-                        {
-                            MessageBox.Show($"Login successful for {domain} domain as an administrator!");
-                            return true;
-                        }
-                        else
-                        {
-                            MessageBox.Show("You are not authorized to login to this application.");
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Invalid username or password for {domain} domain.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred: " + ex.Message);
-            }
-
-            return false;
-        }
-
-        private void SaveCredentials(string domain1, string domain2, string username1, string username2, string password1, string password2, string group1, string group2)
+        private void SaveCredentials(string domain1, string domain2, string username1, string username2, string password1, string password2, string group1, string group2, string ou1, string ou2)
         {
             // Update the user settings with the provided credentials
             Properties.Settings.Default.Domain1 = domain1;
@@ -207,6 +173,8 @@ namespace ADsFusion
             Properties.Settings.Default.Password2 = password2;
             Properties.Settings.Default.Group1 = group1;
             Properties.Settings.Default.Group2 = group2;
+            Properties.Settings.Default.OU1 = ou1;
+            Properties.Settings.Default.OU2 = ou2;
 
             // Save the changes
             Properties.Settings.Default.Save();

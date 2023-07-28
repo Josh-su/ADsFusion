@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ADsFusion" GeneratedClassName="CustomNames">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ADsFusion.Properties" GeneratedClassName="CustomNames">
   <Profiles />
   <Settings>
     <Setting Name="sAMAccountName1" Type="System.String" Scope="User">
@@ -42,6 +42,9 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="description2" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MergeParameter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

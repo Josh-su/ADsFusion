@@ -29,21 +29,19 @@ namespace ADsFusion
         public string Description2 { get; set; }
         public List<string> UserGroups2 { get; set; }
 
-        public User(string sAMAccountName, string displayName, string givenName, string sn, string mail, string title, string description, List<string> userGroups)
+        public User(
+            string sAMAccountName1, string displayName1, string givenName1, string sn1, string mail1, string title1, string description1, List<string> userGroups1,
+            string sAMAccountName2, string displayName2, string givenName2, string sn2, string mail2, string title2, string description2, List<string> userGroups2)
         {
-            SAMAccountName1 = sAMAccountName;
-            DisplayName1 = displayName;
-            GivenName1 = givenName;
-            Sn1 = sn;
-            Mail1 = mail;
-            Title1 = title;
-            Description1 = description;
-            UserGroups1 = userGroups;
-        }
+            SAMAccountName1 = sAMAccountName1;
+            DisplayName1 = displayName1;
+            GivenName1 = givenName1;
+            Sn1 = sn1;
+            Mail1 = mail1;
+            Title1 = title1;
+            Description1 = description1;
+            UserGroups1 = userGroups1;
 
-        public User(string sAMAccountName, string displayName, string givenName, string sn, string mail, string title, string description, List<string> userGroups, string sAMAccountName2, string displayName2, string givenName2, string sn2, string mail2, string title2, string description2, List<string> userGroups2)
-            : this(sAMAccountName, displayName, givenName, sn, mail, title, description, userGroups)
-        {
             SAMAccountName2 = sAMAccountName2;
             DisplayName2 = displayName2;
             GivenName2 = givenName2;
@@ -59,8 +57,15 @@ namespace ADsFusion
     {
         public static void SaveToJson(List<User> users, string filePath)
         {
+            // Deserialize the existing data from the file, if it exists.
+            List<User> existingUsers = ReadFromJson(filePath);
+
+            // Combine the existing data with the new data (users to be added).
+            List<User> combinedUsers = existingUsers.Concat(users).ToList();
+
+            // Serialize the combined data back to JSON and save it to the file.
             var options = new JsonSerializerOptions { WriteIndented = true };
-            string jsonData = JsonSerializer.Serialize(users, options);
+            string jsonData = JsonSerializer.Serialize(combinedUsers, options);
             File.WriteAllText(filePath, jsonData);
         }
 
