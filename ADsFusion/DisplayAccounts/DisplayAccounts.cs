@@ -387,7 +387,7 @@ namespace ADsFusion
             {
                 string matchingParameter = Properties.CustomNames.Default.MergeParameter;
 
-                foreach (var user1 in _userList1)
+                foreach (User user1 in _userList1)
                 {
                     var matchingValue = user1.GetType().GetProperty(matchingParameter)?.GetValue(user1);
 
@@ -403,17 +403,23 @@ namespace ADsFusion
                             var value1 = property.GetValue(user1);
                             var value2 = property.GetValue(matchingUser);
 
-                            // If the property is from the matching parameter, use the value from list2
                             if (property.Name == matchingParameter)
-                                property.SetValue(mergedUser, value2);
-                            // If the property is not from the matching parameter, use the value from list1
+                            {
+                                // Determine whether to use the value from list1 or list2 based on the matching parameter
+                                property.SetValue(mergedUser, (matchingValue != null ? value1 : value2));
+                            }
                             else if (value1 != null)
+                            {
+                                // Use the value from list1
                                 property.SetValue(mergedUser, value1);
-                            // If the property is null in list1, use the value from list2
+                            }
                             else
+                            {
+                                // Use the value from list2
                                 property.SetValue(mergedUser, value2);
-
+                            }
                         }
+
                         _mergedUserList.Add(mergedUser);
                     }
                 }
@@ -427,7 +433,21 @@ namespace ADsFusion
                         user1.GetType().GetProperty(matchingParameter)?.GetValue(user1)?.Equals(matchingValue) ?? false);
 
                     if (!userExists)
-                        _mergedUserList.Add(user2);
+                    {
+                        var mergedUser = new User(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+                        foreach (var property in typeof(User).GetProperties())
+                        {
+                            var value2 = property.GetValue(user2);
+                            if (property.Name == matchingParameter)
+                            {
+                                // Add "2" to the property name if searching in list2
+                                property.SetValue(mergedUser, value2);
+                            }
+                        }
+
+                        _mergedUserList.Add(mergedUser);
+                    }
                 }
             }
             else
