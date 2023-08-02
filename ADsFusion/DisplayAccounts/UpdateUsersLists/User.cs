@@ -71,11 +71,24 @@ namespace ADsFusion
 
         public static List<User> ReadFromJson(string filePath)
         {
-            if (!File.Exists(filePath))
-                return new List<User>();
+            List<User> userList = new List<User>();
 
-            string jsonData = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<List<User>>(jsonData);
+            try
+            {
+                string jsonData = File.ReadAllText(filePath);
+
+                if (!string.IsNullOrEmpty(jsonData))
+                {
+                    userList = JsonSerializer.Deserialize<List<User>>(jsonData);
+                }
+            }
+            catch (JsonException ex)
+            {
+                // Handle any exception that may occur during deserialization
+                Console.WriteLine("Error deserializing JSON: " + ex.Message);
+            }
+
+            return userList;
         }
     }
 }

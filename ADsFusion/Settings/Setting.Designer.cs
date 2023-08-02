@@ -484,18 +484,17 @@
             // 
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(130, 250);
+            this.label21.Location = new System.Drawing.Point(122, 245);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(242, 34);
+            this.label21.Size = new System.Drawing.Size(246, 34);
             this.label21.TabIndex = 79;
-            this.label21.Text = "                            ↑\r\ndonné en commun sur les 2 serveurs";
+            this.label21.Text = "                              ↑\r\nattribut en commun sur les 2 serveurs";
             // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(493, 330);
-            this.Controls.Add(this.label21);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label14);
@@ -540,6 +539,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label21);
             this.Name = "Settings";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.Settings_Load);

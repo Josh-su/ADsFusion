@@ -98,6 +98,8 @@ namespace ADsFusion
             if (string.IsNullOrEmpty(textBox10.Text)) textBox10.Text = "mail";
             if (string.IsNullOrEmpty(textBox9.Text)) textBox9.Text = "title";
             if (string.IsNullOrEmpty(textBox8.Text)) textBox8.Text = "description";
+
+
         }
 
         private void button2_Click(object sender, EventArgs e)
