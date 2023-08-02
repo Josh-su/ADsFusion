@@ -57,11 +57,14 @@ namespace ADsFusion
     {
         public static void SaveToJson(List<User> users, string filePath)
         {
-            // Deserialize the existing data from the file, if it exists.
-            List<User> existingUsers = ReadFromJson(filePath);
-
-            // Combine the existing data with the new data (users to be added).
-            List<User> combinedUsers = existingUsers.Concat(users).ToList();
+            // Combine the existing data (if it exists) with the new data (users to be added).
+            List<User> combinedUsers = new List<User>();
+            if (File.Exists(filePath))
+            {
+                List<User> existingUsers = ReadFromJson(filePath);
+                combinedUsers.AddRange(existingUsers);
+            }
+            combinedUsers.AddRange(users);
 
             // Serialize the combined data back to JSON and save it to the file.
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -71,7 +74,11 @@ namespace ADsFusion
 
         public static List<User> ReadFromJson(string filePath)
         {
-            List<User> userList = new List<User>();
+            if (!File.Exists(filePath))
+            {
+                // Return an empty list if the file doesn't exist.
+                return new List<User>();
+            }
 
             try
             {
@@ -79,7 +86,7 @@ namespace ADsFusion
 
                 if (!string.IsNullOrEmpty(jsonData))
                 {
-                    userList = JsonSerializer.Deserialize<List<User>>(jsonData);
+                    return JsonSerializer.Deserialize<List<User>>(jsonData);
                 }
             }
             catch (JsonException ex)
@@ -88,7 +95,7 @@ namespace ADsFusion
                 Console.WriteLine("Error deserializing JSON: " + ex.Message);
             }
 
-            return userList;
+            return new List<User>();
         }
     }
 }

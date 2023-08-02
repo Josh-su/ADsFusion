@@ -49,6 +49,7 @@ namespace ADsFusion
         public DisplayAccounts()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
             _userList1 = new List<User>();
             _userList2 = new List<User>();
@@ -142,16 +143,19 @@ namespace ADsFusion
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
             {
                 label2.Visible = false;
+                UpdateLastUpdateTime(_userList1Path);
                 return 1;
             }
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain2) && string.IsNullOrEmpty(Properties.Settings.Default.Domain1))
             {
                 label2.Visible = false;
+                UpdateLastUpdateTime(_userList2Path);
                 return 2;
             }
             if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && !string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
             {
                 label2.Visible = false;
+                UpdateLastUpdateTime(_mergedUserListPath);
                 return 3;
             }
             return 0;
@@ -176,10 +180,10 @@ namespace ADsFusion
             foreach (User user in _displayedUserList)
             {
                 // Check if SAMAccountName1 or SAMAccountName2 contains the search text (case-insensitive partial match)
-                if ((!string.IsNullOrEmpty(user.SAMAccountName1) && user.SAMAccountName1.ToLower().Contains(searchText)) || searchText.Contains(user.SAMAccountName1.ToLower()) ||
-                    (!string.IsNullOrEmpty(user.SAMAccountName2) && user.SAMAccountName2.ToLower().Contains(searchText)) || searchText.Contains(user.SAMAccountName2.ToLower()) ||
-                    (!string.IsNullOrEmpty(user.DisplayName1) && user.DisplayName1.ToLower().Contains(searchText)) || searchText.Contains(user.DisplayName1.ToLower()) ||
-                    (!string.IsNullOrEmpty(user.DisplayName2) && user.DisplayName2.ToLower().Contains(searchText)) || searchText.Contains(user.DisplayName2.ToLower()))
+                if ((!string.IsNullOrEmpty(user.SAMAccountName1) && user.SAMAccountName1.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.SAMAccountName1) && searchText.Contains(user.SAMAccountName1.ToLower()) ||
+                    (!string.IsNullOrEmpty(user.SAMAccountName2) && user.SAMAccountName2.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.SAMAccountName2) && searchText.Contains(user.SAMAccountName2.ToLower()) ||
+                    (!string.IsNullOrEmpty(user.DisplayName1) && user.DisplayName1.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.DisplayName1) && searchText.Contains(user.DisplayName1.ToLower()) ||
+                    (!string.IsNullOrEmpty(user.DisplayName2) && user.DisplayName2.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.DisplayName2) && searchText.Contains(user.DisplayName2.ToLower()))
                 {
                     // Add the user's SAMAccountName1 and SAMAccountName2 to the list box, if available
                     string displayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
@@ -310,14 +314,12 @@ namespace ADsFusion
                     progressBar1.Visible = true;
                     _userList1 = await Task.Run(() => UpdateUserList(_userList1, _userList1Path, _domain1, _ou1, 1));
                     progressBar1.Visible = false;
-                    UpdateLastUpdateTime(_userList1Path);
                     DisplayUserList();
                     break;
                 case 2:
                     progressBar1.Visible = true;
                     _userList2 = await Task.Run(() => UpdateUserList(_userList2, _userList2Path, _domain2, _ou2, 2));
                     progressBar1.Visible = false;
-                    UpdateLastUpdateTime(_userList2Path);
                     DisplayUserList();
                     break;
                 case 3:
@@ -326,7 +328,6 @@ namespace ADsFusion
                     _userList2 = await Task.Run(() => UpdateUserList(_userList2, _userList2Path, _domain2, _ou2, 2));
                     progressBar1.Visible = false;
                     MergeUserList(); // No need to run in the background, as it's not a lengthy operation.
-                    UpdateLastUpdateTime(_mergedUserListPath);
                     DisplayUserList();
                     break;
             }

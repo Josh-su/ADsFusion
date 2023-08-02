@@ -22,6 +22,7 @@ namespace ADsFusion
         public ServerAndAdminLogin()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
             _settings = new Settings();
         }

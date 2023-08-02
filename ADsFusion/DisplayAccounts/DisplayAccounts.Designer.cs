@@ -277,6 +277,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button3);
             this.Name = "DisplayAccounts";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DisplayAccounts";
             this.Load += new System.EventHandler(this.DisplayAccounts_Load);
             this.contextMenuStrip1.ResumeLayout(false);

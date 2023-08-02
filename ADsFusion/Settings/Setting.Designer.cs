@@ -48,7 +48,6 @@
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.radioButton7 = new System.Windows.Forms.RadioButton();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -192,8 +191,8 @@
             this.radioButton1.Size = new System.Drawing.Size(14, 13);
             this.radioButton1.TabIndex = 48;
             this.radioButton1.TabStop = true;
+            this.radioButton1.Tag = "SAMAccountName";
             this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // radioButton2
             // 
@@ -203,8 +202,8 @@
             this.radioButton2.Size = new System.Drawing.Size(14, 13);
             this.radioButton2.TabIndex = 49;
             this.radioButton2.TabStop = true;
+            this.radioButton2.Tag = "DisplayName";
             this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
             // radioButton3
             // 
@@ -214,8 +213,8 @@
             this.radioButton3.Size = new System.Drawing.Size(14, 13);
             this.radioButton3.TabIndex = 50;
             this.radioButton3.TabStop = true;
+            this.radioButton3.Tag = "GivenName";
             this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
             // radioButton4
             // 
@@ -225,8 +224,8 @@
             this.radioButton4.Size = new System.Drawing.Size(14, 13);
             this.radioButton4.TabIndex = 51;
             this.radioButton4.TabStop = true;
+            this.radioButton4.Tag = "Sn";
             this.radioButton4.UseVisualStyleBackColor = true;
-            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
             // 
             // radioButton5
             // 
@@ -236,8 +235,8 @@
             this.radioButton5.Size = new System.Drawing.Size(14, 13);
             this.radioButton5.TabIndex = 52;
             this.radioButton5.TabStop = true;
+            this.radioButton5.Tag = "Mail";
             this.radioButton5.UseVisualStyleBackColor = true;
-            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
             // 
             // radioButton6
             // 
@@ -247,8 +246,8 @@
             this.radioButton6.Size = new System.Drawing.Size(14, 13);
             this.radioButton6.TabIndex = 53;
             this.radioButton6.TabStop = true;
+            this.radioButton6.Tag = "Title";
             this.radioButton6.UseVisualStyleBackColor = true;
-            this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
             // 
             // radioButton7
             // 
@@ -258,18 +257,8 @@
             this.radioButton7.Size = new System.Drawing.Size(14, 13);
             this.radioButton7.TabIndex = 54;
             this.radioButton7.TabStop = true;
+            this.radioButton7.Tag = "Description";
             this.radioButton7.UseVisualStyleBackColor = true;
-            this.radioButton7.CheckedChanged += new System.EventHandler(this.radioButton7_CheckedChanged);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.statusStrip1.Location = new System.Drawing.Point(0, 308);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(493, 22);
-            this.statusStrip1.TabIndex = 55;
-            this.statusStrip1.Text = "statusStrip1";
             // 
             // label7
             // 
@@ -494,7 +483,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(493, 330);
+            this.ClientSize = new System.Drawing.Size(493, 319);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label14);
@@ -518,7 +507,6 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.radioButton7);
             this.Controls.Add(this.radioButton6);
             this.Controls.Add(this.radioButton5);
@@ -570,7 +558,6 @@
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.RadioButton radioButton6;
         private System.Windows.Forms.RadioButton radioButton7;
-        private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;

@@ -17,11 +17,27 @@ namespace ADsFusion
         public Settings()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
         private void Settings_Load(object sender, EventArgs e)
         {
+            if (Properties.CustomNames.Default.sAMAccountName1.ToString() != null) textBox1.Text = Properties.CustomNames.Default.sAMAccountName1;
+            if (Properties.CustomNames.Default.sAMAccountName2.ToString() != null) textBox14.Text = Properties.CustomNames.Default.sAMAccountName2;
+            if (Properties.CustomNames.Default.displayName1.ToString() != null) textBox2.Text = Properties.CustomNames.Default.displayName1;
+            if (Properties.CustomNames.Default.displayName2.ToString() != null) textBox13.Text = Properties.CustomNames.Default.displayName2;
+            if (Properties.CustomNames.Default.givenName1.ToString() != null) textBox3.Text = Properties.CustomNames.Default.givenName1;
+            if (Properties.CustomNames.Default.givenName2.ToString() != null) textBox12.Text = Properties.CustomNames.Default.givenName2;
+            if (Properties.CustomNames.Default.sn1.ToString() != null) textBox4.Text = Properties.CustomNames.Default.sn1;
+            if (Properties.CustomNames.Default.sn2.ToString() != null) textBox11.Text = Properties.CustomNames.Default.sn2;
+            if (Properties.CustomNames.Default.mail1.ToString() != null) textBox5.Text = Properties.CustomNames.Default.mail1;
+            if (Properties.CustomNames.Default.mail2.ToString() != null) textBox10.Text = Properties.CustomNames.Default.mail2;
+            if (Properties.CustomNames.Default.title1.ToString() != null) textBox6.Text = Properties.CustomNames.Default.title1;
+            if (Properties.CustomNames.Default.title2.ToString() != null) textBox9.Text = Properties.CustomNames.Default.title2;
+            if (Properties.CustomNames.Default.description1.ToString() != null) textBox7.Text = Properties.CustomNames.Default.description1;
+            if (Properties.CustomNames.Default.description2.ToString() != null) textBox8.Text = Properties.CustomNames.Default.description2;
 
+            SetDefaultIfEmpty();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -44,41 +60,17 @@ namespace ADsFusion
             Properties.CustomNames.Default.description1 = textBox7.Text;
             Properties.CustomNames.Default.description2 = textBox8.Text;
 
-            string param = "";
-            if (radioButton1.Checked)
+            foreach (RadioButton radioButton in this.Controls.OfType<RadioButton>())
             {
-                param = "SAMAccountName";
+                if (radioButton.Checked)
+                {
+                    Properties.CustomNames.Default.MergeParameter = radioButton.Tag.ToString();
+                }
             }
-            if (radioButton2.Checked)
-            {
-                param = "DisplayName";
-            }
-            if (radioButton3.Checked)
-            {
-                param = "GivenName";
-            }
-            if (radioButton4.Checked)
-            {
-                param = "Sn";
-            }
-            if (radioButton5.Checked)
-            {
-                param = "Mail";
-            }
-            if (radioButton6.Checked)
-            {
-                param = "Title";
-            }
-            if (radioButton7.Checked)
-            {
-                param = "Description";
-            }
-            Properties.CustomNames.Default.MergeParameter = param;
 
             // Save the changes
             Properties.CustomNames.Default.Save();
         }
-
 
 
         private void SetDefaultIfEmpty()
@@ -99,47 +91,27 @@ namespace ADsFusion
             if (string.IsNullOrEmpty(textBox9.Text)) textBox9.Text = "title";
             if (string.IsNullOrEmpty(textBox8.Text)) textBox8.Text = "description";
 
-
+            foreach (RadioButton radioButton in this.Controls.OfType<RadioButton>())
+            {
+                // The Tag property of each radio button should be set to the corresponding parameter value
+                if (radioButton.Tag != null && radioButton.Tag.ToString() == Properties.CustomNames.Default.MergeParameter)
+                {
+                    radioButton.Checked = true;
+                }
+                else
+                {
+                    radioButton.Checked = false;
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             Properties.CustomNames.Default.Reset();
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton5_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton6_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton7_CheckedChanged(object sender, EventArgs e)
-        {
-
+            foreach (RadioButton radioButton in this.Controls.OfType<RadioButton>())
+            {
+                radioButton.Checked = false;
+            }
         }
     }
 }
