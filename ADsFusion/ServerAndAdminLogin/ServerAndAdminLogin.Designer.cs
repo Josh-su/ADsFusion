@@ -68,7 +68,7 @@
             this.txtbPassword1.Location = new System.Drawing.Point(132, 98);
             this.txtbPassword1.Name = "txtbPassword1";
             this.txtbPassword1.Size = new System.Drawing.Size(202, 20);
-            this.txtbPassword1.TabIndex = 1;
+            this.txtbPassword1.TabIndex = 2;
             this.txtbPassword1.UseSystemPasswordChar = true;
             // 
             // txtbUsername1
@@ -76,7 +76,7 @@
             this.txtbUsername1.Location = new System.Drawing.Point(132, 72);
             this.txtbUsername1.Name = "txtbUsername1";
             this.txtbUsername1.Size = new System.Drawing.Size(202, 20);
-            this.txtbUsername1.TabIndex = 2;
+            this.txtbUsername1.TabIndex = 1;
             // 
             // label1
             // 
@@ -124,7 +124,7 @@
             this.btnLogin.Location = new System.Drawing.Point(15, 196);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(676, 23);
-            this.btnLogin.TabIndex = 9;
+            this.btnLogin.TabIndex = 10;
             this.btnLogin.Text = "Se connecter";
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
@@ -134,7 +134,7 @@
             this.btnLogout.Location = new System.Drawing.Point(15, 225);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(676, 23);
-            this.btnLogout.TabIndex = 17;
+            this.btnLogout.TabIndex = 11;
             this.btnLogout.Text = "Se déconnecter";
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
@@ -184,7 +184,7 @@
             this.txtbGroup1.Location = new System.Drawing.Point(132, 124);
             this.txtbGroup1.Name = "txtbGroup1";
             this.txtbGroup1.Size = new System.Drawing.Size(202, 20);
-            this.txtbGroup1.TabIndex = 25;
+            this.txtbGroup1.TabIndex = 3;
             // 
             // label9
             // 
@@ -210,35 +210,35 @@
             this.txtbOU1.Location = new System.Drawing.Point(132, 157);
             this.txtbOU1.Name = "txtbOU1";
             this.txtbOU1.Size = new System.Drawing.Size(202, 20);
-            this.txtbOU1.TabIndex = 29;
+            this.txtbOU1.TabIndex = 4;
             // 
             // txtbOU2
             // 
             this.txtbOU2.Location = new System.Drawing.Point(489, 157);
             this.txtbOU2.Name = "txtbOU2";
             this.txtbOU2.Size = new System.Drawing.Size(202, 20);
-            this.txtbOU2.TabIndex = 37;
+            this.txtbOU2.TabIndex = 9;
             // 
             // txtbGroup2
             // 
             this.txtbGroup2.Location = new System.Drawing.Point(489, 124);
             this.txtbGroup2.Name = "txtbGroup2";
             this.txtbGroup2.Size = new System.Drawing.Size(202, 20);
-            this.txtbGroup2.TabIndex = 36;
+            this.txtbGroup2.TabIndex = 8;
             // 
             // txtbUsername2
             // 
             this.txtbUsername2.Location = new System.Drawing.Point(489, 72);
             this.txtbUsername2.Name = "txtbUsername2";
             this.txtbUsername2.Size = new System.Drawing.Size(202, 20);
-            this.txtbUsername2.TabIndex = 35;
+            this.txtbUsername2.TabIndex = 6;
             // 
             // txtbPassword2
             // 
             this.txtbPassword2.Location = new System.Drawing.Point(489, 98);
             this.txtbPassword2.Name = "txtbPassword2";
             this.txtbPassword2.Size = new System.Drawing.Size(202, 20);
-            this.txtbPassword2.TabIndex = 34;
+            this.txtbPassword2.TabIndex = 7;
             this.txtbPassword2.UseSystemPasswordChar = true;
             // 
             // txtbDomain2
@@ -246,7 +246,7 @@
             this.txtbDomain2.Location = new System.Drawing.Point(489, 46);
             this.txtbDomain2.Name = "txtbDomain2";
             this.txtbDomain2.Size = new System.Drawing.Size(202, 20);
-            this.txtbDomain2.TabIndex = 33;
+            this.txtbDomain2.TabIndex = 5;
             // 
             // label10
             // 

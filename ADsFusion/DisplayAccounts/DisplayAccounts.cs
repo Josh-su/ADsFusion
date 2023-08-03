@@ -197,7 +197,7 @@ namespace ADsFusion
             if (!Directory.Exists(directoryPath))
             {
                 // Create the directory
-                DirectoryInfo directoryInfo = Directory.CreateDirectory(directoryPath);
+                Directory.CreateDirectory(directoryPath);
             }
         }
 
@@ -285,6 +285,11 @@ namespace ADsFusion
                     contextMenuStrip1.Show(listBox1, e.Location);
                 }
             }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void button2_Click(object sender, EventArgs e)
