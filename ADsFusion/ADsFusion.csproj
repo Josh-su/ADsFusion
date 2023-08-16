@@ -114,10 +114,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountDetails.cs">
+    <Compile Include="AccountDetails\AccountDetails.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AccountDetails.Designer.cs">
+    <Compile Include="AccountDetails\AccountDetails.Designer.cs">
       <DependentUpon>AccountDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayAccounts\UpdateUsersLists\User.cs" />
@@ -147,7 +147,7 @@
     <Compile Include="Settings\Setting.Designer.cs">
       <DependentUpon>Setting.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AccountDetails.resx">
+    <EmbeddedResource Include="AccountDetails\AccountDetails.resx">
       <DependentUpon>AccountDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DisplayAccounts\DisplayAccounts.resx">
@@ -214,8 +214,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AccountDetails\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

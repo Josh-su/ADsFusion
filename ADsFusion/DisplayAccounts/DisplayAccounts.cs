@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Remoting.Contexts;
+using System.Reflection;
 
 namespace ADsFusion
 {
@@ -21,6 +22,7 @@ namespace ADsFusion
     {
         private Settings _settings;
         private ServerAndAdminLogin _login;
+
         private int _selectedListBoxIndex;
 
         private string _repositoryFilesPath;
@@ -287,11 +289,6 @@ namespace ADsFusion
             }
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             UpdateAllAsync(CheckIfLogged());
@@ -440,6 +437,11 @@ namespace ADsFusion
 
         private void MergeUserList()
         {
+            // Check if the JSON file exists and delete it to start with a fresh file.
+            if (File.Exists(_mergedUserListPath))
+            {
+                File.Delete(_mergedUserListPath);
+            }
             if (!string.IsNullOrEmpty(Properties.CustomNames.Default.MergeParameter))
             {
                 string matchingParameter = Properties.CustomNames.Default.MergeParameter;
@@ -578,5 +580,64 @@ namespace ADsFusion
                 MessageBox.Show("Error opening website: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        #region Open Detail forms
+        // Define a dictionary to store instances of AccountDetails forms.
+        private Dictionary<int, AccountDetails> _accountDetailsForms = new Dictionary<int, AccountDetails>();
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            OpenDetailsForm();
+        }
+
+        private void listBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                OpenDetailsForm();
+                e.Handled = true; // Prevent ListBox default behavior for Enter key
+            }
+        }
+
+        private void listBox1_DoubleClick(object sender, EventArgs e)
+        {
+                OpenDetailsForm();
+        }
+
+        private void OpenDetailsForm()
+        {
+            int index = listBox1.SelectedIndex;
+
+            if (index >= 0)
+            {
+                string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
+                User selectedUser = _displayedUserList.FirstOrDefault(user =>
+                {
+                    string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
+                    return userDisplayText == displayText;
+                });
+
+                if (selectedUser != null)
+                {
+                    // Check if a form for this index already exists.
+                    if (!_accountDetailsForms.ContainsKey(index))
+                    {
+                        AccountDetails newForm = new AccountDetails();
+                        newForm.InitializeWithUser(selectedUser); // Pass the selected user to the form
+
+                        _accountDetailsForms.Add(index, newForm);
+                        newForm.FormClosed += (s, args) => _accountDetailsForms.Remove(index);
+                    }
+
+                    // Show the form, whether it's a new instance or an existing one.
+                    if (_accountDetailsForms.ContainsKey(index))
+                    {
+                        _accountDetailsForms[index].Show();
+                        _accountDetailsForms[index].BringToFront();
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }
