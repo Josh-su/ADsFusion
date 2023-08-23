@@ -131,7 +131,7 @@
             // btnLogin
             // 
             this.btnLogin.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLogin.Location = new System.Drawing.Point(20, 314);
+            this.btnLogin.Location = new System.Drawing.Point(20, 270);
             this.btnLogin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(1014, 35);
@@ -143,7 +143,7 @@
             // btnLogout
             // 
             this.btnLogout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLogout.Location = new System.Drawing.Point(20, 358);
+            this.btnLogout.Location = new System.Drawing.Point(20, 314);
             this.btnLogout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(1014, 35);
@@ -232,6 +232,7 @@
             this.txtbOU1.Name = "txtbOU1";
             this.txtbOU1.Size = new System.Drawing.Size(477, 26);
             this.txtbOU1.TabIndex = 4;
+            this.txtbOU1.Visible = false;
             // 
             // txtbOU2
             // 
@@ -240,6 +241,7 @@
             this.txtbOU2.Name = "txtbOU2";
             this.txtbOU2.Size = new System.Drawing.Size(488, 26);
             this.txtbOU2.TabIndex = 9;
+            this.txtbOU2.Visible = false;
             // 
             // txtbGroup2
             // 
@@ -343,7 +345,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1058, 410);
+            this.ClientSize = new System.Drawing.Size(1058, 366);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button2);
