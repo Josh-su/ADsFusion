@@ -41,7 +41,8 @@ namespace ADsFusion
         private List<User> _userList1;
         private List<User> _userList2;
         private List<User> _mergedUserList;
-        private List<User> _displayedUserList;
+        private List<User> _actualUserList;
+        private List<User> _filteredUserList;
 
         private string _userList1Path;
         private string _userList2Path;
@@ -56,7 +57,8 @@ namespace ADsFusion
             _userList1 = new List<User>();
             _userList2 = new List<User>();
             _mergedUserList = new List<User>();
-            _displayedUserList = new List<User>();
+            _actualUserList = new List<User>();
+            _filteredUserList = new List<User>();
 
             _settings = new Settings();
             _login = new ServerAndAdminLogin();
@@ -102,34 +104,34 @@ namespace ADsFusion
                 case 1:
                     if (File.Exists(_userList1Path))
                     {
-                        _displayedUserList = ReadFromJson(_userList1Path);
+                        _actualUserList = ReadFromJson(_userList1Path);
                     }
                     else
                     {
                         // The file doesn't exist or is empty, create an empty list
-                        _displayedUserList = new List<User>();
+                        _actualUserList = new List<User>();
                     }
                     break;
                 case 2:
                     if (File.Exists(_userList2Path))
                     {
-                        _displayedUserList = ReadFromJson(_userList2Path);
+                        _actualUserList = ReadFromJson(_userList2Path);
                     }
                     else
                     {
                         // The file doesn't exist or is empty, create an empty list
-                        _displayedUserList = new List<User>();
+                        _actualUserList = new List<User>();
                     }
                     break;
                 case 3:
                     if (File.Exists(_mergedUserListPath))
                     {
-                        _displayedUserList = ReadFromJson(_mergedUserListPath);
+                        _actualUserList = ReadFromJson(_mergedUserListPath);
                     }
                     else
                     {
                         // The file doesn't exist or is empty, create an empty list
-                        _displayedUserList = new List<User>();
+                        _actualUserList = new List<User>();
                     }
                     break;
             }
@@ -165,10 +167,7 @@ namespace ADsFusion
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if(textBox1.Text.Length >= 3)
-            {
-                DisplayUserList();
-            }
+            DisplayUserList();
         }
 
         private void DisplayUserList()
@@ -177,18 +176,26 @@ namespace ADsFusion
 
             listBox1.Items.Clear();
 
-            string searchText = textBox1.Text.Normalize().Trim().ToLower();
+            string searchText = textBox1.Text.Normalize().Trim().ToLower(); // Convert to lowercase once
 
-            foreach (User user in _displayedUserList)
+            foreach (User user in _filteredUserList)
             {
-                // Check if SAMAccountName1 or SAMAccountName2 contains the search text (case-insensitive partial match)
-                if ((!string.IsNullOrEmpty(user.SAMAccountName1) && user.SAMAccountName1.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.SAMAccountName1) && searchText.Contains(user.SAMAccountName1.ToLower()) ||
-                    (!string.IsNullOrEmpty(user.SAMAccountName2) && user.SAMAccountName2.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.SAMAccountName2) && searchText.Contains(user.SAMAccountName2.ToLower()) ||
-                    (!string.IsNullOrEmpty(user.DisplayName1) && user.DisplayName1.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.DisplayName1) && searchText.Contains(user.DisplayName1.ToLower()) ||
-                    (!string.IsNullOrEmpty(user.DisplayName2) && user.DisplayName2.ToLower().Contains(searchText)) || !string.IsNullOrEmpty(user.DisplayName2) && searchText.Contains(user.DisplayName2.ToLower()))
+                string samAccountName1 = user.SAMAccountName1 ?? "N/A";
+                string samAccountName2 = user.SAMAccountName2 ?? "N/A";
+                string displayName1 = user.DisplayName1 ?? "";
+                string displayName2 = user.DisplayName2 ?? "";
+
+                // Convert the attributes to lowercase for case-insensitive comparisons
+                samAccountName1 = samAccountName1.ToLower();
+                samAccountName2 = samAccountName2.ToLower();
+                displayName1 = displayName1.ToLower();
+                displayName2 = displayName2.ToLower();
+
+                if (samAccountName1.Contains(searchText) || samAccountName2.Contains(searchText) ||
+                    displayName1.Contains(searchText) || displayName2.Contains(searchText))
                 {
                     // Add the user's SAMAccountName1 and SAMAccountName2 to the list box, if available
-                    string displayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
+                    string displayText = $"{samAccountName1} / {samAccountName2}";
                     listBox1.Items.Add(displayText);
                 }
             }
@@ -234,28 +241,102 @@ namespace ADsFusion
 
         private void aZToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            aZToolStripMenuItem.Checked = true;
-
-            foreach (ToolStripMenuItem item in contextMenuStrip2.Items)
+            if (aZToolStripMenuItem.Checked)
             {
-                if (item != aZToolStripMenuItem)
-                {
-                    item.Checked = false;
-                }
+                aZToolStripMenuItem.Checked = false;
             }
+            else
+            {
+                aZToolStripMenuItem.Checked = true;
+                zAToolStripMenuItem.Checked = false;
+            }
+            UpdateFilteredUserList();
         }
 
         private void zAToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            zAToolStripMenuItem.Checked = true;
-
-            foreach (ToolStripMenuItem item in contextMenuStrip2.Items)
+            if (zAToolStripMenuItem.Checked)
             {
-                if (item != zAToolStripMenuItem)
-                {
-                    item.Checked = false;
-                }
+                zAToolStripMenuItem.Checked = false;
             }
+            else
+            {
+                zAToolStripMenuItem.Checked = true;
+                aZToolStripMenuItem.Checked = false;
+            }
+            UpdateFilteredUserList();
+        }
+
+        private void maitresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (maitresToolStripMenuItem.Checked)
+            {
+                maitresToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                maitresToolStripMenuItem.Checked = true;
+            }
+            UpdateFilteredUserList();
+        }
+
+        private void élèvesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (élèvesToolStripMenuItem.Checked)
+            {
+                élèvesToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                élèvesToolStripMenuItem.Checked = true;
+            }
+            UpdateFilteredUserList();
+        }
+
+        private void autresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (autresToolStripMenuItem.Checked)
+            {
+                autresToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                autresToolStripMenuItem.Checked = true;
+            }
+            UpdateFilteredUserList();
+        }
+
+        private void UpdateFilteredUserList()
+        {
+            _filteredUserList.Clear(); // Clear the existing filtered list
+
+            if (aZToolStripMenuItem.Checked)
+            {
+                _filteredUserList = _actualUserList.OrderBy(user => user.DisplayName1).ToList();
+            }
+            else if (zAToolStripMenuItem.Checked)
+            {
+                _filteredUserList = _actualUserList.OrderByDescending(user => user.DisplayName1).ToList();
+            }
+            else
+            {
+                _filteredUserList = _actualUserList.ToList(); // Start with the complete list if no A to Z or Z to A filter
+            }
+
+            // Apply other filters based on the checked menu items
+            bool filterStudents = élèvesToolStripMenuItem.Checked;
+            bool filterTeachers = maitresToolStripMenuItem.Checked;
+            bool filterOthers = autresToolStripMenuItem.Checked;
+
+            // Apply the Student and Teacher filters based on the checked menu items
+            _filteredUserList = _filteredUserList.Where(user =>
+                (filterStudents && user.Title2 == "Student") ||
+                (filterTeachers && user.Title2 == "Teacher") ||
+                (filterOthers && user.Title2 != "Student" && user.Title2 != "Teacher")).ToList();
+
+            // Remove duplicate users (if any) and update the display
+            _filteredUserList = _filteredUserList.Distinct().ToList();
+            DisplayUserList();
         }
         #endregion
 
@@ -264,26 +345,14 @@ namespace ADsFusion
 
         }
 
-        private void listBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                int index = listBox1.IndexFromPoint(e.Location);
-                if (index >= 0 && index < listBox1.Items.Count)
-                {
-                    listBox1.SelectedIndex = index;
-                    _selectedListBoxIndex = index;
-                }
-            }
-        }
-
         private void listBox1_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
                 int index = listBox1.IndexFromPoint(e.Location);
-                if (index >= 0 && index < listBox1.Items.Count && index == _selectedListBoxIndex)
+                if (index >= 0 && index < listBox1.Items.Count)
                 {
+                    listBox1.SelectedIndex = index; // Ensure the right-clicked item is selected
                     contextMenuStrip1.Show(listBox1, e.Location);
                 }
             }
@@ -507,19 +576,19 @@ namespace ADsFusion
                 switch (matchingParameter)
                 {
                     case "SAMAccountName":
-                        return user.SAMAccountName1;
+                        return user.SAMAccountName1.ToLower();
                     case "DisplayName":
-                        return user.DisplayName1;
+                        return user.DisplayName1.ToLower();
                     case "GivenName":
-                        return user.GivenName1;
+                        return user.GivenName1.ToLower();
                     case "Sn":
-                        return user.Sn1;
+                        return user.Sn1.ToLower();
                     case "Mail":
-                        return user.Mail1;
+                        return user.Mail1.ToLower();
                     case "Title":
-                        return user.Title1;
+                        return user.Title1.ToLower();
                     case "Description":
-                        return user.Description1;
+                        return user.Description1.ToLower();
                 }
             }
             if (user.SAMAccountName2 != null)
@@ -527,19 +596,19 @@ namespace ADsFusion
                 switch (matchingParameter)
                 {
                     case "SAMAccountName":
-                        return user.SAMAccountName2;
+                        return user.SAMAccountName2.ToLower();
                     case "DisplayName":
-                        return user.DisplayName2;
+                        return user.DisplayName2.ToLower();
                     case "GivenName":
-                        return user.GivenName2;
+                        return user.GivenName2.ToLower();
                     case "Sn":
-                        return user.Sn2;
+                        return user.Sn2.ToLower();
                     case "Mail":
-                        return user.Mail2;
+                        return user.Mail2.ToLower();
                     case "Title":
-                        return user.Title2;
+                        return user.Title2.ToLower();
                     case "Description":
-                        return user.Description2;
+                        return user.Description2.ToLower();
                 }
             }
             return null;
@@ -606,15 +675,13 @@ namespace ADsFusion
 
         private void OpenDetailsForm()
         {
-            int index = listBox1.SelectedIndex;
-
-            if (index >= 0)
+            foreach (int index in listBox1.SelectedIndices)
             {
                 string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
-                User selectedUser = _displayedUserList.FirstOrDefault(user =>
+                User selectedUser = _actualUserList.FirstOrDefault(user =>
                 {
                     string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
-                    return userDisplayText == displayText;
+                    return userDisplayText.ToLower() == displayText;
                 });
 
                 if (selectedUser != null)

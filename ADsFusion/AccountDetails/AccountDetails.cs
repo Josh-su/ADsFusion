@@ -16,9 +16,8 @@ namespace ADsFusion
         public AccountDetails()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
-
-
 
         private void AccountDetails_Load(object sender, EventArgs e)
         {

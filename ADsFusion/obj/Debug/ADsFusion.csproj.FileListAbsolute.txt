@@ -2,7 +2,6 @@ C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\ADs
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\ADsFusion.exe
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\ADsFusion.pdb
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.AssemblyReference.cache
-C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.SuggestedBindingRedirects.cache
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.DisplayAccounts.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Properties.Resources.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.GenerateResource.cache

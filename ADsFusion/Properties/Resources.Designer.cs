@@ -73,6 +73,16 @@ namespace ADsFusion.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap poubelle_de_recyclage_20 {
+            get {
+                object obj = ResourceManager.GetObject("poubelle-de-recyclage_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap profil_20 {
             get {
                 object obj = ResourceManager.GetObject("profil_20", resourceCulture);
