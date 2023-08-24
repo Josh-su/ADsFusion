@@ -35,8 +35,8 @@ namespace ADsFusion
         private string _serverPassword2;
         private string _adminGroup1;
         private string _adminGroup2;
-        private string _ou1;
-        private string _ou2;
+        private List<string> _ou1List;
+        private List<string> _ou2List;
 
         private List<User> _userList1;
         private List<User> _userList2;
@@ -237,6 +237,8 @@ namespace ADsFusion
         {
             // Show the context menu strip at the button's location
             contextMenuStrip2.Show(button1, new Point(0, button1.Height));
+
+            UpdateFilteredUserList();
         }
 
         private void aZToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,7 +271,7 @@ namespace ADsFusion
 
         private void maitresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (maitresToolStripMenuItem.Checked)
+            /*if (maitresToolStripMenuItem.Checked)
             {
                 maitresToolStripMenuItem.Checked = false;
             }
@@ -277,12 +279,12 @@ namespace ADsFusion
             {
                 maitresToolStripMenuItem.Checked = true;
             }
-            UpdateFilteredUserList();
+            UpdateFilteredUserList();*/
         }
 
         private void élèvesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (élèvesToolStripMenuItem.Checked)
+            /*if (élèvesToolStripMenuItem.Checked)
             {
                 élèvesToolStripMenuItem.Checked = false;
             }
@@ -290,12 +292,12 @@ namespace ADsFusion
             {
                 élèvesToolStripMenuItem.Checked = true;
             }
-            UpdateFilteredUserList();
+            UpdateFilteredUserList();*/
         }
 
         private void autresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (autresToolStripMenuItem.Checked)
+            /*if (autresToolStripMenuItem.Checked)
             {
                 autresToolStripMenuItem.Checked = false;
             }
@@ -303,7 +305,7 @@ namespace ADsFusion
             {
                 autresToolStripMenuItem.Checked = true;
             }
-            UpdateFilteredUserList();
+            UpdateFilteredUserList();*/
         }
 
         private void UpdateFilteredUserList()
@@ -373,8 +375,8 @@ namespace ADsFusion
             _serverPassword2 = Properties.Settings.Default.Password2;
             _adminGroup1 = Properties.Settings.Default.Group1;
             _adminGroup2 = Properties.Settings.Default.Group2;
-            _ou1 = Properties.Settings.Default.OU1;
-            _ou2 = Properties.Settings.Default.OU2;
+            _ou1List = Properties.Settings.Default.OU1.Split('|').ToList();
+            _ou2List = Properties.Settings.Default.OU2.Split('|').ToList();
 
             switch (x)
             {
@@ -383,20 +385,20 @@ namespace ADsFusion
                     break;
                 case 1:
                     progressBar1.Visible = true;
-                    _userList1 = await Task.Run(() => UpdateUserList(_userList1, _userList1Path, _domain1, _ou1, 1));
+                    _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _ou1List, 1));
                     progressBar1.Visible = false;
                     DisplayUserList();
                     break;
                 case 2:
                     progressBar1.Visible = true;
-                    _userList2 = await Task.Run(() => UpdateUserList(_userList2, _userList2Path, _domain2, _ou2, 2));
+                    _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _ou2List, 2));
                     progressBar1.Visible = false;
                     DisplayUserList();
                     break;
                 case 3:
                     progressBar1.Visible = true;
-                    _userList1 = await Task.Run(() => UpdateUserList(_userList1, _userList1Path, _domain1, _ou1, 1));
-                    _userList2 = await Task.Run(() => UpdateUserList(_userList2, _userList2Path, _domain2, _ou2, 2));
+                    _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _ou1List, 1));
+                    _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _ou2List, 2));
                     progressBar1.Visible = false;
                     MergeUserList(); // No need to run in the background, as it's not a lengthy operation.
                     DisplayUserList();
@@ -404,7 +406,7 @@ namespace ADsFusion
             }
         }
 
-        private List<User> UpdateUserList(List<User> userlist, string userListPath, string domain, string ou, int selectedList)
+        private List<User> UpdateUserList(string userListPath, string domain, List<string> ouList, int selectedList)
         {
             // Create an empty list to store the active users.
             List<User> ActiveUsersAD = new List<User>();
@@ -415,13 +417,34 @@ namespace ADsFusion
                 File.Delete(userListPath);
             }
 
-            // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
-            var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, domain)));
-            if (!string.IsNullOrEmpty(ou))
+            if (ouList.Count > 0)
             {
-                principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, domain, ou)));
+                foreach (string ou in ouList)
+                {
+                    if (!string.IsNullOrEmpty(ou))
+                    {
+                        // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
+                        var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, domain, ou)));
+
+                        GetADUsers(principalSearcher, selectedList, ActiveUsersAD, userListPath);
+                    }
+                }
             }
-            
+            else
+            {
+                // Create a PrincipalSearcher and specify the UserPrincipal as the type to search for.
+                var principalSearcher = new PrincipalSearcher(new UserPrincipal(new PrincipalContext(ContextType.Domain, domain)));
+
+                GetADUsers(principalSearcher, selectedList, ActiveUsersAD, userListPath);
+            }
+
+            // Read the data back from the JSON file into ActiveUsersAD.
+            List<User> userListToReturn = ReadFromJson(userListPath);
+            return userListToReturn;
+        }
+
+        private void GetADUsers(PrincipalSearcher principalSearcher, int selectedList, List<User> ActiveUsersAD, string userListPath)
+        {
             // Perform the search and get a collection of UserPrincipal objects.
             var userPrincipals = principalSearcher.FindAll();
 
@@ -498,10 +521,6 @@ namespace ADsFusion
                     progressBar1.Value = (int)((double)progressCounter / totalUsers * 100);
                 }));
             }
-
-            // Read the data back from the JSON file into ActiveUsersAD.
-            List<User> userListToReturn = ReadFromJson(userListPath);
-            return userListToReturn;
         }
 
         private void MergeUserList()
@@ -526,7 +545,7 @@ namespace ADsFusion
                         if (matchingValue1.Equals(matchingValue2))
                         {
                             matchingUser = user2;
-                            break; // Stop searching once a match is found to avoid unnecessary iterations
+                            break; // Stop searching once a match is found, to avoid unnecessary iterations
                         }
                     }                    
 

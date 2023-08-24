@@ -151,17 +151,17 @@ namespace ADsFusion
                 {
                     if (domain1Success && !domain2Success)
                     {
-                        SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null, txtbOU1.Text, null);
+                        SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
                     }
 
                     if (domain2Success || !domain1Success)
                     {
-                        SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text, null, txtbOU2.Text);
+                        SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
                     }
 
                     if (domain1Success && domain2Success)
                     {
-                        SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text, txtbOU1.Text, txtbOU2.Text);
+                        SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
                     }
                 }
             }
@@ -204,7 +204,7 @@ namespace ADsFusion
             return false;
         }
 
-        private void SaveCredentials(string domain1, string domain2, string username1, string username2, string password1, string password2, string group1, string group2, string ou1, string ou2)
+        private void SaveCredentials(string domain1, string domain2, string username1, string username2, string password1, string password2, string group1, string group2)
         {
             // Clear all the saved information by resetting the user settings
             Properties.Settings.Default.Reset();
@@ -218,8 +218,6 @@ namespace ADsFusion
             Properties.Settings.Default.Password2 = password2;
             Properties.Settings.Default.Group1 = group1;
             Properties.Settings.Default.Group2 = group2;
-            //Properties.Settings.Default.OU1 = ou1;
-            //Properties.Settings.Default.OU2 = ou2;
 
             // Save dynamic textbox information
             StringBuilder dynamicTextboxesData = new StringBuilder();
