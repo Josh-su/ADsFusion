@@ -48,6 +48,8 @@ namespace ADsFusion
         private string _userList2Path;
         private string _mergedUserListPath;
 
+        private readonly object activeUsersLock = new object(); // Lock object
+        List<Task> userTasks = new List<Task>();
 
         public DisplayAccounts()
         {
@@ -269,43 +271,16 @@ namespace ADsFusion
             UpdateFilteredUserList();
         }
 
-        private void maitresToolStripMenuItem_Click(object sender, EventArgs e)
+        private void tousToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /*if (maitresToolStripMenuItem.Checked)
+            if (tousToolStripMenuItem.Checked)
             {
-                maitresToolStripMenuItem.Checked = false;
+                tousToolStripMenuItem.Checked = false;
             }
             else
             {
-                maitresToolStripMenuItem.Checked = true;
+                tousToolStripMenuItem.Checked = true;
             }
-            UpdateFilteredUserList();*/
-        }
-
-        private void élèvesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*if (élèvesToolStripMenuItem.Checked)
-            {
-                élèvesToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                élèvesToolStripMenuItem.Checked = true;
-            }
-            UpdateFilteredUserList();*/
-        }
-
-        private void autresToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*if (autresToolStripMenuItem.Checked)
-            {
-                autresToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                autresToolStripMenuItem.Checked = true;
-            }
-            UpdateFilteredUserList();*/
         }
 
         private void UpdateFilteredUserList()
@@ -320,21 +295,11 @@ namespace ADsFusion
             {
                 _filteredUserList = _actualUserList.OrderByDescending(user => user.DisplayName1).ToList();
             }
-            else
+
+            if (tousToolStripMenuItem.Checked)
             {
                 _filteredUserList = _actualUserList.ToList(); // Start with the complete list if no A to Z or Z to A filter
             }
-
-            // Apply other filters based on the checked menu items
-            bool filterStudents = élèvesToolStripMenuItem.Checked;
-            bool filterTeachers = maitresToolStripMenuItem.Checked;
-            bool filterOthers = autresToolStripMenuItem.Checked;
-
-            // Apply the Student and Teacher filters based on the checked menu items
-            _filteredUserList = _filteredUserList.Where(user =>
-                (filterStudents && user.Title2 == "Student") ||
-                (filterTeachers && user.Title2 == "Teacher") ||
-                (filterOthers && user.Title2 != "Student" && user.Title2 != "Teacher")).ToList();
 
             // Remove duplicate users (if any) and update the display
             _filteredUserList = _filteredUserList.Distinct().ToList();
@@ -438,6 +403,9 @@ namespace ADsFusion
                 GetADUsers(principalSearcher, selectedList, ActiveUsersAD, userListPath);
             }
 
+            // Wait for all the tasks to complete before reading from the JSON file.
+            Task.WhenAll(userTasks).Wait();
+
             // Read the data back from the JSON file into ActiveUsersAD.
             List<User> userListToReturn = ReadFromJson(userListPath);
             return userListToReturn;
@@ -447,7 +415,6 @@ namespace ADsFusion
         {
             // Perform the search and get a collection of UserPrincipal objects.
             var userPrincipals = principalSearcher.FindAll();
-
             var progressCounter = 0;
             var totalUsers = userPrincipals.Count();
 
@@ -460,22 +427,39 @@ namespace ADsFusion
                 // Check if the user is active in Active Directory.
                 if (userPrincipal != null && userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value && userPrincipal.SamAccountName != null && userPrincipal.EmailAddress != null)
                 {
-                    // The user is active. You can now proceed to retrieve user data and create User objects.
-                    var groupsMembership = userPrincipal.GetGroups();
-                    List<string> groups = new List<string>();
-                    foreach (var groupMembership in groupsMembership)
+                    userTasks.Add(Task.Run(async () =>
                     {
-                        groups.Add(groupMembership.Name);
-                    }
+                        // The user is active. You can now proceed to retrieve user data and create User objects.
+                        var groupsMembership = userPrincipal.GetGroups();
+                        List<string> groups = new List<string>();
+                        foreach (var groupMembership in groupsMembership)
+                        {
+                            groups.Add(groupMembership.Name);
+                        }
 
-                    // Get the underlying DirectoryEntry object.
-                    var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
+                        // Get the underlying DirectoryEntry object.
+                        var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
 
-                    User userToAdd = new User(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                        User userToAdd = new User(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
-                    if (selectedList == 1)
-                    {
-                        userToAdd = new User(
+                        if (selectedList == 1)
+                        {
+                            userToAdd = new User(
+                                Convert.ToString(userPrincipal.SamAccountName),
+                                Convert.ToString(userPrincipal.DisplayName),
+                                Convert.ToString(userPrincipal.GivenName),
+                                Convert.ToString(userPrincipal.Surname),
+                                Convert.ToString(userPrincipal.EmailAddress),
+                                Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                Convert.ToString(userPrincipal.Description),
+                                groups,
+                                null, null, null, null, null, null, null, null);
+
+                        }
+                        if (selectedList == 2)
+                        {
+                            userToAdd = new User(
+                            null, null, null, null, null, null, null, null,
                             Convert.ToString(userPrincipal.SamAccountName),
                             Convert.ToString(userPrincipal.DisplayName),
                             Convert.ToString(userPrincipal.GivenName),
@@ -483,43 +467,32 @@ namespace ADsFusion
                             Convert.ToString(userPrincipal.EmailAddress),
                             Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
                             Convert.ToString(userPrincipal.Description),
-                            groups,
-                            null, null, null, null, null, null, null, null);
+                            groups);
+                        }
 
-                    }
-                    if (selectedList == 2)
-                    {
-                        userToAdd = new User(
-                        null, null, null, null, null, null, null, null,
-                        Convert.ToString(userPrincipal.SamAccountName),
-                        Convert.ToString(userPrincipal.DisplayName),
-                        Convert.ToString(userPrincipal.GivenName),
-                        Convert.ToString(userPrincipal.Surname),
-                        Convert.ToString(userPrincipal.EmailAddress),
-                        Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
-                        Convert.ToString(userPrincipal.Description),
-                        groups);
-                    }
+                        // Add the user to the list of active users within a lock
+                        lock (activeUsersLock)
+                        {
+                            ActiveUsersAD.Add(userToAdd);
 
-                    // Add the user to the list of active users.
-                    ActiveUsersAD.Add(userToAdd);
+                            // Check if the batch size is reached or if we processed all users.
+                            if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalUsers - 1)
+                            {
+                                // Save the current batch to the JSON file.
+                                SaveToJson(ActiveUsersAD, userListPath);
 
-                    // Check if the batch size is reached or if we processed all users.
-                    if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalUsers - 1)
-                    {
-                        // Save the current batch to the JSON file.
-                        SaveToJson(ActiveUsersAD, userListPath);
-
-                        // Clear the list to free up memory for the next batch.
-                        ActiveUsersAD.Clear();
-                    }
+                                // Clear the list to free up memory for the next batch.
+                                ActiveUsersAD.Clear();
+                            }
+                        }
+                        progressCounter++;
+                        // Update the progress bar on the UI thread.
+                        this.Invoke(new Action(() =>
+                        {
+                            progressBar1.Value = (int)((double)progressCounter / totalUsers * 100);
+                        }));
+                    }));
                 }
-                progressCounter++;
-                // Update the progress bar on the UI thread.
-                this.Invoke(new Action(() =>
-                {
-                    progressBar1.Value = (int)((double)progressCounter / totalUsers * 100);
-                }));
             }
         }
 

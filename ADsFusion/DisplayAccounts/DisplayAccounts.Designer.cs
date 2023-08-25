@@ -55,9 +55,8 @@ namespace ADsFusion
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.maitresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.élèvesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -159,16 +158,16 @@ namespace ADsFusion
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aZToolStripMenuItem,
             this.zAToolStripMenuItem,
-            this.maitresToolStripMenuItem,
-            this.élèvesToolStripMenuItem,
-            this.autresToolStripMenuItem});
+            this.groupesToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(181, 136);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(119, 70);
             // 
             // aZToolStripMenuItem
             // 
+            this.aZToolStripMenuItem.Checked = true;
+            this.aZToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.aZToolStripMenuItem.Name = "aZToolStripMenuItem";
-            this.aZToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aZToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.aZToolStripMenuItem.Text = "A -> Z";
             this.aZToolStripMenuItem.Click += new System.EventHandler(this.aZToolStripMenuItem_Click);
             // 
@@ -283,26 +282,22 @@ namespace ADsFusion
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // maitresToolStripMenuItem
+            // groupesToolStripMenuItem
             // 
-            this.maitresToolStripMenuItem.Name = "maitresToolStripMenuItem";
-            this.maitresToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.maitresToolStripMenuItem.Text = "Maitres";
-            this.maitresToolStripMenuItem.Click += new System.EventHandler(this.maitresToolStripMenuItem_Click);
+            this.groupesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tousToolStripMenuItem});
+            this.groupesToolStripMenuItem.Name = "groupesToolStripMenuItem";
+            this.groupesToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.groupesToolStripMenuItem.Text = "Groupes";
             // 
-            // élèvesToolStripMenuItem
+            // tousToolStripMenuItem
             // 
-            this.élèvesToolStripMenuItem.Name = "élèvesToolStripMenuItem";
-            this.élèvesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.élèvesToolStripMenuItem.Text = "Élèves";
-            this.élèvesToolStripMenuItem.Click += new System.EventHandler(this.élèvesToolStripMenuItem_Click);
-            // 
-            // autresToolStripMenuItem
-            // 
-            this.autresToolStripMenuItem.Name = "autresToolStripMenuItem";
-            this.autresToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.autresToolStripMenuItem.Text = "Autres";
-            this.autresToolStripMenuItem.Click += new System.EventHandler(this.autresToolStripMenuItem_Click);
+            this.tousToolStripMenuItem.Checked = true;
+            this.tousToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tousToolStripMenuItem.Name = "tousToolStripMenuItem";
+            this.tousToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tousToolStripMenuItem.Text = "Tous";
+            this.tousToolStripMenuItem.Click += new System.EventHandler(this.tousToolStripMenuItem_Click);
             // 
             // DisplayAccounts
             // 
@@ -360,9 +355,8 @@ namespace ADsFusion
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private ToolStripMenuItem maitresToolStripMenuItem;
-        private ToolStripMenuItem élèvesToolStripMenuItem;
-        private ToolStripMenuItem autresToolStripMenuItem;
+        private ToolStripMenuItem groupesToolStripMenuItem;
+        private ToolStripMenuItem tousToolStripMenuItem;
     }
 }
 
