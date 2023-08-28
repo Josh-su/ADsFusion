@@ -120,7 +120,8 @@
     <Compile Include="AccountDetails\AccountDetails.Designer.cs">
       <DependentUpon>AccountDetails.cs</DependentUpon>
     </Compile>
-    <Compile Include="DisplayAccounts\UpdateUsersLists\User.cs" />
+    <Compile Include="DisplayAccounts\Utilities\User.cs" />
+    <Compile Include="DisplayAccounts\Utilities\JsonManager.cs" />
     <Compile Include="Properties\CustomNames.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
