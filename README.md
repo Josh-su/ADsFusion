@@ -7,4 +7,4 @@ the principle of this application is to be able to manage two groups of users co
 
 
 
-Icons made by Pavel Kozlov, Wahyu Adam, Kirill Kazachek, Catalin Fertu, Arkinasi & Febrian Hidayat from <a href="https://www.flaticon.com/fr/collections/MzMxMDkwMTA=">flaticon.com</a>
+Icons made by Pavel Kozlov, Wahyu Adam, Kirill Kazachek, Catalin Fertu, Arkinasi, Freepik & Febrian Hidayat from <a href="https://www.flaticon.com/fr/collections/MzMxMDkwMTA=">flaticon.com</a>
