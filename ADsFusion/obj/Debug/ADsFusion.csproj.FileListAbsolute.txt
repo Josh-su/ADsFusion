@@ -60,3 +60,4 @@ C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\Sys
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\bin\Debug\System.ValueTuple.xml
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.AccountDetails.resources
+C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.FilterForm.resources

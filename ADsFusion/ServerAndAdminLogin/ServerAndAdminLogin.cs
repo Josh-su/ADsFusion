@@ -46,7 +46,7 @@ namespace ADsFusion
             txtbGroup2.Text = Properties.Settings.Default.Group2;
 
             // Load dynamic textbox data
-            string[] ou1TextboxValues = Properties.Settings.Default.OU1.Split('|');
+            string[] ou1TextboxValues = Properties.Settings.Default.Groups1.Split('|');
             for (int i = 0; i < ou1TextboxValues.Length - 1; i++) // Length - 1 to exclude the last empty entry
             {
                 System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
@@ -64,7 +64,7 @@ namespace ADsFusion
                 Controls.Add(newTextbox);
                 AdjustFormLayout();
             }
-            string[] ou2TextboxValues = Properties.Settings.Default.OU2.Split('|');
+            string[] ou2TextboxValues = Properties.Settings.Default.Groups2.Split('|');
             for (int i = 0; i < ou2TextboxValues.Length - 1; i++) // Length - 1 to exclude the last empty entry
             {
                 System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
@@ -229,7 +229,7 @@ namespace ADsFusion
                     dynamicTextboxesData.Append("|"); // Use a separator between values
                 }
             }
-            Properties.Settings.Default.OU1 = dynamicTextboxesData.ToString();
+            Properties.Settings.Default.Groups1 = dynamicTextboxesData.ToString();
 
             dynamicTextboxesData.Clear(); // Clear for next set of textboxes
             foreach (System.Windows.Forms.TextBox textBox in dynamicTextBoxesOu2)
@@ -240,7 +240,7 @@ namespace ADsFusion
                     dynamicTextboxesData.Append("|"); // Use a separator between values
                 }
             }
-            Properties.Settings.Default.OU2 = dynamicTextboxesData.ToString();
+            Properties.Settings.Default.Groups2 = dynamicTextboxesData.ToString();
 
             // Save the changes
             Properties.Settings.Default.Save();

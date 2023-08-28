@@ -297,8 +297,8 @@ namespace ADsFusion
             _serverPassword2 = Properties.Settings.Default.Password2;
             _adminGroup1 = Properties.Settings.Default.Group1;
             _adminGroup2 = Properties.Settings.Default.Group2;
-            _groupList1 = Properties.Settings.Default.OU1.Split('|').ToList();
-            _groupList2 = Properties.Settings.Default.OU2.Split('|').ToList();
+            _groupList1 = Properties.Settings.Default.Groups1.Split('|').ToList();
+            _groupList2 = Properties.Settings.Default.Groups2.Split('|').ToList();
 
             switch (x)
             {
