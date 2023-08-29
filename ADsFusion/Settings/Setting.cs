@@ -17,7 +17,7 @@ namespace ADsFusion
         public Settings()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void Settings_Load(object sender, EventArgs e)
@@ -55,6 +55,8 @@ namespace ADsFusion
 
             // Save the changes
             Properties.CustomNames.Default.Save();
+
+            this.Close();
         }
 
 

@@ -260,6 +260,7 @@ namespace ADsFusion
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DisplayAccounts";
             this.Load += new System.EventHandler(this.DisplayAccounts_Load);
+            this.LocationChanged += new System.EventHandler(this.DisplayAccounts_LocationChanged);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

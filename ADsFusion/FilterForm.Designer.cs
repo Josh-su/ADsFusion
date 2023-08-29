@@ -46,7 +46,7 @@
             this.checkedListBox1.FormattingEnabled = true;
             this.checkedListBox1.Location = new System.Drawing.Point(12, 38);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(260, 409);
+            this.checkedListBox1.Size = new System.Drawing.Size(260, 439);
             this.checkedListBox1.TabIndex = 1;
             // 
             // button1
@@ -63,12 +63,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 453);
+            this.ClientSize = new System.Drawing.Size(284, 486);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.textBox1);
             this.Name = "FilterForm";
             this.Text = "FilterForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FilterForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

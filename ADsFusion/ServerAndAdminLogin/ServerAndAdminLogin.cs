@@ -19,22 +19,21 @@ namespace ADsFusion
     {
         private int _initialHeight;
 
-        private List<System.Windows.Forms.TextBox> dynamicTextBoxesOu1 = new List<System.Windows.Forms.TextBox>();
-        private List<System.Windows.Forms.TextBox> dynamicTextBoxesOu2 = new List<System.Windows.Forms.TextBox>();
+        private List<System.Windows.Forms.TextBox> _allTextBoxesGroup1 = new List<System.Windows.Forms.TextBox>();
+        private List<System.Windows.Forms.TextBox> _allTextBoxesGroup2 = new List<System.Windows.Forms.TextBox>();
+
+        StringBuilder dynamicTextboxesData = new StringBuilder();
 
         public ServerAndAdminLogin()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = FormBorderStyle.None;
 
             _initialHeight = this.Height;
         }
 
         private void ServerAndAdminLogin_Load(object sender, EventArgs e)
         {
-            //dynamicTextBoxesOu1.Add(txtbOU1); // Add the existing textbox to the dynamic list
-            //dynamicTextBoxesOu2.Add(txtbOU2); // Add the existing textbox to the dynamic list
-
             // Retrieved the saved credentials and informations from the app.config file an fill the appropriate textboxes with the saved credentials
             txtbDomain1.Text = Properties.Settings.Default.Domain1;
             txtbDomain2.Text = Properties.Settings.Default.Domain2;
@@ -45,42 +44,46 @@ namespace ADsFusion
             txtbGroup1.Text = Properties.Settings.Default.Group1;
             txtbGroup2.Text = Properties.Settings.Default.Group2;
 
+
+            _allTextBoxesGroup1.Add(txtbGroups1);
+            _allTextBoxesGroup2.Add(txtbGroups2);
+
             // Load dynamic textbox data
-            string[] ou1TextboxValues = Properties.Settings.Default.Groups1.Split('|');
-            for (int i = 0; i < ou1TextboxValues.Length - 1; i++) // Length - 1 to exclude the last empty entry
+            string[] groups1TextboxValues = Properties.Settings.Default.Groups1.Split('|');
+            foreach (string value in groups1TextboxValues)
             {
                 System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
-                newTextbox.Size = txtbOU1.Size; // Set the size
-                if (dynamicTextBoxesOu1.Count > 0)
+                newTextbox.Size = txtbGroups1.Size; // Set the size
+                if (_allTextBoxesGroup1.Count > 1)
                 {
-                    newTextbox.Location = new Point(txtbOU1.Left, dynamicTextBoxesOu1[dynamicTextBoxesOu1.Count - 1].Bottom + 10);
+                    newTextbox.Location = new Point(txtbGroups1.Left, _allTextBoxesGroup1[_allTextBoxesGroup1.Count - 1].Bottom + 10);
+                    newTextbox.Text = value;
+                    _allTextBoxesGroup1.Add(newTextbox);
+                    Controls.Add(newTextbox);
+                    AdjustFormLayout();
                 }
                 else
                 {
-                    newTextbox.Location = new Point(txtbOU1.Left, txtbOU1.Bottom - 20);
+                    txtbGroups1.Text = value;
                 }
-                newTextbox.Text = ou1TextboxValues[i];
-                dynamicTextBoxesOu1.Add(newTextbox);
-                Controls.Add(newTextbox);
-                AdjustFormLayout();
             }
-            string[] ou2TextboxValues = Properties.Settings.Default.Groups2.Split('|');
-            for (int i = 0; i < ou2TextboxValues.Length - 1; i++) // Length - 1 to exclude the last empty entry
+            string[] groups2TextboxValues = Properties.Settings.Default.Groups2.Split('|');
+            foreach (string value in groups2TextboxValues)
             {
                 System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
-                newTextbox.Size = txtbOU2.Size; // Set the size
-                if (i == 0)
+                newTextbox.Size = txtbGroups2.Size; // Set the size
+                if (_allTextBoxesGroup1.Count > 1)
                 {
-                    newTextbox.Location = new Point(txtbOU2.Left, txtbOU2.Bottom - 20);
+                    newTextbox.Location = new Point(txtbGroups2.Left, _allTextBoxesGroup2[_allTextBoxesGroup2.Count - 1].Bottom + 10);
+                    newTextbox.Text = value;
+                    _allTextBoxesGroup2.Add(newTextbox);
+                    Controls.Add(newTextbox);
+                    AdjustFormLayout();
                 }
                 else
                 {
-                    newTextbox.Location = new Point(txtbOU2.Left, dynamicTextBoxesOu2[dynamicTextBoxesOu2.Count - 1].Bottom + 10);
+                    txtbGroups2.Text = value;
                 }
-                newTextbox.Text = ou2TextboxValues[i];
-                dynamicTextBoxesOu2.Add(newTextbox);
-                Controls.Add(newTextbox);
-                AdjustFormLayout();
             }
         }
 
@@ -96,14 +99,16 @@ namespace ADsFusion
                 txtbDomain1.Text,
                 txtbUsername1.Text,
                 txtbPassword1.Text,
-                txtbGroup1.Text
+                txtbGroup1.Text,
+                txtbGroups1.Text
             };
             List<string> server2Informations = new List<string>
             {
                 txtbDomain2.Text,
                 txtbUsername2.Text,
                 txtbPassword2.Text,
-                txtbGroup2.Text
+                txtbGroup2.Text,
+                txtbGroups2.Text
             };
 
             int server1NotEmptyInformations = 0;
@@ -152,22 +157,24 @@ namespace ADsFusion
                     if (domain1Success && !domain2Success)
                     {
                         SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
+                        this.Close();
                     }
 
                     if (domain2Success || !domain1Success)
                     {
                         SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
+                        this.Close();
                     }
 
                     if (domain1Success && domain2Success)
                     {
                         SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
+                        this.Close();
                     }
                 }
             }
         }
 
-        // Login for Domain1
         private bool LoginDomain(string domain, string username, string password, string groupName)
         {
             try
@@ -220,24 +227,24 @@ namespace ADsFusion
             Properties.Settings.Default.Group2 = group2;
 
             // Save dynamic textbox information
-            StringBuilder dynamicTextboxesData = new StringBuilder();
-            foreach (System.Windows.Forms.TextBox textBox in dynamicTextBoxesOu1)
+            dynamicTextboxesData.Clear();
+            foreach (System.Windows.Forms.TextBox textBox in _allTextBoxesGroup1)
             {
-                if(textBox.Text.Length > 4)
+                if (!string.IsNullOrEmpty(textBox.Text))
                 {
                     dynamicTextboxesData.Append(textBox.Text);
-                    dynamicTextboxesData.Append("|"); // Use a separator between values
+                    if (dynamicTextboxesData.ToString().Split('|').Count() < 5) dynamicTextboxesData.Append("|"); ; // Use a separator between values
                 }
             }
             Properties.Settings.Default.Groups1 = dynamicTextboxesData.ToString();
 
             dynamicTextboxesData.Clear(); // Clear for next set of textboxes
-            foreach (System.Windows.Forms.TextBox textBox in dynamicTextBoxesOu2)
+            foreach (System.Windows.Forms.TextBox textBox in _allTextBoxesGroup2)
             {
-                if (textBox.Text.Length > 4)
+                if (!string.IsNullOrEmpty(textBox.Text))
                 {
                     dynamicTextboxesData.Append(textBox.Text);
-                    dynamicTextboxesData.Append("|"); // Use a separator between values
+                    if (dynamicTextboxesData.ToString().Split('|').Count() < 5) dynamicTextboxesData.Append("|"); // Use a separator between values
                 }
             }
             Properties.Settings.Default.Groups2 = dynamicTextboxesData.ToString();
@@ -273,17 +280,19 @@ namespace ADsFusion
                 }
             }
 
-            foreach (System.Windows.Forms.TextBox dynamicTextBox in dynamicTextBoxesOu1)
+            foreach (System.Windows.Forms.TextBox dynamicTextBox in _allTextBoxesGroup1)
             {
-                Controls.Remove(dynamicTextBox);
+                if (_allTextBoxesGroup1.Count() != 1) Controls.Remove(dynamicTextBox);
             }
-            dynamicTextBoxesOu1.Clear();
+            _allTextBoxesGroup1.Clear();
+            _allTextBoxesGroup1.Add(txtbGroups1);
 
-            foreach (System.Windows.Forms.TextBox dynamicTextBox in dynamicTextBoxesOu2)
+            foreach (System.Windows.Forms.TextBox dynamicTextBox in _allTextBoxesGroup2)
             {
-                Controls.Remove(dynamicTextBox);
+                if (_allTextBoxesGroup2.Count() != 1) Controls.Remove(dynamicTextBox);
             }
-            dynamicTextBoxesOu2.Clear();
+            _allTextBoxesGroup2.Clear();
+            _allTextBoxesGroup2.Add(txtbGroups2);
 
             AdjustFormLayout();
         }
@@ -291,19 +300,19 @@ namespace ADsFusion
         #region Add & toggle OU textbox
         private void button1_Click(object sender, EventArgs e)
         {
-            if (dynamicTextBoxesOu1.Count < 5)
+            if (_allTextBoxesGroup1.Count < 5)
             {
                 System.Windows.Forms.TextBox newTextBox = new System.Windows.Forms.TextBox();
-                newTextBox.Size = txtbOU1.Size; // Set the size
-                if (dynamicTextBoxesOu1.Count > 0)
+                newTextBox.Size = txtbGroups1.Size; // Set the size
+                if (_allTextBoxesGroup1.Count > 0)
                 {
-                    newTextBox.Location = new Point(txtbOU1.Left, dynamicTextBoxesOu1[dynamicTextBoxesOu1.Count - 1].Bottom + 10);
+                    newTextBox.Location = new Point(txtbGroups1.Left, _allTextBoxesGroup1[_allTextBoxesGroup1.Count - 1].Bottom + 10);
                 }
                 else
                 {
-                    newTextBox.Location = new Point(txtbOU1.Left, txtbOU1.Bottom - 20);
+                    newTextBox.Location = new Point(txtbGroups1.Left, txtbGroups1.Bottom + 10);
                 }
-                dynamicTextBoxesOu1.Add(newTextBox);
+                _allTextBoxesGroup1.Add(newTextBox);
                 Controls.Add(newTextBox);
 
                 AdjustFormLayout();
@@ -312,10 +321,10 @@ namespace ADsFusion
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            if (dynamicTextBoxesOu1.Count > 0)
+            if (_allTextBoxesGroup1.Count > 1)
             {
-                Controls.Remove(dynamicTextBoxesOu1[dynamicTextBoxesOu1.Count -1]);
-                dynamicTextBoxesOu1.RemoveAt(dynamicTextBoxesOu1.Count - 1);
+                Controls.Remove(_allTextBoxesGroup1[_allTextBoxesGroup1.Count-1]);
+                _allTextBoxesGroup1.RemoveAt(_allTextBoxesGroup1.Count-1);
 
                 AdjustFormLayout();
             }
@@ -323,19 +332,19 @@ namespace ADsFusion
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (dynamicTextBoxesOu2.Count < 5)
+            if (_allTextBoxesGroup2.Count < 5)
             {
                 System.Windows.Forms.TextBox newTextBox = new System.Windows.Forms.TextBox();
-                newTextBox.Size = txtbOU2.Size; // Set the size
-                if (dynamicTextBoxesOu2.Count > 0)
+                newTextBox.Size = txtbGroups2.Size; // Set the size
+                if (_allTextBoxesGroup2.Count > 0)
                 {
-                    newTextBox.Location = new Point(txtbOU2.Left, dynamicTextBoxesOu2[dynamicTextBoxesOu2.Count - 1].Bottom + 10);
+                    newTextBox.Location = new Point(txtbGroups2.Left, _allTextBoxesGroup2[_allTextBoxesGroup2.Count - 1].Bottom + 10);
                 }
                 else
                 {
-                    newTextBox.Location = new Point(txtbOU2.Left, txtbOU2.Bottom -20);
+                    newTextBox.Location = new Point(txtbGroups2.Left, txtbGroups2.Bottom + 10);
                 }
-                dynamicTextBoxesOu2.Add(newTextBox);
+                _allTextBoxesGroup2.Add(newTextBox);
                 Controls.Add(newTextBox);
 
                 AdjustFormLayout();
@@ -344,10 +353,10 @@ namespace ADsFusion
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (dynamicTextBoxesOu2.Count > 0)
+            if (_allTextBoxesGroup2.Count > 1)
             {
-                Controls.Remove(dynamicTextBoxesOu2[dynamicTextBoxesOu2.Count - 1]);
-                dynamicTextBoxesOu2.RemoveAt(dynamicTextBoxesOu2.Count - 1);
+                Controls.Remove(_allTextBoxesGroup2[_allTextBoxesGroup2.Count-1]);
+                _allTextBoxesGroup2.RemoveAt(_allTextBoxesGroup2.Count-1);
 
                 AdjustFormLayout();
             }
@@ -356,8 +365,8 @@ namespace ADsFusion
         private void AdjustFormLayout()
         {
             int textboxNb = Math.Max(
-                dynamicTextBoxesOu1.Count,
-                dynamicTextBoxesOu2.Count
+                _allTextBoxesGroup1.Count,
+                _allTextBoxesGroup2.Count
             );
 
             // Adjust the form's height to accommodate added textboxes

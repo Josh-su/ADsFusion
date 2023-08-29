@@ -44,8 +44,8 @@
             this.txtbGroup1 = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.txtbOU1 = new System.Windows.Forms.TextBox();
-            this.txtbOU2 = new System.Windows.Forms.TextBox();
+            this.txtbGroups1 = new System.Windows.Forms.TextBox();
+            this.txtbGroups2 = new System.Windows.Forms.TextBox();
             this.txtbGroup2 = new System.Windows.Forms.TextBox();
             this.txtbUsername2 = new System.Windows.Forms.TextBox();
             this.txtbPassword2 = new System.Windows.Forms.TextBox();
@@ -124,7 +124,7 @@
             // btnLogin
             // 
             this.btnLogin.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLogin.Location = new System.Drawing.Point(13, 202);
+            this.btnLogin.Location = new System.Drawing.Point(13, 203);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(676, 23);
             this.btnLogin.TabIndex = 10;
@@ -135,7 +135,7 @@
             // btnLogout
             // 
             this.btnLogout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLogout.Location = new System.Drawing.Point(13, 230);
+            this.btnLogout.Location = new System.Drawing.Point(13, 231);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(676, 23);
             this.btnLogout.TabIndex = 11;
@@ -209,21 +209,19 @@
             this.label12.TabIndex = 30;
             this.label12.Text = "Groupe où se trouve les utilisateurs*";
             // 
-            // txtbOU1
+            // txtbGroups1
             // 
-            this.txtbOU1.Location = new System.Drawing.Point(15, 176);
-            this.txtbOU1.Name = "txtbOU1";
-            this.txtbOU1.Size = new System.Drawing.Size(319, 20);
-            this.txtbOU1.TabIndex = 4;
-            this.txtbOU1.Visible = false;
+            this.txtbGroups1.Location = new System.Drawing.Point(13, 177);
+            this.txtbGroups1.Name = "txtbGroups1";
+            this.txtbGroups1.Size = new System.Drawing.Size(319, 20);
+            this.txtbGroups1.TabIndex = 4;
             // 
-            // txtbOU2
+            // txtbGroups2
             // 
-            this.txtbOU2.Location = new System.Drawing.Point(365, 176);
-            this.txtbOU2.Name = "txtbOU2";
-            this.txtbOU2.Size = new System.Drawing.Size(327, 20);
-            this.txtbOU2.TabIndex = 9;
-            this.txtbOU2.Visible = false;
+            this.txtbGroups2.Location = new System.Drawing.Point(362, 177);
+            this.txtbGroups2.Name = "txtbGroups2";
+            this.txtbGroups2.Size = new System.Drawing.Size(327, 20);
+            this.txtbGroups2.TabIndex = 9;
             // 
             // txtbGroup2
             // 
@@ -317,20 +315,20 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(705, 264);
+            this.ClientSize = new System.Drawing.Size(705, 265);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.txtbOU2);
+            this.Controls.Add(this.txtbGroups2);
             this.Controls.Add(this.txtbGroup2);
             this.Controls.Add(this.txtbUsername2);
             this.Controls.Add(this.txtbPassword2);
             this.Controls.Add(this.txtbDomain2);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.txtbOU1);
+            this.Controls.Add(this.txtbGroups1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtbGroup1);
             this.Controls.Add(this.label5);
@@ -372,8 +370,8 @@
         private System.Windows.Forms.TextBox txtbGroup1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox txtbOU1;
-        private System.Windows.Forms.TextBox txtbOU2;
+        private System.Windows.Forms.TextBox txtbGroups1;
+        private System.Windows.Forms.TextBox txtbGroups2;
         private System.Windows.Forms.TextBox txtbGroup2;
         private System.Windows.Forms.TextBox txtbUsername2;
         private System.Windows.Forms.TextBox txtbPassword2;

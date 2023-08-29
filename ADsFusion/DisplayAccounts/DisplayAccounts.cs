@@ -23,6 +23,7 @@ namespace ADsFusion
     {
         private Settings _settings;
         private ServerAndAdminLogin _login;
+        private FilterForm _filterForm;
 
         private int _selectedListBoxIndex;
 
@@ -73,6 +74,10 @@ namespace ADsFusion
 
             _settings = new Settings();
             _login = new ServerAndAdminLogin();
+            _filterForm = new FilterForm();
+
+            // Attach the LocationChanged event handler
+            this.LocationChanged += DisplayAccounts_LocationChanged;
 
             // Define the path to the repository
             _repositoryUserListsFilesPath = "C:\\ADsFusion\\UsersLists";
@@ -103,6 +108,12 @@ namespace ADsFusion
             {
                 CheckAndCreateFile(file.filePath, file.defaultContent);
             }
+        }
+
+        private void DisplayAccounts_LocationChanged(object sender, EventArgs e)
+        {
+            // Update the location of the FilterForm to be on the left of DisplayAccounts
+            _filterForm.Location = new Point(this.Left - _filterForm.Width, this.Top);
         }
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
@@ -246,13 +257,20 @@ namespace ADsFusion
         private void button3_Click(object sender, EventArgs e)
         {
             _settings.ShowDialog();
+            MergeUserList();
         }
 
         #region Account list filter
         private void button1_Click(object sender, EventArgs e)
         {
-            // Show the context menu strip at the button's location
-            //_filterForm.Show(button1, new Point(0, button1.Height));
+            if (!_filterForm.Visible)
+            {
+                _filterForm.Show();
+            }
+            else
+            {
+                _filterForm.Hide();
+            }
 
             UpdateFilteredUserList();
         }
