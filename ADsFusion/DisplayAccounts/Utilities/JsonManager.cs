@@ -7,8 +7,17 @@ namespace ADsFusion
 {
     internal class JsonManager
     {
-        public static void SaveToJson<T>(List<T> items, string filePath)
+        public static void SaveToJson<T>(List<T> items, string filePath, bool clearExisting = false)
         {
+            if (clearExisting)
+            {
+                // Delete the file if it exists
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+
             List<T> existingItems = ReadFromJson<T>(filePath);
             existingItems.AddRange(items);
 

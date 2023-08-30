@@ -25,8 +25,6 @@ namespace ADsFusion
         private ServerAndAdminLogin _login;
         private FilterForm _filterForm;
 
-        private int _selectedListBoxIndex;
-
         private string _repositoryUserListsFilesPath;
         private string _repositoryGroupsListsListsPath;
 
@@ -118,12 +116,16 @@ namespace ADsFusion
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            UpdateFilteredUserList();
+            SetUserListFromJson(CheckIfLogged());
+            UpdateFilteredUserList(_filterForm.SelectedGroups);
             DisplayUserList();
         }
 
         private void SetUserListFromJson(int x)
         {
+            _allGroupsList = ReadGroupNamesFromJson(_groupListPath);
+            _filterForm.ListGroups.Clear();
+            _filterForm.ListGroups = _allGroupsList;
             switch (x)
             {
                 case 0:
@@ -199,8 +201,6 @@ namespace ADsFusion
 
         private void DisplayUserList()
         {
-            SetUserListFromJson(CheckIfLogged());
-
             listBox1.Items.Clear();
 
             string searchText = textBox1.Text.Normalize().Trim().ToLower(); // Convert to lowercase once
@@ -272,10 +272,10 @@ namespace ADsFusion
                 _filterForm.Hide();
             }
 
-            UpdateFilteredUserList();
+            UpdateFilteredUserList(_filterForm.SelectedGroups);
         }
 
-        private void UpdateFilteredUserList()
+        private void UpdateFilteredUserList(List<string> groups)
         {
             _filteredUserList.Clear(); // Clear the existing filtered list
 
@@ -283,6 +283,7 @@ namespace ADsFusion
 
             // Remove duplicate users (if any) and update the display
             _filteredUserList = _filteredUserList.Distinct().ToList();
+
             DisplayUserList();
         }
         #endregion
@@ -316,12 +317,16 @@ namespace ADsFusion
             _adminGroup1 = Properties.Settings.Default.Group1;
             _adminGroup2 = Properties.Settings.Default.Group2;
             _groupList1 = Properties.Settings.Default.Groups1.Split('|').ToList();
+            _groupList1.Remove(_groupList1.Last()); // remove the last empty entry
             _groupList2 = Properties.Settings.Default.Groups2.Split('|').ToList();
+            _groupList2.Remove(_groupList2.Last()); // remove the last empty entry
 
             switch (x)
             {
                 case 0:
                     _login.ShowDialog();
+                    _settings.ShowDialog();
+                    UpdateAllAsync(CheckIfLogged());
                     break;
                 case 1:
                     progressBar1.Visible = true;
@@ -341,14 +346,15 @@ namespace ADsFusion
                     _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, 2));
                     _userList1 = _userList1.Distinct().ToList();
                     _userList2 = _userList2.Distinct().ToList();
-                    MergeUserList(); // No need to run in the background, as it's not a lengthy operation.
+                    MergeUserList();
                     UpdateGroupsListAndSaveToJson(_mergedUserList, _groupListPath);
                     break;
             }
             if (x != 0)
             {
                 progressBar1.Visible = false;
-                UpdateFilteredUserList();
+                SetUserListFromJson(CheckIfLogged());
+                UpdateFilteredUserList(_filterForm.SelectedGroups);
                 DisplayUserList();
             }
         }
@@ -461,7 +467,7 @@ namespace ADsFusion
                                         if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalMembers - 1)
                                         {
                                             // Save the current batch to the JSON file.
-                                            SaveUsersToJson(ActiveUsersAD, userListPath);
+                                            SaveUsersToJson(ActiveUsersAD, userListPath, false);
 
                                             // Clear the list to free up memory for the next batch.
                                             ActiveUsersAD.Clear();
@@ -507,16 +513,16 @@ namespace ADsFusion
             _allGroupsList = _allGroupsList.Distinct().ToList();
 
             // Save the list of group names to a JSON file.
-            SaveGroupNamesToJson(_allGroupsList, groupListPath);
+            SaveGroupNamesToJson(_allGroupsList, groupListPath, true);
         }
 
         private void MergeUserList()
         {
             // Check if the JSON file exists and delete it to start with a fresh file.
-            if (File.Exists(_mergedUserListPath))
+            /*if (File.Exists(_mergedUserListPath))
             {
                 File.Delete(_mergedUserListPath);
-            }
+            }*/
             _mergedUserList.Clear();
 
             if (!string.IsNullOrEmpty(Properties.CustomNames.Default.MergeParameter))
@@ -567,8 +573,8 @@ namespace ADsFusion
                     }
                 }
 
-                // Save the merged list to a JSON file
-                SaveUsersToJson(_mergedUserList, _mergedUserListPath);
+                // Save the merged list to a JSON file, clearing existing content
+                SaveUsersToJson(_mergedUserList, _mergedUserListPath, true);
             }
             else
             {
@@ -622,9 +628,9 @@ namespace ADsFusion
             return null;
         }
 
-        private void SaveUsersToJson(List<User> users, string path)
+        private void SaveUsersToJson(List<User> users, string path, bool clear)
         {
-            JsonManager.SaveToJson(users, path);
+            JsonManager.SaveToJson(users, path, clear);
         }
 
         private List<User> ReadUsersFromJson(string path)
@@ -634,9 +640,9 @@ namespace ADsFusion
             return users;
         }
 
-        private void SaveGroupNamesToJson(List<string> groupNames, string path)
+        private void SaveGroupNamesToJson(List<string> groupNames, string path, bool clear)
         {
-            JsonManager.SaveToJson(groupNames, path);
+            JsonManager.SaveToJson(groupNames, path, clearExisting : clear);
         }
 
         private List<string> ReadGroupNamesFromJson(string path)
@@ -724,5 +730,10 @@ namespace ADsFusion
             }
         }
         #endregion
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            label3.Text = listBox1.SelectedItems.Count.ToString() + "/" + _filteredUserList.Count.ToString();
+        }
     }
 }
