@@ -20,16 +20,19 @@
     <Setting Name="Password2" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Group1" Type="System.String" Scope="User">
+    <Setting Name="GroupAdmin1" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Group2" Type="System.String" Scope="User">
+    <Setting Name="GroupAdmin2" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Groups1" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Groups2" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Filters" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

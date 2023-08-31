@@ -29,6 +29,7 @@ namespace ADsFusion
 
             ListGroups = new List<string>();
             _checkedItems = new List<string>();
+            SelectedGroups = new List<string>();
         }
 
         private void FilterForm_Load(object sender, EventArgs e)
@@ -46,11 +47,14 @@ namespace ADsFusion
 
         private void button1_Click(object sender, EventArgs e)
         {
+            _checkedItems.Clear(); // Clear the existing checked items
+
             foreach (var item in checkedListBox1.CheckedItems)
             {
-                if (!_checkedItems.Contains(item)) _checkedItems.Add(item.ToString());
+                _checkedItems.Add(item.ToString()); // Add each checked item to the list
             }
 
+            SelectedGroups = _checkedItems; // Update the SelectedGroups property with the new list
         }
 
         private void button2_Click(object sender, EventArgs e)

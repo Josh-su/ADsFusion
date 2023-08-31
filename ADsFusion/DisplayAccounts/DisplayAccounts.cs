@@ -114,6 +114,34 @@ namespace ADsFusion
             _filterForm.Location = new Point(this.Left - _filterForm.Width, this.Top);
         }
 
+        #region check if the initial files exist if not create them
+        private void CheckAndCreateDirectory(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                // Create the directory
+                Directory.CreateDirectory(directoryPath);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="defaultContent"></param>
+        private void CheckAndCreateFile(string filePath, string defaultContent)
+        {
+            if (!File.Exists(filePath))
+            {
+                // Create the file with default content
+                using (StreamWriter writer = File.CreateText(filePath))
+                {
+                    writer.Write(defaultContent);
+                }
+            }
+        }
+        #endregion
+
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
             SetUserListFromJson(CheckIfLogged());
@@ -228,36 +256,26 @@ namespace ADsFusion
             }
         }
 
-        private void CheckAndCreateDirectory(string directoryPath)
-        {
-            if (!Directory.Exists(directoryPath))
-            {
-                // Create the directory
-                Directory.CreateDirectory(directoryPath);
-            }
-        }
-
-        private void CheckAndCreateFile(string filePath, string defaultContent)
-        {
-            if (!File.Exists(filePath))
-            {
-                // Create the file with default content
-                using (StreamWriter writer = File.CreateText(filePath))
-                {
-                    writer.Write(defaultContent);
-                }
-            }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
             _login.ShowDialog();
         }
 
+        /// <summary>
+        /// Show the Settings form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
             _settings.ShowDialog();
             MergeUserList();
+            SetUserListFromJson(CheckIfLogged());
         }
 
         #region Account list filter
@@ -279,7 +297,32 @@ namespace ADsFusion
         {
             _filteredUserList.Clear(); // Clear the existing filtered list
 
-            _filteredUserList = _actualUserList;
+            if(groups != null && groups.Count > 0)
+            {
+                // Iterate through each user in _actualUserList
+                foreach (var user in _actualUserList)
+                {
+                    // Check if any group in UserGroups1 or UserGroups2 exists in the provided 'groups' list
+                    bool hasMatchingGroup = false;
+                    if (user.UserGroups1?.Intersect(groups).Any() ?? false)
+                    {
+                        hasMatchingGroup = true;
+                    }
+                    if (user.UserGroups2?.Intersect(groups).Any() ?? false)
+                    {
+                        hasMatchingGroup = true;
+                    }
+
+                    if (hasMatchingGroup)
+                    {
+                        _filteredUserList.Add(user);
+                    }
+                }
+            }
+            else
+            {
+                _filteredUserList = _actualUserList;
+            }
 
             // Remove duplicate users (if any) and update the display
             _filteredUserList = _filteredUserList.Distinct().ToList();
@@ -288,6 +331,11 @@ namespace ADsFusion
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listBox1_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -301,6 +349,7 @@ namespace ADsFusion
             }
         }
 
+        #region Update Users Lists
         private void button2_Click(object sender, EventArgs e)
         {
             UpdateAllAsync(CheckIfLogged());
@@ -314,8 +363,8 @@ namespace ADsFusion
             _serverLogin2 = Properties.Settings.Default.Username2;
             _serverPassword1 = Properties.Settings.Default.Password1;
             _serverPassword2 = Properties.Settings.Default.Password2;
-            _adminGroup1 = Properties.Settings.Default.Group1;
-            _adminGroup2 = Properties.Settings.Default.Group2;
+            _adminGroup1 = Properties.Settings.Default.GroupAdmin1;
+            _adminGroup2 = Properties.Settings.Default.GroupAdmin2;
             _groupList1 = Properties.Settings.Default.Groups1.Split('|').ToList();
             _groupList1.Remove(_groupList1.Last()); // remove the last empty entry
             _groupList2 = Properties.Settings.Default.Groups2.Split('|').ToList();
@@ -518,11 +567,6 @@ namespace ADsFusion
 
         private void MergeUserList()
         {
-            // Check if the JSON file exists and delete it to start with a fresh file.
-            /*if (File.Exists(_mergedUserListPath))
-            {
-                File.Delete(_mergedUserListPath);
-            }*/
             _mergedUserList.Clear();
 
             if (!string.IsNullOrEmpty(Properties.CustomNames.Default.MergeParameter))
@@ -627,7 +671,9 @@ namespace ADsFusion
             }
             return null;
         }
+        #endregion
 
+        #region Json Manager
         private void SaveUsersToJson(List<User> users, string path, bool clear)
         {
             JsonManager.SaveToJson(users, path, clear);
@@ -651,7 +697,12 @@ namespace ADsFusion
             // Now, 'loadedGroupNames' will contain the list of group names from the JSON file.
             return loadedGroupNames;
         }
+        #endregion
 
+        /// <summary>
+        /// update the date of the last update of the users lists
+        /// </summary>
+        /// <param name="filePath"></param>
         private void UpdateLastUpdateTime(string filePath)
         {
             DateTime lastWriteTime = File.GetLastWriteTime(filePath);
@@ -659,6 +710,11 @@ namespace ADsFusion
             label1.Text = "Last update: " + localTime.ToString("dd.MM.yyyy HH:mm:ss");
         }
 
+        /// <summary>
+        /// Button Help that open the web page of the Github repository
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
             string websiteUrl = "https://github.com/Josh-su/ADsFusion";
@@ -734,6 +790,52 @@ namespace ADsFusion
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             label3.Text = listBox1.SelectedItems.Count.ToString() + "/" + _filteredUserList.Count.ToString();
+        }
+
+        /// <summary>
+        /// export the list in a csv file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button8_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+
+                    // Create a StringBuilder to build the CSV content
+                    StringBuilder csvContent = new StringBuilder();
+
+                    foreach (var item in listBox1.Items)
+                    {
+                        // Extract SAMAccountName1 and SAMAccountName2 from the list item
+                        string[] parts = item.ToString().Split(new string[] { " / " }, StringSplitOptions.None);
+                        string samAccountName1 = parts[0].Trim();
+                        string samAccountName2 = parts.Length > 1 ? parts[1].Trim() : "";
+
+                        // Append the values to the CSV content
+                        csvContent.AppendLine($"{samAccountName1},{samAccountName2}");
+                    }
+
+                    // Write the CSV content to the selected file
+                    File.WriteAllText(filePath, csvContent.ToString());
+
+                    MessageBox.Show("CSV file exported successfully.", "Export Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button10_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

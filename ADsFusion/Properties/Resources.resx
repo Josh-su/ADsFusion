@@ -139,10 +139,16 @@
   <data name="poubelle-de-recyclage_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\poubelle-de-recyclage_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="printer_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\printer_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="filtre_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\filtre_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="check_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\check_12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="file_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\file_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

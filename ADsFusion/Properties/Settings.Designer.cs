@@ -98,24 +98,24 @@ namespace ADsFusion.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Group1 {
+        public string GroupAdmin1 {
             get {
-                return ((string)(this["Group1"]));
+                return ((string)(this["GroupAdmin1"]));
             }
             set {
-                this["Group1"] = value;
+                this["GroupAdmin1"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Group2 {
+        public string GroupAdmin2 {
             get {
-                return ((string)(this["Group2"]));
+                return ((string)(this["GroupAdmin2"]));
             }
             set {
-                this["Group2"] = value;
+                this["GroupAdmin2"] = value;
             }
         }
         
@@ -140,6 +140,18 @@ namespace ADsFusion.Properties {
             }
             set {
                 this["Groups2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Filters {
+            get {
+                return ((string)(this["Filters"]));
+            }
+            set {
+                this["Filters"] = value;
             }
         }
     }

@@ -41,10 +41,10 @@ namespace ADsFusion
             txtbUsername2.Text = Properties.Settings.Default.Username2;
             txtbPassword1.Text = Properties.Settings.Default.Password1;
             txtbPassword2.Text = Properties.Settings.Default.Password2;
-            txtbGroup1.Text = Properties.Settings.Default.Group1;
+            txtbGroup1.Text = Properties.Settings.Default.GroupAdmin1;
             List<string> groups1TextboxValues = Properties.Settings.Default.Groups1.Split('|').ToList();
             groups1TextboxValues.Remove(groups1TextboxValues.Last());
-            txtbGroup2.Text = Properties.Settings.Default.Group2;
+            txtbGroup2.Text = Properties.Settings.Default.GroupAdmin2;
             List<string> groups2TextboxValues = Properties.Settings.Default.Groups2.Split('|').ToList();
             groups2TextboxValues.Remove(groups2TextboxValues.Last());
 
@@ -224,8 +224,8 @@ namespace ADsFusion
             Properties.Settings.Default.Username2 = username2;
             Properties.Settings.Default.Password1 = password1;
             Properties.Settings.Default.Password2 = password2;
-            Properties.Settings.Default.Group1 = group1;
-            Properties.Settings.Default.Group2 = group2;
+            Properties.Settings.Default.GroupAdmin1 = group1;
+            Properties.Settings.Default.GroupAdmin2 = group2;
 
             // Save dynamic textbox information
             dynamicTextboxesData.Clear();
