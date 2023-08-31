@@ -229,6 +229,8 @@ namespace ADsFusion
 
         private void DisplayUserList()
         {
+            UpdateCountItemLabel();
+
             listBox1.Items.Clear();
 
             string searchText = textBox1.Text.Normalize().Trim().ToLower(); // Convert to lowercase once
@@ -787,9 +789,22 @@ namespace ADsFusion
         }
         #endregion
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void UpdateCountItemLabel()
         {
-            label3.Text = listBox1.SelectedItems.Count.ToString() + "/" + _filteredUserList.Count.ToString();
+            int Totalcount = UpdateTotalCountItem();
+            int SelectedCount = UpdateCountSelectedItem();
+
+            label3.Text = "Selected items : " + SelectedCount + " | Total items : " + Totalcount;
+        }
+
+        private int UpdateTotalCountItem()
+        {
+            return listBox1.Items.Count;
+        }
+
+        private int UpdateCountSelectedItem()
+        {
+            return listBox1.SelectedItems.Count;
         }
 
         /// <summary>
@@ -829,13 +844,18 @@ namespace ADsFusion
         }
 
         /// <summary>
-        /// 
+        /// print account info
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button10_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateCountItemLabel();
         }
     }
 }

@@ -169,12 +169,13 @@ namespace ADsFusion
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(409, 433);
+            this.label3.Location = new System.Drawing.Point(9, 432);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
+            this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label3.Size = new System.Drawing.Size(195, 13);
             this.label3.TabIndex = 20;
-            this.label3.Text = "2137/2137";
+            this.label3.Text = "selected items : ???? | total items : ????";
             // 
             // button10
             // 
@@ -259,7 +260,7 @@ namespace ADsFusion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(477, 454);
+            this.ClientSize = new System.Drawing.Size(485, 454);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label2);
