@@ -46,6 +46,7 @@ namespace ADsFusion
         private List<User> _mergedUserList;
         private List<User> _actualUserList;
         private List<User> _filteredUserList;
+        private bool _isUserListsMerged = true; // Initial state is merged
 
         private string _userList1Path;
         private string _userList2Path;
@@ -144,54 +145,48 @@ namespace ADsFusion
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            SetUserListFromJson(CheckIfLogged());
-            UpdateFilteredUserList(_filterForm.SelectedGroups);
-            DisplayUserList();
+            UpdateAllAsync(CheckIfLogged());
         }
 
-        private void SetUserListFromJson(int x)
+        private void SetUserListFromJson()
         {
+            if (File.Exists(_userList1Path))
+            {
+                _userList1 = ReadUsersFromJson(_userList1Path);
+                _userList1 = _userList1.Distinct().ToList();
+            }
+            else
+            {
+                // The file doesn't exist or is empty, create an empty list
+                _userList1 = new List<User>();
+            }
+            if (File.Exists(_userList2Path))
+            {
+                _userList2 = ReadUsersFromJson(_userList2Path);
+                _userList2 = _userList2.Distinct().ToList();
+            }
+            else
+            {
+                // The file doesn't exist or is empty, create an empty list
+                _userList2 = new List<User>();
+            }
+            if (File.Exists(_mergedUserListPath))
+            {
+                _mergedUserList = ReadUsersFromJson(_mergedUserListPath);
+                _mergedUserList = _mergedUserList.Distinct().ToList();
+            }
+            else
+            {
+                // The file doesn't exist or is empty, create an empty list
+                _mergedUserList = new List<User>();
+            }
+
+            UpdateActualUserList();
+            UpdateGroupsListAndSaveToJson(_actualUserList, _groupListPath);
             _allGroupsList = ReadGroupNamesFromJson(_groupListPath);
             _filterForm.ListGroups.Clear();
             _filterForm.ListGroups = _allGroupsList;
-            switch (x)
-            {
-                case 0:
-                    break;
-                case 1:
-                    if (File.Exists(_userList1Path))
-                    {
-                        _actualUserList = ReadUsersFromJson(_userList1Path);
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _actualUserList = new List<User>();
-                    }
-                    break;
-                case 2:
-                    if (File.Exists(_userList2Path))
-                    {
-                        _actualUserList = ReadUsersFromJson(_userList2Path);
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _actualUserList = new List<User>();
-                    }
-                    break;
-                case 3:
-                    if (File.Exists(_mergedUserListPath))
-                    {
-                        _actualUserList = ReadUsersFromJson(_mergedUserListPath);
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _actualUserList = new List<User>();
-                    }
-                    break;
-            }
+            _filterForm.UpdateGroups();
         }
 
         private int CheckIfLogged()
@@ -229,7 +224,6 @@ namespace ADsFusion
 
         private void DisplayUserList()
         {
-            UpdateCountItemLabel();
 
             listBox1.Items.Clear();
 
@@ -253,7 +247,8 @@ namespace ADsFusion
                 {
                     // Add the user's SAMAccountName1 and SAMAccountName2 to the list box, if available
                     string displayText = $"{samAccountName1} / {samAccountName2}";
-                    listBox1.Items.Add(displayText);
+                    AddItemToListBox(displayText);
+                    //listBox1.Items.Add(displayText);
                 }
             }
         }
@@ -276,8 +271,8 @@ namespace ADsFusion
         private void button3_Click(object sender, EventArgs e)
         {
             _settings.ShowDialog();
-            MergeUserList();
-            SetUserListFromJson(CheckIfLogged());
+            /*MergeUserList();
+            SetUserListFromJson();*/
         }
 
         #region Account list filter
@@ -361,12 +356,14 @@ namespace ADsFusion
         {
             _domain1 = Properties.Settings.Default.Domain1;
             _domain2 = Properties.Settings.Default.Domain2;
+            /*
             _serverLogin1 = Properties.Settings.Default.Username1;
             _serverLogin2 = Properties.Settings.Default.Username2;
             _serverPassword1 = Properties.Settings.Default.Password1;
             _serverPassword2 = Properties.Settings.Default.Password2;
             _adminGroup1 = Properties.Settings.Default.GroupAdmin1;
             _adminGroup2 = Properties.Settings.Default.GroupAdmin2;
+            */
             _groupList1 = Properties.Settings.Default.Groups1.Split('|').ToList();
             _groupList1.Remove(_groupList1.Last()); // remove the last empty entry
             _groupList2 = Properties.Settings.Default.Groups2.Split('|').ToList();
@@ -382,29 +379,25 @@ namespace ADsFusion
                 case 1:
                     progressBar1.Visible = true;
                     _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _groupList1, 1));
-                    _userList1 = _userList1.Distinct().ToList();
-                    UpdateGroupsListAndSaveToJson(_userList1, _groupListPath);
+                    //UpdateGroupsListAndSaveToJson(_userList1, _groupListPath);
                     break;
                 case 2:
                     progressBar1.Visible = true;
                     _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, 2));
-                    _userList2 = _userList2.Distinct().ToList();
-                    UpdateGroupsListAndSaveToJson(_userList2, _groupListPath);
+                    //UpdateGroupsListAndSaveToJson(_userList2, _groupListPath);
                     break;
                 case 3:
                     progressBar1.Visible = true;
                     _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _groupList1, 1));
                     _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, 2));
-                    _userList1 = _userList1.Distinct().ToList();
-                    _userList2 = _userList2.Distinct().ToList();
                     MergeUserList();
-                    UpdateGroupsListAndSaveToJson(_mergedUserList, _groupListPath);
+                    //UpdateGroupsListAndSaveToJson(_mergedUserList, _groupListPath);
                     break;
             }
             if (x != 0)
             {
                 progressBar1.Visible = false;
-                SetUserListFromJson(CheckIfLogged());
+                SetUserListFromJson();
                 UpdateFilteredUserList(_filterForm.SelectedGroups);
                 DisplayUserList();
             }
@@ -471,6 +464,7 @@ namespace ADsFusion
                                     // The user is active. You can now proceed to retrieve user data and create User objects.
                                     var groupsMembership = userPrincipal.GetGroups();
                                     List<string> groups = new List<string>();
+
                                     foreach (var groupMembership in groupsMembership)
                                     {
                                         groups.Add(groupMembership.Name);
@@ -544,6 +538,7 @@ namespace ADsFusion
 
             foreach (User user in userList)
             {
+                
                 if(user.UserGroups1 != null)
                 {
                     foreach (string group in user.UserGroups1)
@@ -843,14 +838,49 @@ namespace ADsFusion
             }
         }
 
+        private void UpdateActualUserList()
+        {
+            // Update the button image based on the state
+            if (_isUserListsMerged)
+            {
+                button10.Image = Properties.Resources.split_20; // Set to split image
+                _actualUserList = _mergedUserList; // Set _actualUserList to the merged list
+            }
+            else
+            {
+                button10.Image = Properties.Resources.merge_20; // Set to merge image
+                // Set _actualUserList to the two separate lists, you may need to adjust this based on your data structure
+                _actualUserList = _userList1.Concat(_userList2).ToList();
+            }
+        }
+
         /// <summary>
-        /// print account info
+        /// merge or split the two users lists
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button10_Click(object sender, EventArgs e)
         {
+            UpdateActualUserList();
 
+            // Toggle the state
+            _isUserListsMerged = !_isUserListsMerged;
+
+            // Update your user interface or perform any other necessary actions
+            UpdateFilteredUserList(_filterForm.SelectedGroups);
+            DisplayUserList();
+        }
+
+        private void AddItemToListBox(string item)
+        {
+            listBox1.Items.Add(item); // Add an item to the ListBox
+            UpdateCountItemLabel(); // Update the count label
+        }
+
+        private void RemoveItemFromListBox(string item)
+        {
+            listBox1.Items.Remove(item); // Remove an item from the ListBox
+            UpdateCountItemLabel(); // Update the count label
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)

@@ -35,8 +35,6 @@ namespace ADsFusion
             if (Properties.CustomNames.Default.title2.ToString() != null) label13.Text = Properties.CustomNames.Default.title2;
             if (Properties.CustomNames.Default.description1.ToString() != null) label7.Text = Properties.CustomNames.Default.description1;
             if (Properties.CustomNames.Default.description2.ToString() != null) label12.Text = Properties.CustomNames.Default.description2;
-
-
         }
 
         internal void InitializeWithUser(User user)

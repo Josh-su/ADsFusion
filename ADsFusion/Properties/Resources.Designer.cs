@@ -113,6 +113,16 @@ namespace ADsFusion.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap merge_20 {
+            get {
+                object obj = ResourceManager.GetObject("merge_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap poubelle_de_recyclage_20 {
             get {
                 object obj = ResourceManager.GetObject("poubelle-de-recyclage_20", resourceCulture);
@@ -166,6 +176,36 @@ namespace ADsFusion.Properties {
         internal static System.Drawing.Bitmap reglages_20 {
             get {
                 object obj = ResourceManager.GetObject("reglages_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap reset_password_20 {
+            get {
+                object obj = ResourceManager.GetObject("reset-password_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap search_file_20 {
+            get {
+                object obj = ResourceManager.GetObject("search-file_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap split_20 {
+            get {
+                object obj = ResourceManager.GetObject("split_20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

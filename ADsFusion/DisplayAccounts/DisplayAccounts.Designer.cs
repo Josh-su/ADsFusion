@@ -34,9 +34,8 @@ namespace ADsFusion
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.impressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.motDePasseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.asdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.supprimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -70,43 +69,39 @@ namespace ADsFusion
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
+            this.impressionToolStripMenuItem,
             this.motDePasseToolStripMenuItem,
             this.supprimerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(220, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 108);
             // 
             // toolStripMenuItem1
             // 
+            this.toolStripMenuItem1.Image = global::ADsFusion.Properties.Resources.search_file_20;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(223, 26);
             this.toolStripMenuItem1.Text = "Détails";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
+            // impressionToolStripMenuItem
+            // 
+            this.impressionToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.printer_20;
+            this.impressionToolStripMenuItem.Name = "impressionToolStripMenuItem";
+            this.impressionToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.impressionToolStripMenuItem.Text = "Impression";
+            // 
             // motDePasseToolStripMenuItem
             // 
-            this.motDePasseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sadToolStripMenuItem,
-            this.asdToolStripMenuItem});
+            this.motDePasseToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.reset_password_20;
             this.motDePasseToolStripMenuItem.Name = "motDePasseToolStripMenuItem";
-            this.motDePasseToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.motDePasseToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.motDePasseToolStripMenuItem.Text = "Réinitialiser le mot de passe";
-            // 
-            // sadToolStripMenuItem
-            // 
-            this.sadToolStripMenuItem.Name = "sadToolStripMenuItem";
-            this.sadToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.sadToolStripMenuItem.Text = "Eduvaud";
-            // 
-            // asdToolStripMenuItem
-            // 
-            this.asdToolStripMenuItem.Name = "asdToolStripMenuItem";
-            this.asdToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.asdToolStripMenuItem.Text = "Pédagogique";
             // 
             // supprimerToolStripMenuItem
             // 
+            this.supprimerToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.poubelle_de_recyclage_20;
             this.supprimerToolStripMenuItem.Name = "supprimerToolStripMenuItem";
-            this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.supprimerToolStripMenuItem.Text = "Supprimer";
             // 
             // listBox1
@@ -117,7 +112,7 @@ namespace ADsFusion
             this.listBox1.Location = new System.Drawing.Point(12, 78);
             this.listBox1.Name = "listBox1";
             this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBox1.Size = new System.Drawing.Size(457, 346);
+            this.listBox1.Size = new System.Drawing.Size(457, 328);
             this.listBox1.TabIndex = 2;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
@@ -154,6 +149,7 @@ namespace ADsFusion
             this.label2.Size = new System.Drawing.Size(340, 31);
             this.label2.TabIndex = 18;
             this.label2.Text = "Veuillez vous connecter !!!!";
+            this.label2.Visible = false;
             // 
             // progressBar1
             // 
@@ -179,7 +175,7 @@ namespace ADsFusion
             // 
             // button10
             // 
-            this.button10.Image = global::ADsFusion.Properties.Resources.printer_20;
+            this.button10.Image = global::ADsFusion.Properties.Resources.split_20;
             this.button10.Location = new System.Drawing.Point(120, 6);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(30, 30);
@@ -293,8 +289,6 @@ namespace ADsFusion
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem motDePasseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem asdToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem supprimerToolStripMenuItem;
         private System.Windows.Forms.ListBox listBox1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
@@ -310,6 +304,7 @@ namespace ADsFusion
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ProgressBar progressBar1;
         private Label label3;
+        private ToolStripMenuItem impressionToolStripMenuItem;
     }
 }
 

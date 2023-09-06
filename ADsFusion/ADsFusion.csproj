@@ -114,18 +114,18 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountDetails\AccountDetails.cs">
+    <Compile Include="AccountDetails\MergedAccountsDetails.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AccountDetails\AccountDetails.Designer.cs">
-      <DependentUpon>AccountDetails.cs</DependentUpon>
+    <Compile Include="AccountDetails\MergedAccountsDetails.Designer.cs">
+      <DependentUpon>MergedAccountsDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayAccounts\Utilities\User.cs" />
     <Compile Include="DisplayAccounts\Utilities\JsonManager.cs" />
-    <Compile Include="FilterForm.cs">
+    <Compile Include="DisplayAccounts\FilterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FilterForm.Designer.cs">
+    <Compile Include="DisplayAccounts\FilterForm.Designer.cs">
       <DependentUpon>FilterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\CustomNames.Designer.cs">
@@ -154,13 +154,22 @@
     <Compile Include="Settings\Setting.Designer.cs">
       <DependentUpon>Setting.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AccountDetails\AccountDetails.resx">
-      <DependentUpon>AccountDetails.cs</DependentUpon>
+    <Compile Include="AccountDetails\SingleAccountDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AccountDetails\SingleAccountDetails.Designer.cs">
+      <DependentUpon>SingleAccountDetails.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AccountDetails\MergedAccountsDetails.resx">
+      <DependentUpon>MergedAccountsDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AccountDetails\SingleAccountDetails.resx">
+      <DependentUpon>SingleAccountDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DisplayAccounts\DisplayAccounts.resx">
       <DependentUpon>DisplayAccounts.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FilterForm.resx">
+    <EmbeddedResource Include="DisplayAccounts\FilterForm.resx">
       <DependentUpon>FilterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -241,6 +250,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\file_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\merge_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\split_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\search-file_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\reset-password_20.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

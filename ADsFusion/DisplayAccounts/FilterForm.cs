@@ -27,6 +27,9 @@ namespace ADsFusion
             // Attach the FormClosing event handler
             this.FormClosing += FilterForm_FormClosing;
 
+            // Wire up the ItemCheck event handler
+            //checkedListBox1.ItemCheck += checkedListBox1_ItemCheck;
+
             ListGroups = new List<string>();
             _checkedItems = new List<string>();
             SelectedGroups = new List<string>();
@@ -34,7 +37,7 @@ namespace ADsFusion
 
         private void FilterForm_Load(object sender, EventArgs e)
         {
-            UpdateGroups(ListGroups);
+            UpdateGroups();
         }
 
         private void FilterForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -43,18 +46,6 @@ namespace ADsFusion
             e.Cancel = true;
             // Hide the form instead
             this.Hide();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            _checkedItems.Clear(); // Clear the existing checked items
-
-            foreach (var item in checkedListBox1.CheckedItems)
-            {
-                _checkedItems.Add(item.ToString()); // Add each checked item to the list
-            }
-
-            SelectedGroups = _checkedItems; // Update the SelectedGroups property with the new list
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -76,26 +67,54 @@ namespace ADsFusion
 
             foreach (string group in ListGroups)
             {
-                if (filterText == "check" && _checkedItems.Contains(group))
+                if (filterText == "$" && _checkedItems.Contains(group))
                 {
                     checkedListBox1.Items.Add(group, true);
                 }
-                else if (_checkedItems.Contains(group) || group.ToLower().Contains(filterText))
+                else if (group.ToLower().Contains(filterText))
                 {
                     checkedListBox1.Items.Add(group, _checkedItems.Contains(group));
                 }
             }
         }
 
-        public void UpdateGroups(List<string> groups)
+        public void UpdateGroups()
         {
             // Clear existing items in the CheckedListBox 
             checkedListBox1.Items.Clear();
             // Add items from the groups list to the CheckedListBox
-            foreach (string group in groups)
+            foreach (string group in ListGroups)
             {
                 checkedListBox1.Items.Add(group);
             }
+        }
+
+        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            string itemName = checkedListBox1.Items[e.Index].ToString();
+
+            // If the item is being checked, add it to the _checkedItems list
+            if (e.NewValue == CheckState.Checked)
+            {
+                if (!_checkedItems.Contains(itemName))
+                {
+                    _checkedItems.Add(itemName);
+                }
+            }
+            // If the item is being unchecked, remove it from the _checkedItems list
+            else if (e.NewValue == CheckState.Unchecked)
+            {
+                if (_checkedItems.Contains(itemName))
+                {
+                    _checkedItems.Remove(itemName);
+                }
+            }
+            SelectedGroups = _checkedItems; // Update the SelectedGroups property with the new list
+        }
+
+        private void FilterForm_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

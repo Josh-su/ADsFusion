@@ -22,6 +22,9 @@ namespace ADsFusion
         private List<System.Windows.Forms.TextBox> _allTextBoxesGroup1 = new List<System.Windows.Forms.TextBox>();
         private List<System.Windows.Forms.TextBox> _allTextBoxesGroup2 = new List<System.Windows.Forms.TextBox>();
 
+        private List<string> _groups1TextboxValues;
+        private List<string> _groups2TextboxValues;
+
         StringBuilder dynamicTextboxesData = new StringBuilder();
 
         public ServerAndAdminLogin()
@@ -30,6 +33,12 @@ namespace ADsFusion
             this.FormBorderStyle = FormBorderStyle.None;
 
             _initialHeight = this.Height;
+
+            _groups1TextboxValues = new List<string>();
+            _groups2TextboxValues = new List<string>();
+
+            _allTextBoxesGroup1.Add(txtbGroups1);
+            _allTextBoxesGroup2.Add(txtbGroups2);
         }
 
         private void ServerAndAdminLogin_Load(object sender, EventArgs e)
@@ -42,22 +51,20 @@ namespace ADsFusion
             txtbPassword1.Text = Properties.Settings.Default.Password1;
             txtbPassword2.Text = Properties.Settings.Default.Password2;
             txtbGroup1.Text = Properties.Settings.Default.GroupAdmin1;
-            List<string> groups1TextboxValues = Properties.Settings.Default.Groups1.Split('|').ToList();
-            groups1TextboxValues.Remove(groups1TextboxValues.Last());
             txtbGroup2.Text = Properties.Settings.Default.GroupAdmin2;
-            List<string> groups2TextboxValues = Properties.Settings.Default.Groups2.Split('|').ToList();
-            groups2TextboxValues.Remove(groups2TextboxValues.Last());
 
-            _allTextBoxesGroup1.Add(txtbGroups1);
-            _allTextBoxesGroup2.Add(txtbGroups2);
+            _groups1TextboxValues = Properties.Settings.Default.Groups1.Split('|').ToList();
+            _groups1TextboxValues.Remove(_groups1TextboxValues.Last());
+            _groups2TextboxValues = Properties.Settings.Default.Groups2.Split('|').ToList();
+            _groups2TextboxValues.Remove(_groups2TextboxValues.Last());
 
             // Load dynamic textbox data
-            foreach (string value in groups1TextboxValues)
+            foreach (string value in _groups1TextboxValues)
             {
-                System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
-                newTextbox.Size = txtbGroups1.Size; // Set the size
-                if (_allTextBoxesGroup1.Count > 0)
+                if (_allTextBoxesGroup1.Count > 1)
                 {
+                    System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
+                    newTextbox.Size = txtbGroups1.Size; // Set the size
                     newTextbox.Location = new Point(txtbGroups1.Left, _allTextBoxesGroup1[_allTextBoxesGroup1.Count - 1].Bottom + 10);
                     newTextbox.Text = value;
                     _allTextBoxesGroup1.Add(newTextbox);
@@ -69,12 +76,12 @@ namespace ADsFusion
                     txtbGroups1.Text = value;
                 }
             }
-            foreach (string value in groups2TextboxValues)
+            foreach (string value in _groups2TextboxValues)
             {
-                System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
-                newTextbox.Size = txtbGroups2.Size; // Set the size
-                if (_allTextBoxesGroup1.Count > 0)
+                if (_allTextBoxesGroup1.Count > 1)
                 {
+                    System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
+                    newTextbox.Size = txtbGroups2.Size; // Set the size
                     newTextbox.Location = new Point(txtbGroups2.Left, _allTextBoxesGroup2[_allTextBoxesGroup2.Count - 1].Bottom + 10);
                     newTextbox.Text = value;
                     _allTextBoxesGroup2.Add(newTextbox);
@@ -158,18 +165,21 @@ namespace ADsFusion
                     if (domain1Success && !domain2Success)
                     {
                         SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
+                        ClearAllTextBoxes();
                         this.Close();
                     }
 
                     if (domain2Success && !domain1Success)
                     {
                         SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
+                        ClearAllTextBoxes();
                         this.Close();
                     }
 
                     if (domain1Success && domain2Success)
                     {
                         SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
+                        ClearAllTextBoxes();
                         this.Close();
                     }
                 }
@@ -266,6 +276,8 @@ namespace ADsFusion
 
             // Clear all textboxes on the form and its nested containers
             ClearAllTextBoxes();
+
+            this.Close();
         }
 
         /// <summary>
@@ -281,19 +293,25 @@ namespace ADsFusion
                 }
             }
 
-            foreach (System.Windows.Forms.TextBox dynamicTextBox in _allTextBoxesGroup1)
+            for (int i = _allTextBoxesGroup1.Count - 1; i >= 0; i--)
             {
-                if (_allTextBoxesGroup1.Count() != 1) Controls.Remove(dynamicTextBox);
+                System.Windows.Forms.TextBox dynamicTextBox = _allTextBoxesGroup1[i];
+                if (dynamicTextBox != txtbGroups1)
+                {
+                    _allTextBoxesGroup1.RemoveAt(i);
+                    Controls.Remove(dynamicTextBox);
+                }
             }
-            _allTextBoxesGroup1.Clear();
-            _allTextBoxesGroup1.Add(txtbGroups1);
 
-            foreach (System.Windows.Forms.TextBox dynamicTextBox in _allTextBoxesGroup2)
+            for (int i = _allTextBoxesGroup2.Count - 1; i >= 0; i--)
             {
-                if (_allTextBoxesGroup2.Count() != 1) Controls.Remove(dynamicTextBox);
+                System.Windows.Forms.TextBox dynamicTextBox = _allTextBoxesGroup2[i];
+                if (dynamicTextBox != txtbGroups2)
+                {
+                    _allTextBoxesGroup2.RemoveAt(i);
+                    Controls.Remove(dynamicTextBox);
+                }
             }
-            _allTextBoxesGroup2.Clear();
-            _allTextBoxesGroup2.Add(txtbGroups2);
 
             AdjustFormLayout();
         }
@@ -366,8 +384,8 @@ namespace ADsFusion
         private void AdjustFormLayout()
         {
             int textboxNb = Math.Max(
-                _allTextBoxesGroup1.Count,
-                _allTextBoxesGroup2.Count
+                _allTextBoxesGroup1.Count - 1,
+                _allTextBoxesGroup2.Count - 1
             );
 
             // Adjust the form's height to accommodate added textboxes
