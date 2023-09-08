@@ -1,6 +1,6 @@
 ﻿namespace ADsFusion
 {
-    partial class AccountDetails
+    partial class MergedAccountDetails
     {
         /// <summary>
         /// Required designer variable.

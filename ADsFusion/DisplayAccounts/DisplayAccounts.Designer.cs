@@ -73,7 +73,7 @@ namespace ADsFusion
             this.motDePasseToolStripMenuItem,
             this.supprimerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 108);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 130);
             // 
             // toolStripMenuItem1
             // 
@@ -87,11 +87,14 @@ namespace ADsFusion
             // 
             this.impressionToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.printer_20;
             this.impressionToolStripMenuItem.Name = "impressionToolStripMenuItem";
+            this.impressionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.impressionToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.impressionToolStripMenuItem.Text = "Impression";
+            this.impressionToolStripMenuItem.Click += new System.EventHandler(this.impressionToolStripMenuItem_Click);
             // 
             // motDePasseToolStripMenuItem
             // 
+            this.motDePasseToolStripMenuItem.Enabled = false;
             this.motDePasseToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.reset_password_20;
             this.motDePasseToolStripMenuItem.Name = "motDePasseToolStripMenuItem";
             this.motDePasseToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
@@ -99,6 +102,7 @@ namespace ADsFusion
             // 
             // supprimerToolStripMenuItem
             // 
+            this.supprimerToolStripMenuItem.Enabled = false;
             this.supprimerToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.poubelle_de_recyclage_20;
             this.supprimerToolStripMenuItem.Name = "supprimerToolStripMenuItem";
             this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
@@ -185,6 +189,7 @@ namespace ADsFusion
             // 
             // button9
             // 
+            this.button9.Enabled = false;
             this.button9.Image = global::ADsFusion.Properties.Resources.poubelle_de_recyclage_20;
             this.button9.Location = new System.Drawing.Point(192, 6);
             this.button9.Name = "button9";

@@ -11,9 +11,9 @@ using System.Xml;
 
 namespace ADsFusion
 {
-    public partial class AccountDetails : Form
+    public partial class MergedAccountDetails : Form
     {
-        public AccountDetails()
+        public MergedAccountDetails()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;

@@ -107,16 +107,14 @@ namespace ADsFusion
                 txtbDomain1.Text,
                 txtbUsername1.Text,
                 txtbPassword1.Text,
-                txtbGroup1.Text,
-                txtbGroups1.Text
+                txtbGroup1.Text
             };
             List<string> server2Informations = new List<string>
             {
                 txtbDomain2.Text,
                 txtbUsername2.Text,
                 txtbPassword2.Text,
-                txtbGroup2.Text,
-                txtbGroups2.Text
+                txtbGroup2.Text
             };
 
             int server1NotEmptyInformations = 0;
@@ -139,20 +137,22 @@ namespace ADsFusion
                     server2NotEmptyInformations++;
                 }
             }
+            bool group1TextBoxFilled = IsAtLeastOneTextBoxFilled(_allTextBoxesGroup1);
+            bool group2TextBoxFilled = IsAtLeastOneTextBoxFilled(_allTextBoxesGroup2);
 
-            if (server1NotEmptyInformations > 0 && server1NotEmptyInformations < server1Informations.Count)
+            if (server1NotEmptyInformations > 0 && server1NotEmptyInformations < server1Informations.Count && !group1TextBoxFilled)
             {
                 MessageBox.Show("Veuillez écrire toute les informations pour le serveur 1");
             }
-            else if (server1NotEmptyInformations == server1Informations.Count)
+            else if (server1NotEmptyInformations == server1Informations.Count && group1TextBoxFilled)
             {
                 domain1Success = LoginDomain(txtbDomain1.Text, txtbUsername1.Text, txtbPassword1.Text, txtbGroup1.Text);
             }
-            if (server2NotEmptyInformations > 0 && server2NotEmptyInformations < server2Informations.Count)
+            if (server2NotEmptyInformations > 0 && server2NotEmptyInformations < server2Informations.Count && !group2TextBoxFilled)
             {
                 MessageBox.Show("Veuillez écrire toute les informations pour le serveur 2");
             }
-            else if (server2NotEmptyInformations == server2Informations.Count)
+            else if (server2NotEmptyInformations == server2Informations.Count && group2TextBoxFilled)
             {
                 domain2Success = LoginDomain(txtbDomain2.Text, txtbUsername2.Text, txtbPassword2.Text, txtbGroup2.Text);
             }
@@ -184,6 +184,18 @@ namespace ADsFusion
                     }
                 }
             }
+        }
+
+        private bool IsAtLeastOneTextBoxFilled(List<System.Windows.Forms.TextBox> textBoxes)
+        {
+            foreach (var textBox in textBoxes)
+            {
+                if (!string.IsNullOrEmpty(textBox.Text))
+                {
+                    return true; // Found a filled textbox, no need to check further
+                }
+            }
+            return false; // No filled textbox found in the list
         }
 
         private bool LoginDomain(string domain, string username, string password, string groupName)

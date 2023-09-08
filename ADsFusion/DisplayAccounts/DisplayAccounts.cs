@@ -53,6 +53,10 @@ namespace ADsFusion
         private string _mergedUserListPath;
         private string _groupListPath;
 
+        // Define dictionarys to store instances of AccountDetails forms.
+        private Dictionary<User, MergedAccountDetails> _mergedAccountsDetailsForms;
+        private Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
+
         private readonly object activeUsersLock = new object(); // Lock object
         List<Task> userTasks = new List<Task>();
 
@@ -74,6 +78,9 @@ namespace ADsFusion
             _settings = new Settings();
             _login = new ServerAndAdminLogin();
             _filterForm = new FilterForm();
+
+            _mergedAccountsDetailsForms = new Dictionary<User, MergedAccountDetails>();
+            _singleAccountsDetailsForms = new Dictionary<User, SingleAccountDetails>();
 
             // Attach the LocationChanged event handler
             this.LocationChanged += DisplayAccounts_LocationChanged;
@@ -224,7 +231,6 @@ namespace ADsFusion
 
         private void DisplayUserList()
         {
-
             listBox1.Items.Clear();
 
             string searchText = textBox1.Text.Normalize().Trim().ToLower(); // Convert to lowercase once
@@ -246,9 +252,17 @@ namespace ADsFusion
                     displayName1.Contains(searchText) || displayName2.Contains(searchText))
                 {
                     // Add the user's SAMAccountName1 and SAMAccountName2 to the list box, if available
-                    string displayText = $"{samAccountName1} / {samAccountName2}";
-                    AddItemToListBox(displayText);
-                    //listBox1.Items.Add(displayText);
+                    if (_isUserListsMerged)
+                    {
+                        string displayText = $"{samAccountName1} / {samAccountName2}";
+                        AddItemToListBox(displayText);
+                    }
+                    else
+                    {
+                        string displayText = $"{samAccountName1 ?? samAccountName2}, {displayName1 ?? displayName2}";
+                        AddItemToListBox(displayText);
+                    }
+
                 }
             }
         }
@@ -282,12 +296,10 @@ namespace ADsFusion
             {
                 _filterForm.Show();
             }
-            else
-            {
-                _filterForm.Hide();
-            }
 
+            // Update your user interface or perform any other necessary actions
             UpdateFilteredUserList(_filterForm.SelectedGroups);
+            DisplayUserList();
         }
 
         private void UpdateFilteredUserList(List<string> groups)
@@ -365,9 +377,9 @@ namespace ADsFusion
             _adminGroup2 = Properties.Settings.Default.GroupAdmin2;
             */
             _groupList1 = Properties.Settings.Default.Groups1.Split('|').ToList();
-            _groupList1.Remove(_groupList1.Last()); // remove the last empty entry
+            _groupList1.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
             _groupList2 = Properties.Settings.Default.Groups2.Split('|').ToList();
-            _groupList2.Remove(_groupList2.Last()); // remove the last empty entry
+            _groupList2.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
 
             switch (x)
             {
@@ -728,9 +740,6 @@ namespace ADsFusion
         }
 
         #region Open Detail forms
-        // Define a dictionary to store instances of AccountDetails forms.
-        private Dictionary<int, AccountDetails> _accountDetailsForms = new Dictionary<int, AccountDetails>();
-
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenDetailsForm();
@@ -755,29 +764,54 @@ namespace ADsFusion
             foreach (int index in listBox1.SelectedIndices)
             {
                 string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
-                User selectedUser = _actualUserList.FirstOrDefault(user =>
+                User selectedUser = new User();
+                if (_isUserListsMerged)
                 {
-                    string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
-                    return userDisplayText.ToLower() == displayText;
-                });
+                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    {
+                        string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
+                        return userDisplayText.ToLower() == displayText;
+                    });
+                }
+                else
+                {
+                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    {
+                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
+                        return userDisplayText.ToLower() == displayText;
+                    });
+                }
 
                 if (selectedUser != null)
                 {
                     // Check if a form for this index already exists.
-                    if (!_accountDetailsForms.ContainsKey(index))
+                    if(_isUserListsMerged && !_mergedAccountsDetailsForms.ContainsKey(selectedUser))
                     {
-                        AccountDetails newForm = new AccountDetails();
+                        MergedAccountDetails newForm = new MergedAccountDetails();
                         newForm.InitializeWithUser(selectedUser); // Pass the selected user to the form
 
-                        _accountDetailsForms.Add(index, newForm);
-                        newForm.FormClosed += (s, args) => _accountDetailsForms.Remove(index);
+                        _mergedAccountsDetailsForms.Add(selectedUser, newForm);
+                        newForm.FormClosed += (s, args) => _mergedAccountsDetailsForms.Remove(selectedUser);
+                    }
+                    else if (!_isUserListsMerged && !_singleAccountsDetailsForms.ContainsKey(selectedUser))
+                    {
+                        SingleAccountDetails newForm = new SingleAccountDetails();
+                        newForm.InitializeWithUser(selectedUser); // Pass the selected user to the form
+
+                        _singleAccountsDetailsForms.Add(selectedUser, newForm);
+                        newForm.FormClosed += (s, args) => _singleAccountsDetailsForms.Remove(selectedUser);
                     }
 
                     // Show the form, whether it's a new instance or an existing one.
-                    if (_accountDetailsForms.ContainsKey(index))
+                    if (_isUserListsMerged && _mergedAccountsDetailsForms.ContainsKey(selectedUser))
                     {
-                        _accountDetailsForms[index].Show();
-                        _accountDetailsForms[index].BringToFront();
+                        _mergedAccountsDetailsForms[selectedUser].Show();
+                        _mergedAccountsDetailsForms[selectedUser].BringToFront();
+                    }
+                    if (!_isUserListsMerged && _singleAccountsDetailsForms.ContainsKey(selectedUser))
+                    {
+                        _singleAccountsDetailsForms[selectedUser].Show();
+                        _singleAccountsDetailsForms[selectedUser].BringToFront();
                     }
                 }
             }
@@ -861,31 +895,79 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void button10_Click(object sender, EventArgs e)
         {
-            UpdateActualUserList();
-
-            // Toggle the state
+            // Change the state
             _isUserListsMerged = !_isUserListsMerged;
+
+            UpdateActualUserList();
 
             // Update your user interface or perform any other necessary actions
             UpdateFilteredUserList(_filterForm.SelectedGroups);
             DisplayUserList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
         private void AddItemToListBox(string item)
         {
             listBox1.Items.Add(item); // Add an item to the ListBox
             UpdateCountItemLabel(); // Update the count label
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
         private void RemoveItemFromListBox(string item)
         {
             listBox1.Items.Remove(item); // Remove an item from the ListBox
             UpdateCountItemLabel(); // Update the count label
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateCountItemLabel();
+        }
+
+        /// <summary>
+        /// imprimer un document avec les informations sur le compte
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void impressionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //printAccountInfo(_isUserListsMerged);
+        }
+
+        private void printAccountInfo(bool isUserListsMerged)
+        {
+            foreach (int index in listBox1.SelectedIndices)
+            {
+                string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
+                User selectedUser = new User();
+                if (isUserListsMerged)
+                {
+                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    {
+                        string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
+                        return userDisplayText.ToLower() == displayText;
+                    });
+                }
+                else
+                {
+                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    {
+                        string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
+                        return userDisplayText.ToLower() == displayText;
+                    });
+                }
+            }
         }
     }
 }

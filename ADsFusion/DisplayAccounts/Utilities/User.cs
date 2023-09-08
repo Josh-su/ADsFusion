@@ -44,5 +44,9 @@ namespace ADsFusion
             Description2 = description2;
             UserGroups2 = userGroups2;
         }
+
+        public User()
+        {
+        }
     }
 }
