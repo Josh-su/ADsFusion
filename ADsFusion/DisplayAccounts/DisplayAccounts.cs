@@ -237,32 +237,46 @@ namespace ADsFusion
 
             foreach (User user in _filteredUserList)
             {
-                string samAccountName1 = user.SAMAccountName1 ?? "N/A";
-                string samAccountName2 = user.SAMAccountName2 ?? "N/A";
-                string displayName1 = user.DisplayName1 ?? "";
-                string displayName2 = user.DisplayName2 ?? "";
+                string samAccountName1 = user.SAMAccountName1;
+                string samAccountName2 = user.SAMAccountName2;
+                string displayName1 = user.DisplayName1;
+                string displayName2 = user.DisplayName2;
 
-                // Convert the attributes to lowercase for case-insensitive comparisons
-                samAccountName1 = samAccountName1.ToLower();
-                samAccountName2 = samAccountName2.ToLower();
-                displayName1 = displayName1.ToLower();
-                displayName2 = displayName2.ToLower();
-
-                if (samAccountName1.Contains(searchText) || samAccountName2.Contains(searchText) ||
-                    displayName1.Contains(searchText) || displayName2.Contains(searchText))
+                if (_isUserListsMerged)
                 {
-                    // Add the user's SAMAccountName1 and SAMAccountName2 to the list box, if available
-                    if (_isUserListsMerged)
+                    string displayText = $"{(string.IsNullOrEmpty(samAccountName1) ? "n/a" : samAccountName1)} / {(string.IsNullOrEmpty(samAccountName2) ? "n/a" : samAccountName2)}";
+                    if (displayText.Normalize().Trim().ToLower().Contains(searchText))
                     {
-                        string displayText = $"{samAccountName1} / {samAccountName2}";
                         AddItemToListBox(displayText);
                     }
-                    else
+                }
+                else
+                {
+                    List<string> parts = new List<string>();
+
+                    if (!string.IsNullOrEmpty(samAccountName1))
                     {
-                        string displayText = $"{samAccountName1 ?? samAccountName2}, {displayName1 ?? displayName2}";
-                        AddItemToListBox(displayText);
+                        parts.Add(samAccountName1);
+                    }
+                    if (!string.IsNullOrEmpty(samAccountName2))
+                    {
+                        parts.Add(samAccountName2);
+                    }
+                    if (!string.IsNullOrEmpty(displayName1))
+                    {
+                        parts.Add(displayName1);
+                    }
+                    if (!string.IsNullOrEmpty(displayName2))
+                    {
+                        parts.Add(displayName2);
                     }
 
+                    string displayText = string.Join(", ", parts);
+
+                    if (displayText.Normalize().Trim().ToLower().Contains(searchText))
+                    {
+                        AddItemToListBox(displayText);
+                    }
                 }
             }
         }
@@ -298,11 +312,11 @@ namespace ADsFusion
             }
 
             // Update your user interface or perform any other necessary actions
-            UpdateFilteredUserList(_filterForm.SelectedGroups);
+            UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
             DisplayUserList();
         }
 
-        private void UpdateFilteredUserList(List<string> groups)
+        private void UpdateFilteredUserList(List<string> groups, bool selectAllMatchingGroups)
         {
             _filteredUserList.Clear(); // Clear the existing filtered list
 
@@ -311,20 +325,36 @@ namespace ADsFusion
                 // Iterate through each user in _actualUserList
                 foreach (var user in _actualUserList)
                 {
-                    // Check if any group in UserGroups1 or UserGroups2 exists in the provided 'groups' list
                     bool hasMatchingGroup = false;
-                    if (user.UserGroups1?.Intersect(groups).Any() ?? false)
+                    if (selectAllMatchingGroups)
                     {
-                        hasMatchingGroup = true;
-                    }
-                    if (user.UserGroups2?.Intersect(groups).Any() ?? false)
-                    {
-                        hasMatchingGroup = true;
-                    }
+                        // Combine UserGroups1 and UserGroups2 into a single list
+                        List<string> allUserGroups = (user.UserGroups1 ?? new List<string>()).Concat(user.UserGroups2 ?? new List<string>()).ToList();
 
-                    if (hasMatchingGroup)
+                        // Check if all groups in 'groups' are present in allUserGroups
+                        hasMatchingGroup = groups.All(group => allUserGroups.Contains(group));
+
+                        if (hasMatchingGroup)
+                        {
+                            _filteredUserList.Add(user);
+                        }
+                    }
+                    else
                     {
-                        _filteredUserList.Add(user);
+                        // Check if any group in UserGroups1 or UserGroups2 exists in the provided 'groups' list
+                        if (user.UserGroups1?.Intersect(groups).Any() ?? false)
+                        {
+                            hasMatchingGroup = true;
+                        }
+                        if (user.UserGroups2?.Intersect(groups).Any() ?? false)
+                        {
+                            hasMatchingGroup = true;
+                        }
+
+                        if (hasMatchingGroup)
+                        {
+                            _filteredUserList.Add(user);
+                        }
                     }
                 }
             }
@@ -410,7 +440,7 @@ namespace ADsFusion
             {
                 progressBar1.Visible = false;
                 SetUserListFromJson();
-                UpdateFilteredUserList(_filterForm.SelectedGroups);
+                UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
                 DisplayUserList();
             }
         }
@@ -756,7 +786,7 @@ namespace ADsFusion
 
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
-                OpenDetailsForm();
+            OpenDetailsForm();
         }
 
         private void OpenDetailsForm()
@@ -901,7 +931,7 @@ namespace ADsFusion
             UpdateActualUserList();
 
             // Update your user interface or perform any other necessary actions
-            UpdateFilteredUserList(_filterForm.SelectedGroups);
+            UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
             DisplayUserList();
         }
 

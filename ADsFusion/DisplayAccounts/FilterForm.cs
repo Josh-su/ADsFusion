@@ -14,6 +14,7 @@ namespace ADsFusion
     {
         public List<string> ListGroups;
         public List<string> SelectedGroups;
+        public bool SelectAllMatchingGroups;
 
         private List<string> _checkedItems;
 
@@ -112,9 +113,14 @@ namespace ADsFusion
             SelectedGroups = _checkedItems; // Update the SelectedGroups property with the new list
         }
 
-        private void FilterForm_Enter(object sender, EventArgs e)
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
+            if (radioButton1.Checked) SelectAllMatchingGroups = true;
+        }
 
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton2.Checked) SelectAllMatchingGroups = false;
         }
     }
 }
