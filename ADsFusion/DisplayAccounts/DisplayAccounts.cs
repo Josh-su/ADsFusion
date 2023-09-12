@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using System.Runtime.Remoting.Contexts;
 using System.Reflection;
 using System.DirectoryServices.ActiveDirectory;
+using ADsFusion;
 
 namespace ADsFusion
 {
@@ -152,7 +153,7 @@ namespace ADsFusion
 
         private void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            UpdateAllAsync(CheckIfLogged());
+            _ = UpdateAllAsync(CheckIfLogged());
         }
 
         private void SetUserListFromJson()
@@ -391,7 +392,7 @@ namespace ADsFusion
         #region Update Users Lists
         private void button2_Click(object sender, EventArgs e)
         {
-            UpdateAllAsync(CheckIfLogged());
+            _ = UpdateAllAsync(CheckIfLogged());
         }
 
         private async Task UpdateAllAsync(int x)
@@ -416,22 +417,22 @@ namespace ADsFusion
                 case 0:
                     _login.ShowDialog();
                     _settings.ShowDialog();
-                    UpdateAllAsync(CheckIfLogged());
+                    _ = UpdateAllAsync(CheckIfLogged());
                     break;
                 case 1:
                     progressBar1.Visible = true;
-                    _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _groupList1, 1));
+                    _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, 1));
                     //UpdateGroupsListAndSaveToJson(_userList1, _groupListPath);
                     break;
                 case 2:
                     progressBar1.Visible = true;
-                    _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, 2));
+                    _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, 2));
                     //UpdateGroupsListAndSaveToJson(_userList2, _groupListPath);
                     break;
                 case 3:
                     progressBar1.Visible = true;
-                    _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _groupList1, 1));
-                    _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, 2));
+                    _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, 1));
+                    _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, 2));
                     MergeUserList();
                     //UpdateGroupsListAndSaveToJson(_mergedUserList, _groupListPath);
                     break;
@@ -445,27 +446,30 @@ namespace ADsFusion
             }
         }
 
-        private List<User> UpdateUserList(string userListPath, string domain, List<string> groupList, int selectedList)
+        private int _totalUser;
+
+        private async Task<List<User>> UpdateUserListAsync(string userListPath, string domain, List<string> groupList, int selectedList)
         {
+            _totalUser = 0;
+
             // Create an empty list to store the active users.
             List<User> ActiveUsersAD = new List<User>();
-
+            
             // Check if the JSON file exists and delete it to start with a fresh file.
             if (File.Exists(userListPath))
             {
                 File.Delete(userListPath);
             }
 
-            foreach (string group in groupList)
+            Parallel.ForEach(groupList, groupName =>
             {
-                if (!string.IsNullOrEmpty(group))
-                {
-                    GetADUsers(group, selectedList, ActiveUsersAD, userListPath, domain);
-                }
-            }
+                GetADUsers(groupName, selectedList, ActiveUsersAD, userListPath, domain);
+            });
 
             // Wait for all the tasks to complete before reading from the JSON file.
-            Task.WhenAll(userTasks).Wait();
+            await Task.WhenAll(userTasks);
+
+            MessageBox.Show(_totalUser.ToString());
 
             // Read the data back from the JSON file into ActiveUsersAD.
             List<User> userListToReturn = ReadUsersFromJson(userListPath);
@@ -475,8 +479,8 @@ namespace ADsFusion
         private void GetADUsers(string groupName, int selectedList, List<User> ActiveUsersAD, string userListPath, string domain)
         {
             var progressCounter = 0;
-            // Define the batch size (e.g., 10 users at a time).
-            const int batchSize = 10;
+            // Define the batch size (e.g., 600 users at a time).
+            const int batchSize = 600;
 
             // Create the PrincipalContext for the domain.
             var context = new PrincipalContext(ContextType.Domain, domain);
@@ -492,16 +496,17 @@ namespace ADsFusion
                     // Get the count of group members.
                     var totalMembers = groupMembers.Count();
 
+                    var totalActiveUserPrincipal = 0;
+
                     // Loop through the group members to process each user.
                     foreach (var member in groupMembers)
                     {
                         if (member is UserPrincipal userPrincipal)
                         {
                             // Check if the user is active in Active Directory.
-                            if (userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value &&
-                                userPrincipal.SamAccountName != null && userPrincipal.EmailAddress != null)
+                            if (userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value && userPrincipal.SamAccountName != null)
                             {
-                                userTasks.Add(Task.Run(async () =>
+                                userTasks.Add(Task.Run(() =>
                                 {
                                     // The user is active. You can now proceed to retrieve user data and create User objects.
                                     var groupsMembership = userPrincipal.GetGroups();
@@ -548,10 +553,12 @@ namespace ADsFusion
                                     // Add the user to the list of active users within a lock
                                     lock (activeUsersLock)
                                     {
+                                        _totalUser++;
+
                                         ActiveUsersAD.Add(userToAdd);
 
                                         // Check if the batch size is reached or if we processed all users.
-                                        if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalMembers - 1)
+                                        if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalActiveUserPrincipal - 1)
                                         {
                                             // Save the current batch to the JSON file.
                                             SaveUsersToJson(ActiveUsersAD, userListPath, false);
@@ -560,13 +567,14 @@ namespace ADsFusion
                                             ActiveUsersAD.Clear();
                                         }
                                     }
-                                    progressCounter++;
                                     // Update the progress bar on the UI thread.
                                     this.Invoke(new Action(() =>
                                     {
-                                        progressBar1.Value = (int)((double)progressCounter / totalMembers * 100);
+                                        progressBar1.Value = (int)((double)progressCounter / totalActiveUserPrincipal * 100);
                                     }));
+                                    progressCounter++;
                                 }));
+                                totalActiveUserPrincipal++;
                             }
                         }
                     }
@@ -620,7 +628,7 @@ namespace ADsFusion
                     foreach (User user2 in _userList2)
                     {
                         string matchingValue2 = SelectMatchingValue(user2, matchingParameter);
-                        if (matchingValue1.Equals(matchingValue2))
+                        if (matchingValue1 != null && matchingValue1.Equals(matchingValue2))
                         {
                             matchingUser = user2;
                             break; // Stop searching once a match is found, to avoid unnecessary iterations
@@ -642,10 +650,9 @@ namespace ADsFusion
                 // Now, add all users from _userList2 that are not merged
                 foreach (User user2 in _userList2)
                 {
-                    string matchingValue2 = SelectMatchingValue(user2, matchingParameter);
+                    string matchingValue2 = (SelectMatchingValue(user2, matchingParameter));
 
-                    bool isMerged = _mergedUserList.Any(mergedUser =>
-                        SelectMatchingValue(mergedUser, matchingParameter).Equals(matchingValue2));
+                    bool isMerged = _mergedUserList.Any(mergedUser => SelectMatchingValue(mergedUser, matchingParameter).Equals(matchingValue2));
 
                     if (!isMerged)
                     {
@@ -663,6 +670,7 @@ namespace ADsFusion
             {
                 MessageBox.Show("Veuillez sélectionner quel sera l'attribut commun afin de poursuivre la fusion des deux listes d'utilisateurs");
                 _settings.ShowDialog();
+                MergeUserList();
             }
         }
 
@@ -673,19 +681,19 @@ namespace ADsFusion
                 switch (matchingParameter)
                 {
                     case "SAMAccountName":
-                        return user.SAMAccountName1.ToLower();
+                        return user.SAMAccountName1?.ToLower() ?? string.Empty;
                     case "DisplayName":
-                        return user.DisplayName1.ToLower();
+                        return user.DisplayName1?.ToLower() ?? string.Empty;
                     case "GivenName":
-                        return user.GivenName1.ToLower();
+                        return user.GivenName1?.ToLower() ?? string.Empty;
                     case "Sn":
-                        return user.Sn1.ToLower();
+                        return user.Sn1?.ToLower() ?? string.Empty;
                     case "Mail":
-                        return user.Mail1.ToLower();
+                        return user.Mail1?.ToLower() ?? string.Empty;
                     case "Title":
-                        return user.Title1.ToLower();
+                        return user.Title1?.ToLower() ?? string.Empty;
                     case "Description":
-                        return user.Description1.ToLower();
+                        return user.Description1?.ToLower() ?? string.Empty;
                 }
             }
             if (user.SAMAccountName2 != null)
@@ -693,22 +701,22 @@ namespace ADsFusion
                 switch (matchingParameter)
                 {
                     case "SAMAccountName":
-                        return user.SAMAccountName2.ToLower();
+                        return user.SAMAccountName2?.ToLower() ?? string.Empty;
                     case "DisplayName":
-                        return user.DisplayName2.ToLower();
+                        return user.DisplayName2?.ToLower() ?? string.Empty;
                     case "GivenName":
-                        return user.GivenName2.ToLower();
+                        return user.GivenName2?.ToLower() ?? string.Empty;
                     case "Sn":
-                        return user.Sn2.ToLower();
+                        return user.Sn2?.ToLower() ?? string.Empty;
                     case "Mail":
-                        return user.Mail2.ToLower();
+                        return user.Mail2?.ToLower() ?? string.Empty;
                     case "Title":
-                        return user.Title2.ToLower();
+                        return user.Title2?.ToLower() ?? string.Empty;
                     case "Description":
-                        return user.Description2.ToLower();
+                        return user.Description2?.ToLower() ?? string.Empty;
                 }
             }
-            return null;
+            return string.Empty;
         }
         #endregion
 
@@ -799,8 +807,8 @@ namespace ADsFusion
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
-                        return userDisplayText.ToLower() == displayText;
+                        string userDisplayText = $"{user.SAMAccountName1 ?? "n/a"} / {user.SAMAccountName2 ?? "n/a"}";
+                        return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
                 else
@@ -808,7 +816,7 @@ namespace ADsFusion
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
                         string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
-                        return userDisplayText.ToLower() == displayText;
+                        return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
 
