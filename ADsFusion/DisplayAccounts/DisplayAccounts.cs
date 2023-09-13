@@ -17,6 +17,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Reflection;
 using System.DirectoryServices.ActiveDirectory;
 using ADsFusion;
+using System.Threading;
 
 namespace ADsFusion
 {
@@ -151,42 +152,73 @@ namespace ADsFusion
         }
         #endregion
 
-        private void DisplayAccounts_Load(object sender, EventArgs e)
+        private async void DisplayAccounts_Load(object sender, EventArgs e)
         {
-            _ = UpdateAllAsync(CheckIfLogged());
+            await UpdateAllAsync(CheckIfLogged());
         }
 
-        private void SetUserListFromJson()
+        private void SetUserListFromJson(int x)
         {
-            if (File.Exists(_userList1Path))
+            switch (x)
             {
-                _userList1 = ReadUsersFromJson(_userList1Path);
-                _userList1 = _userList1.Distinct().ToList();
-            }
-            else
-            {
-                // The file doesn't exist or is empty, create an empty list
-                _userList1 = new List<User>();
-            }
-            if (File.Exists(_userList2Path))
-            {
-                _userList2 = ReadUsersFromJson(_userList2Path);
-                _userList2 = _userList2.Distinct().ToList();
-            }
-            else
-            {
-                // The file doesn't exist or is empty, create an empty list
-                _userList2 = new List<User>();
-            }
-            if (File.Exists(_mergedUserListPath))
-            {
-                _mergedUserList = ReadUsersFromJson(_mergedUserListPath);
-                _mergedUserList = _mergedUserList.Distinct().ToList();
-            }
-            else
-            {
-                // The file doesn't exist or is empty, create an empty list
-                _mergedUserList = new List<User>();
+                case 1:
+                    if (File.Exists(_userList1Path))
+                    {
+                        _userList1 = ReadUsersFromJson(_userList1Path);
+                        _userList1 = _userList1.Distinct().ToList();
+                        _userList2 = new List<User>();
+                    }
+                    else
+                    {
+                        // The file doesn't exist or is empty, create an empty list
+                        _userList1 = new List<User>();
+                    }
+                    break;
+                case 2:
+                    if (File.Exists(_userList2Path))
+                    {
+                        _userList2 = ReadUsersFromJson(_userList2Path);
+                        _userList2 = _userList2.Distinct().ToList();
+                        _userList1 = new List<User>();
+                    }
+                    else
+                    {
+                        // The file doesn't exist or is empty, create an empty list
+                        _userList2 = new List<User>();
+                    }
+                    break;
+                case 3:
+                    if (File.Exists(_userList1Path))
+                    {
+                        _userList1 = ReadUsersFromJson(_userList1Path);
+                        _userList1 = _userList1.Distinct().ToList();
+                    }
+                    else
+                    {
+                        // The file doesn't exist or is empty, create an empty list
+                        _userList1 = new List<User>();
+                    }
+                    if (File.Exists(_userList2Path))
+                    {
+                        _userList2 = ReadUsersFromJson(_userList2Path);
+                        _userList2 = _userList2.Distinct().ToList();
+                    }
+                    else
+                    {
+                        // The file doesn't exist or is empty, create an empty list
+                        _userList2 = new List<User>();
+                    }
+                    if (File.Exists(_mergedUserListPath))
+                    {
+                        _mergedUserList = ReadUsersFromJson(_mergedUserListPath);
+                        _mergedUserList = _mergedUserList.Distinct().ToList();
+                    }
+                    else
+                    {
+                        // The file doesn't exist or is empty, create an empty list
+                        _mergedUserList = new List<User>();
+                    }
+                    break;
             }
 
             UpdateActualUserList();
@@ -243,7 +275,7 @@ namespace ADsFusion
                 string displayName1 = user.DisplayName1;
                 string displayName2 = user.DisplayName2;
 
-                if (_isUserListsMerged)
+                if (_isUserListsMerged && CheckIfLogged() == 3)
                 {
                     string displayText = $"{(string.IsNullOrEmpty(samAccountName1) ? "n/a" : samAccountName1)} / {(string.IsNullOrEmpty(samAccountName2) ? "n/a" : samAccountName2)}";
                     if (displayText.Normalize().Trim().ToLower().Contains(searchText))
@@ -390,9 +422,9 @@ namespace ADsFusion
         }
 
         #region Update Users Lists
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-            _ = UpdateAllAsync(CheckIfLogged());
+            await UpdateAllAsync(CheckIfLogged());
         }
 
         private async Task UpdateAllAsync(int x)
@@ -417,7 +449,7 @@ namespace ADsFusion
                 case 0:
                     _login.ShowDialog();
                     _settings.ShowDialog();
-                    _ = UpdateAllAsync(CheckIfLogged());
+                    await UpdateAllAsync(CheckIfLogged());
                     break;
                 case 1:
                     progressBar1.Visible = true;
@@ -440,18 +472,14 @@ namespace ADsFusion
             if (x != 0)
             {
                 progressBar1.Visible = false;
-                SetUserListFromJson();
+                SetUserListFromJson(x);
                 UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
                 DisplayUserList();
             }
         }
 
-        private int _totalUser;
-
         private async Task<List<User>> UpdateUserListAsync(string userListPath, string domain, List<string> groupList, int selectedList)
         {
-            _totalUser = 0;
-
             // Create an empty list to store the active users.
             List<User> ActiveUsersAD = new List<User>();
             
@@ -468,8 +496,6 @@ namespace ADsFusion
 
             // Wait for all the tasks to complete before reading from the JSON file.
             await Task.WhenAll(userTasks);
-
-            MessageBox.Show(_totalUser.ToString());
 
             // Read the data back from the JSON file into ActiveUsersAD.
             List<User> userListToReturn = ReadUsersFromJson(userListPath);
@@ -553,8 +579,6 @@ namespace ADsFusion
                                     // Add the user to the list of active users within a lock
                                     lock (activeUsersLock)
                                     {
-                                        _totalUser++;
-
                                         ActiveUsersAD.Add(userToAdd);
 
                                         // Check if the batch size is reached or if we processed all users.
@@ -572,7 +596,8 @@ namespace ADsFusion
                                     {
                                         progressBar1.Value = (int)((double)progressCounter / totalActiveUserPrincipal * 100);
                                     }));
-                                    progressCounter++;
+                                    // Increment progressCounter safely
+                                    Interlocked.Increment(ref progressCounter);
                                 }));
                                 totalActiveUserPrincipal++;
                             }
@@ -912,16 +937,26 @@ namespace ADsFusion
 
         private void UpdateActualUserList()
         {
-            // Update the button image based on the state
-            if (_isUserListsMerged)
+            if (CheckIfLogged() == 3)
             {
-                button10.Image = Properties.Resources.split_20; // Set to split image
-                _actualUserList = _mergedUserList; // Set _actualUserList to the merged list
+                button10.Enabled = true;
+                // Update the button image based on the state
+                if (_isUserListsMerged)
+                {
+                    button10.Image = Properties.Resources.split_20; // Set to split image
+                    _actualUserList = _mergedUserList; // Set _actualUserList to the merged list
+                }
+                else
+                {
+                    button10.Image = Properties.Resources.merge_20; // Set to merge image
+                    // Set _actualUserList to the two separate lists
+                    _actualUserList = _userList1.Concat(_userList2).ToList();
+                }
             }
             else
             {
+                button10.Enabled = false;
                 button10.Image = Properties.Resources.merge_20; // Set to merge image
-                // Set _actualUserList to the two separate lists, you may need to adjust this based on your data structure
                 _actualUserList = _userList1.Concat(_userList2).ToList();
             }
         }
@@ -989,21 +1024,30 @@ namespace ADsFusion
             {
                 string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
                 User selectedUser = new User();
-                if (isUserListsMerged)
+                if (_isUserListsMerged)
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
-                        return userDisplayText.ToLower() == displayText;
+                        string userDisplayText = $"{user.SAMAccountName1 ?? "n/a"} / {user.SAMAccountName2 ?? "n/a"}";
+                        return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
                 else
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? "N/A"} / {user.SAMAccountName2 ?? "N/A"}";
-                        return userDisplayText.ToLower() == displayText;
+                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
+                        return userDisplayText.ToLower() == displayText.ToLower();
                     });
+                }
+
+                if (selectedUser != null)
+                {
+                    //print logic...
+                }
+                else
+                {
+                    MessageBox.Show("T'as rien sélectionné !! Pourquoi tu cliques sur ce bouton ???");
                 }
             }
         }

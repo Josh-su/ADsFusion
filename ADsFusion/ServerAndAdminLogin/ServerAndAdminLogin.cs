@@ -157,31 +157,28 @@ namespace ADsFusion
                 domain2Success = LoginDomain(txtbDomain2.Text, txtbUsername2.Text, txtbPassword2.Text, txtbGroup2.Text);
             }
 
-            if (domain1Success && domain2Success)
+            // Check if at least one domain's login is successful before saving credentials
+            if (domain1Success || domain2Success)
             {
-                // Check if at least one domain's login is successful before saving credentials
-                if (domain1Success || domain2Success)
+                if (domain1Success && !domain2Success)
                 {
-                    if (domain1Success && !domain2Success)
-                    {
-                        SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
-                        ClearAllTextBoxes();
-                        this.Close();
-                    }
+                    SaveCredentials(txtbDomain1.Text, null, txtbUsername1.Text, null, txtbPassword1.Text, null, txtbGroup1.Text, null);
+                    ClearAllTextBoxes();
+                    this.Close();
+                }
 
-                    if (domain2Success && !domain1Success)
-                    {
-                        SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
-                        ClearAllTextBoxes();
-                        this.Close();
-                    }
+                if (domain2Success && !domain1Success)
+                {
+                    SaveCredentials(null, txtbDomain2.Text, null, txtbUsername2.Text, null, txtbPassword2.Text, null, txtbGroup2.Text);
+                    ClearAllTextBoxes();
+                    this.Close();
+                }
 
-                    if (domain1Success && domain2Success)
-                    {
-                        SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
-                        ClearAllTextBoxes();
-                        this.Close();
-                    }
+                if (domain1Success && domain2Success)
+                {
+                    SaveCredentials(txtbDomain1.Text, txtbDomain2.Text, txtbUsername1.Text, txtbUsername2.Text, txtbPassword1.Text, txtbPassword2.Text, txtbGroup1.Text, txtbGroup2.Text);
+                    ClearAllTextBoxes();
+                    this.Close();
                 }
             }
         }

@@ -73,7 +73,7 @@ namespace ADsFusion
             this.motDePasseToolStripMenuItem,
             this.supprimerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 130);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(224, 108);
             // 
             // toolStripMenuItem1
             // 
