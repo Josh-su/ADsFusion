@@ -19,6 +19,13 @@ namespace ADsFusion
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
+            // Set the MaximumSize and MinimumSize to the initial size of your form
+            this.MaximumSize = this.Size;
+            this.MinimumSize = this.Size;
+
+            // Enable KeyPreview
+            this.KeyPreview = true;
         }
 
         private void SingleAccountDetails_Load(object sender, EventArgs e)
@@ -71,6 +78,16 @@ namespace ADsFusion
             if (_user.UserGroups1 != null) foreach (string group in _user.UserGroups1) listBox1.Items.Add(group);
             else foreach (string group in _user.UserGroups2) listBox1.Items.Add(group);
 
+        }
+
+        private void SingleAccountDetails_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if the pressed key is Escape (Esc)
+            if (e.KeyCode == Keys.Escape)
+            {
+                // Close the form
+                this.Close();
+            }
         }
     }
 }

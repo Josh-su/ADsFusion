@@ -28,12 +28,16 @@ namespace ADsFusion
             // Attach the FormClosing event handler
             this.FormClosing += FilterForm_FormClosing;
 
-            // Wire up the ItemCheck event handler
-            //checkedListBox1.ItemCheck += checkedListBox1_ItemCheck;
+            // Set the MaximumSize and MinimumSize to the initial size of your form
+            this.MaximumSize = this.Size;
+            this.MinimumSize = this.Size;
 
             ListGroups = new List<string>();
             _checkedItems = new List<string>();
             SelectedGroups = new List<string>();
+
+            // Enable KeyPreview
+            this.KeyPreview = true;
         }
 
         private void FilterForm_Load(object sender, EventArgs e)
@@ -121,6 +125,16 @@ namespace ADsFusion
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton2.Checked) SelectAllMatchingGroups = false;
+        }
+
+        private void FilterForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if the pressed key is Escape (Esc)
+            if (e.KeyCode == Keys.Escape)
+            {
+                // Close the form
+                this.Close();
+            }
         }
     }
 }

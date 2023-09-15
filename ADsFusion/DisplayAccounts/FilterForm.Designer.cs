@@ -112,6 +112,7 @@
             this.Text = "FilterForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FilterForm_FormClosing);
             this.Load += new System.EventHandler(this.FilterForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

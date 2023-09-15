@@ -27,6 +27,10 @@ namespace ADsFusion
         private ServerAndAdminLogin _login;
         private FilterForm _filterForm;
 
+        // Define dictionarys to store instances of AccountDetails forms.
+        private Dictionary<User, MergedAccountDetails> _mergedAccountsDetailsForms;
+        private Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
+
         private string _repositoryUserListsFilesPath;
         private string _repositoryGroupsListsListsPath;
 
@@ -55,9 +59,7 @@ namespace ADsFusion
         private string _mergedUserListPath;
         private string _groupListPath;
 
-        // Define dictionarys to store instances of AccountDetails forms.
-        private Dictionary<User, MergedAccountDetails> _mergedAccountsDetailsForms;
-        private Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
+        private bool isBackgroundProcessRunning = false;
 
         private readonly object activeUsersLock = new object(); // Lock object
         List<Task> userTasks = new List<Task>();
@@ -66,6 +68,13 @@ namespace ADsFusion
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
+            // Set the MaximumSize and MinimumSize to the initial size of your form
+            this.MaximumSize = this.Size;
+            this.MinimumSize = this.Size;
+
+            // Enable KeyPreview
+            this.KeyPreview = true;
 
             _userList1 = new List<User>();
             _userList2 = new List<User>();
@@ -353,7 +362,7 @@ namespace ADsFusion
         {
             _filteredUserList.Clear(); // Clear the existing filtered list
 
-            if(groups != null && groups.Count > 0)
+            if (groups != null && groups.Count > 0)
             {
                 // Iterate through each user in _actualUserList
                 foreach (var user in _actualUserList)
@@ -480,26 +489,37 @@ namespace ADsFusion
 
         private async Task<List<User>> UpdateUserListAsync(string userListPath, string domain, List<string> groupList, int selectedList)
         {
-            // Create an empty list to store the active users.
-            List<User> ActiveUsersAD = new List<User>();
-            
-            // Check if the JSON file exists and delete it to start with a fresh file.
-            if (File.Exists(userListPath))
+            // Set the flag to true when the background process starts
+            isBackgroundProcessRunning = true;
+
+            try // Your background process code here
             {
-                File.Delete(userListPath);
+                // Create an empty list to store the active users.
+                List<User> ActiveUsersAD = new List<User>();
+
+                // Check if the JSON file exists and delete it to start with a fresh file.
+                if (File.Exists(userListPath))
+                {
+                    File.Delete(userListPath);
+                }
+
+                Parallel.ForEach(groupList, groupName =>
+                {
+                    GetADUsers(groupName, selectedList, ActiveUsersAD, userListPath, domain);
+                });
+
+                // Wait for all the tasks to complete before reading from the JSON file.
+                await Task.WhenAll(userTasks);
+
+                // Read the data back from the JSON file into ActiveUsersAD.
+                List<User> userListToReturn = ReadUsersFromJson(userListPath);
+                return userListToReturn;
             }
-
-            Parallel.ForEach(groupList, groupName =>
+            finally
             {
-                GetADUsers(groupName, selectedList, ActiveUsersAD, userListPath, domain);
-            });
-
-            // Wait for all the tasks to complete before reading from the JSON file.
-            await Task.WhenAll(userTasks);
-
-            // Read the data back from the JSON file into ActiveUsersAD.
-            List<User> userListToReturn = ReadUsersFromJson(userListPath);
-            return userListToReturn;
+                // Set the flag to false when the background process finishes
+                isBackgroundProcessRunning = false;
+            }
         }
 
         private void GetADUsers(string groupName, int selectedList, List<User> ActiveUsersAD, string userListPath, string domain)
@@ -613,8 +633,8 @@ namespace ADsFusion
 
             foreach (User user in userList)
             {
-                
-                if(user.UserGroups1 != null)
+
+                if (user.UserGroups1 != null)
                 {
                     foreach (string group in user.UserGroups1)
                     {
@@ -658,7 +678,7 @@ namespace ADsFusion
                             matchingUser = user2;
                             break; // Stop searching once a match is found, to avoid unnecessary iterations
                         }
-                    }                    
+                    }
 
                     if (matchingUser != null)
                     {
@@ -760,7 +780,7 @@ namespace ADsFusion
 
         private void SaveGroupNamesToJson(List<string> groupNames, string path, bool clear)
         {
-            JsonManager.SaveToJson(groupNames, path, clearExisting : clear);
+            JsonManager.SaveToJson(groupNames, path, clearExisting: clear);
         }
 
         private List<string> ReadGroupNamesFromJson(string path)
@@ -810,11 +830,7 @@ namespace ADsFusion
 
         private void listBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                OpenDetailsForm();
-                e.Handled = true; // Prevent ListBox default behavior for Enter key
-            }
+            
         }
 
         private void listBox1_DoubleClick(object sender, EventArgs e)
@@ -848,7 +864,7 @@ namespace ADsFusion
                 if (selectedUser != null)
                 {
                     // Check if a form for this index already exists.
-                    if(_isUserListsMerged && !_mergedAccountsDetailsForms.ContainsKey(selectedUser))
+                    if (_isUserListsMerged && !_mergedAccountsDetailsForms.ContainsKey(selectedUser))
                     {
                         MergedAccountDetails newForm = new MergedAccountDetails();
                         newForm.InitializeWithUser(selectedUser); // Pass the selected user to the form
@@ -876,6 +892,10 @@ namespace ADsFusion
                         _singleAccountsDetailsForms[selectedUser].Show();
                         _singleAccountsDetailsForms[selectedUser].BringToFront();
                     }
+                }
+                else
+                {
+                    MessageBox.Show("Tu n'as sélectionné aucun utilisateur !!");
                 }
             }
         }
@@ -1015,10 +1035,10 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void impressionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //printAccountInfo(_isUserListsMerged);
+            printAccountInfo();
         }
 
-        private void printAccountInfo(bool isUserListsMerged)
+        private void printAccountInfo()
         {
             foreach (int index in listBox1.SelectedIndices)
             {
@@ -1044,11 +1064,160 @@ namespace ADsFusion
                 if (selectedUser != null)
                 {
                     //print logic...
+                    MessageBox.Show(selectedUser.SAMAccountName1 + selectedUser.SAMAccountName2);
                 }
                 else
                 {
-                    MessageBox.Show("T'as rien sélectionné !! Pourquoi tu cliques sur ce bouton ???");
+                    MessageBox.Show("Tu n'as sélectionné aucun utilisateur !!");
                 }
+            }
+        }
+
+        #region Delete
+        private void supprimerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteUserAccount();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            DeleteUserAccount();
+        }
+
+        private void DeleteUserAccount()
+        {
+            foreach (int index in listBox1.SelectedIndices)
+            {
+                string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
+                User selectedUser = new User();
+                if (_isUserListsMerged)
+                {
+                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    {
+                        string userDisplayText = $"{user.SAMAccountName1 ?? "n/a"} / {user.SAMAccountName2 ?? "n/a"}";
+                        return userDisplayText.ToLower() == displayText.ToLower();
+                    });
+                }
+                else
+                {
+                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    {
+                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
+                        return userDisplayText.ToLower() == displayText.ToLower();
+                    });
+                }
+
+                if (selectedUser != null)
+                {
+                    MessageBox.Show(selectedUser.SAMAccountName1 + selectedUser.SAMAccountName2);
+                }
+                else
+                {
+                    MessageBox.Show("Tu n'as sélectionné aucun utilisateur !!");
+                }
+            }
+        }
+        #endregion
+
+        private void DisplayAccounts_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if the pressed key is Escape (Esc)
+            if (e.KeyCode == Keys.Escape)
+            {
+                // Display a confirmation dialog
+                DialogResult result = MessageBox.Show("Are you sure you want to close the form?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                // Check the user's response
+                if (result == DialogResult.Yes)
+                {
+                    // Close the form
+                    this.Close();
+                }
+            }
+
+            // Check if Alt key is pressed
+            if (e.Alt)
+            {
+                // Handle Alt+A for selecting all items
+                if (e.KeyCode == Keys.A)
+                {
+                    for (int i = 0; i < listBox1.Items.Count; i++)
+                    {
+                        listBox1.SetSelected(i, true);
+                    }
+                    return;
+                }
+
+                // Handle Alt+P for print account info
+                if (e.KeyCode == Keys.P)
+                {
+                    printAccountInfo();
+                }
+
+                // Handle Alt+M for merge user list
+                if (e.KeyCode == Keys.M)
+                {
+                    if (!_isUserListsMerged)
+                    {
+                        // Change the state
+                        _isUserListsMerged = true;
+
+                        UpdateActualUserList();
+
+                        // Update your user interface or perform any other necessary actions
+                        UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
+                        DisplayUserList();
+                    }
+                }
+
+                // Handle Alt+S for split user list
+                if (e.KeyCode == Keys.S)
+                {
+                    if (_isUserListsMerged)
+                    {
+                        // Change the state
+                        _isUserListsMerged = false;
+                        UpdateActualUserList();
+
+                        // Update your user interface or perform any other necessary actions
+                        UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
+                        DisplayUserList();
+                    }
+                }
+
+                // Handle Alt+F4 for close the app
+                if (e.KeyCode == Keys.F4)
+                {
+                    this.Close();
+                }
+
+                // Prevent all other Alt key combinations
+                e.SuppressKeyPress = true;
+                return;
+            }
+
+
+            // Handle Enter key
+            if (e.KeyCode == Keys.Enter)
+            {
+                OpenDetailsForm();
+            }
+        }
+
+        /// <summary>
+        /// Check if there a background process before closing the app
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DisplayAccounts_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Check if the background process is running
+            if (isBackgroundProcessRunning)
+            {
+                // Display a message or take appropriate action to inform the user
+                MessageBox.Show("Please wait for the background process to finish before closing the application.");
+                // Cancel the form closing event to prevent the application from closing
+                e.Cancel = true;
             }
         }
     }

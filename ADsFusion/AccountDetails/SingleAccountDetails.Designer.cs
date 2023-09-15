@@ -214,10 +214,11 @@
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SingleAccountDetails";
             this.Text = "SingleAccountDetails";
             this.Load += new System.EventHandler(this.SingleAccountDetails_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SingleAccountDetails_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

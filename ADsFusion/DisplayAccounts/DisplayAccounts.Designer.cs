@@ -87,7 +87,7 @@ namespace ADsFusion
             // 
             this.impressionToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.printer_20;
             this.impressionToolStripMenuItem.Name = "impressionToolStripMenuItem";
-            this.impressionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.impressionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
             this.impressionToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.impressionToolStripMenuItem.Text = "Impression";
             this.impressionToolStripMenuItem.Click += new System.EventHandler(this.impressionToolStripMenuItem_Click);
@@ -105,8 +105,10 @@ namespace ADsFusion
             this.supprimerToolStripMenuItem.Enabled = false;
             this.supprimerToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.poubelle_de_recyclage_20;
             this.supprimerToolStripMenuItem.Name = "supprimerToolStripMenuItem";
+            this.supprimerToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.supprimerToolStripMenuItem.Text = "Supprimer";
+            this.supprimerToolStripMenuItem.Click += new System.EventHandler(this.supprimerToolStripMenuItem_Click);
             // 
             // listBox1
             // 
@@ -196,6 +198,7 @@ namespace ADsFusion
             this.button9.Size = new System.Drawing.Size(30, 30);
             this.button9.TabIndex = 8;
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // button8
             // 
@@ -280,8 +283,10 @@ namespace ADsFusion
             this.Name = "DisplayAccounts";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DisplayAccounts";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DisplayAccounts_FormClosing);
             this.Load += new System.EventHandler(this.DisplayAccounts_Load);
             this.LocationChanged += new System.EventHandler(this.DisplayAccounts_LocationChanged);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisplayAccounts_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
