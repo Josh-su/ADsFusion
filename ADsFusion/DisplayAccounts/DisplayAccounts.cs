@@ -1184,15 +1184,6 @@ namespace ADsFusion
                         DisplayUserList();
                     }
                 }
-
-                // Handle Alt+F4 for close the app
-                if (e.KeyCode == Keys.F4)
-                {
-                    this.Close();
-                }
-
-                // Prevent all other Alt key combinations
-                e.SuppressKeyPress = true;
                 return;
             }
 
@@ -1215,7 +1206,7 @@ namespace ADsFusion
             if (isBackgroundProcessRunning)
             {
                 // Display a message or take appropriate action to inform the user
-                MessageBox.Show("Please wait for the background process to finish before closing the application.");
+                MessageBox.Show("Please wait for the background process to finish \nbefore closing the application.");
                 // Cancel the form closing event to prevent the application from closing
                 e.Cancel = true;
             }
