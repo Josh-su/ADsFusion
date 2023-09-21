@@ -90,7 +90,7 @@ namespace ADsFusion
             this.impressionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
             this.impressionToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.impressionToolStripMenuItem.Text = "Impression";
-            this.impressionToolStripMenuItem.Click += new System.EventHandler(this.impressionToolStripMenuItem_Click);
+            this.impressionToolStripMenuItem.Click += new System.EventHandler(this.ImpressionToolStripMenuItem_Click);
             // 
             // motDePasseToolStripMenuItem
             // 
@@ -120,9 +120,10 @@ namespace ADsFusion
             this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBox1.Size = new System.Drawing.Size(457, 328);
             this.listBox1.TabIndex = 2;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
             this.listBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox1_KeyDown);
+            this.listBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ListBox1_KeyUp);
             this.listBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseUp);
             // 
             // label1
@@ -187,7 +188,7 @@ namespace ADsFusion
             this.button10.Size = new System.Drawing.Size(30, 30);
             this.button10.TabIndex = 6;
             this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.button10.Click += new System.EventHandler(this.Button10_Click);
             // 
             // button9
             // 
@@ -208,7 +209,7 @@ namespace ADsFusion
             this.button8.Size = new System.Drawing.Size(30, 30);
             this.button8.TabIndex = 7;
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.button8.Click += new System.EventHandler(this.Button8_Click);
             // 
             // button6
             // 
@@ -228,7 +229,7 @@ namespace ADsFusion
             this.button4.Size = new System.Drawing.Size(30, 30);
             this.button4.TabIndex = 3;
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // button1
             // 
@@ -238,7 +239,7 @@ namespace ADsFusion
             this.button1.Size = new System.Drawing.Size(30, 30);
             this.button1.TabIndex = 10;
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // button2
             // 
@@ -258,7 +259,7 @@ namespace ADsFusion
             this.button3.Size = new System.Drawing.Size(30, 30);
             this.button3.TabIndex = 4;
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // DisplayAccounts
             // 

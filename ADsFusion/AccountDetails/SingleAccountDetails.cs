@@ -68,16 +68,21 @@ namespace ADsFusion
             this._user = user; // Store the user object in the class-level variable
 
             // Populate the form's controls with the user's information
-            textBox1.Text = _user.SAMAccountName1;
-            textBox2.Text = _user.DisplayName1;
-            textBox3.Text = _user.GivenName1;
-            textBox4.Text = _user.Sn1;
-            textBox5.Text = _user.Mail1;
-            textBox6.Text = _user.Title1;
-            textBox7.Text = _user.Description1;
-            if (_user.UserGroups1 != null) foreach (string group in _user.UserGroups1) listBox1.Items.Add(group);
-            else foreach (string group in _user.UserGroups2) listBox1.Items.Add(group);
+            string[] userData = _user.SAMAccountName1 != null
+                ? new string[] { _user.SAMAccountName1, _user.DisplayName1, _user.GivenName1, _user.Sn1, _user.Mail1, _user.Title1, _user.Description1 }
+                : new string[] { _user.SAMAccountName2, _user.DisplayName2, _user.GivenName2, _user.Sn2, _user.Mail2, _user.Title2, _user.Description2 };
 
+            System.Windows.Forms.TextBox[] textBoxes = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7 };
+
+            for (int i = 0; i < userData.Length; i++)
+            {
+                textBoxes[i].Text = userData[i] ?? "";
+            }
+
+            foreach (string group in _user.SAMAccountName1 != null ? _user.UserGroups1 : _user.UserGroups2)
+            {
+                listBox1.Items.Add(group);
+            }
         }
 
         private void SingleAccountDetails_KeyDown(object sender, KeyEventArgs e)

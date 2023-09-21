@@ -18,30 +18,31 @@ using System.Reflection;
 using System.DirectoryServices.ActiveDirectory;
 using ADsFusion;
 using System.Threading;
+using System.Collections.ObjectModel;
 
 namespace ADsFusion
 {
     public partial class DisplayAccounts : Form
     {
-        private Settings _settings;
-        private ServerAndAdminLogin _login;
-        private FilterForm _filterForm;
+        private readonly Settings _settings;
+        private readonly ServerAndAdminLogin _login;
+        private readonly FilterForm _filterForm;
 
         // Define dictionarys to store instances of AccountDetails forms.
-        private Dictionary<User, MergedAccountDetails> _mergedAccountsDetailsForms;
-        private Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
+        private readonly Dictionary<User, MergedAccountDetails> _mergedAccountsDetailsForms;
+        private readonly Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
 
-        private string _repositoryUserListsFilesPath;
-        private string _repositoryGroupsListsListsPath;
+        private readonly string _repositoryUserListsFilesPath;
+        private readonly string _repositoryGroupsListsListsPath;
 
-        private string _domain1;
-        private string _domain2;
-        private string _serverLogin1;
-        private string _serverLogin2;
-        private string _serverPassword1;
-        private string _serverPassword2;
-        private string _adminGroup1;
-        private string _adminGroup2;
+        private readonly string _domain1;
+        private readonly string _domain2;
+        private readonly string _serverLogin1;
+        private readonly string _serverLogin2;
+        private readonly string _serverPassword1;
+        private readonly string _serverPassword2;
+        private readonly string _adminGroup1;
+        private readonly string _adminGroup2;
 
         private List<string> _groupList1;
         private List<string> _groupList2;
@@ -54,17 +55,20 @@ namespace ADsFusion
         private List<User> _filteredUserList;
         private bool _isUserListsMerged = true; // Initial state is merged
 
-        private string _userList1Path;
-        private string _userList2Path;
-        private string _mergedUserListPath;
-        private string _groupListPath;
+        private readonly string _userList1Path;
+        private readonly string _userList2Path;
+        private readonly string _mergedUserListPath;
+        private readonly string _groupListPath;
 
         private bool _isBackgroundProcessRunning = false;
-        private bool print = false;
+        private bool _printAccountInfoFlag = false; // Using the word "Flag" in the variable name is a common convention to indicate that it's a boolean flag used for controlling a specific behavior
 
         private readonly object activeUsersLock = new object(); // Lock object
-        List<Task> userTasks = new List<Task>();
+        private readonly List<Task> _userTasks = new List<Task>();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DisplayAccounts()
         {
             InitializeComponent();
@@ -128,6 +132,11 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DisplayAccounts_LocationChanged(object sender, EventArgs e)
         {
             // Update the location of the FilterForm to be on the left of DisplayAccounts
@@ -135,6 +144,10 @@ namespace ADsFusion
         }
 
         #region check if the initial files exist if not create them
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="directoryPath"></param>
         private void CheckAndCreateDirectory(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
@@ -162,11 +175,20 @@ namespace ADsFusion
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void DisplayAccounts_Load(object sender, EventArgs e)
         {
             await UpdateAllAsync(CheckIfLogged());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
         private void SetUserListFromJson(int x)
         {
             switch (x)
@@ -239,6 +261,10 @@ namespace ADsFusion
             _filterForm.UpdateGroups();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private int CheckIfLogged()
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
@@ -267,11 +293,19 @@ namespace ADsFusion
             return 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             DisplayUserList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void DisplayUserList()
         {
             listBox1.Items.Clear();
@@ -329,7 +363,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button4_Click(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
             _login.ShowDialog();
         }
@@ -339,7 +373,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button3_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
             _settings.ShowDialog();
             /*MergeUserList();
@@ -347,7 +381,12 @@ namespace ADsFusion
         }
 
         #region Account list filter
-        private void button1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button1_Click(object sender, EventArgs e)
         {
             if (!_filterForm.Visible)
             {
@@ -361,6 +400,11 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <param name="selectAllMatchingGroups"></param>
         private void UpdateFilteredUserList(List<string> groups, bool selectAllMatchingGroups)
         {
             _filteredUserList.Clear(); // Clear the existing filtered list
@@ -434,11 +478,21 @@ namespace ADsFusion
         }
 
         #region Update Users Lists
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void button2_Click(object sender, EventArgs e)
         {
             await UpdateAllAsync(CheckIfLogged());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         private async Task UpdateAllAsync(int x)
         {
             _domain1 = Properties.Settings.Default.Domain1;
@@ -490,6 +544,14 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userListPath"></param>
+        /// <param name="domain"></param>
+        /// <param name="groupList"></param>
+        /// <param name="selectedList"></param>
+        /// <returns></returns>
         private async Task<List<User>> UpdateUserListAsync(string userListPath, string domain, List<string> groupList, int selectedList)
         {
             // Set the flag to true when the background process starts
@@ -512,7 +574,7 @@ namespace ADsFusion
                 });
 
                 // Wait for all the tasks to complete before reading from the JSON file.
-                await Task.WhenAll(userTasks);
+                await Task.WhenAll(_userTasks);
 
                 // Read the data back from the JSON file into ActiveUsersAD.
                 List<User> userListToReturn = ReadUsersFromJson(userListPath);
@@ -525,6 +587,14 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="selectedList"></param>
+        /// <param name="ActiveUsersAD"></param>
+        /// <param name="userListPath"></param>
+        /// <param name="domain"></param>
         private void GetADUsers(string groupName, int selectedList, List<User> ActiveUsersAD, string userListPath, string domain)
         {
             var progressCounter = 0;
@@ -555,7 +625,7 @@ namespace ADsFusion
                             // Check if the user is active in Active Directory.
                             if (userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value && userPrincipal.SamAccountName != null)
                             {
-                                userTasks.Add(Task.Run(() =>
+                                _userTasks.Add(Task.Run(() =>
                                 {
                                     // The user is active. You can now proceed to retrieve user data and create User objects.
                                     var groupsMembership = userPrincipal.GetGroups();
@@ -630,6 +700,11 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userList"></param>
+        /// <param name="groupListPath"></param>
         private void UpdateGroupsListAndSaveToJson(List<User> userList, string groupListPath)
         {
             _allGroupsList.Clear();
@@ -660,6 +735,9 @@ namespace ADsFusion
             SaveGroupNamesToJson(_allGroupsList, groupListPath, true);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void MergeUserList()
         {
             _mergedUserList.Clear();
@@ -722,6 +800,12 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="matchingParameter"></param>
+        /// <returns></returns>
         private string SelectMatchingValue(User user, string matchingParameter)
         {
             if (user.SAMAccountName1 != null)
@@ -769,11 +853,22 @@ namespace ADsFusion
         #endregion
 
         #region Json Manager
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="path"></param>
+        /// <param name="clear"></param>
         private void SaveUsersToJson(List<User> users, string path, bool clear)
         {
             JsonManager.SaveToJson(users, path, clear);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private List<User> ReadUsersFromJson(string path)
         {
             List<User> users = JsonManager.ReadFromJson<User>(path);
@@ -781,11 +876,22 @@ namespace ADsFusion
             return users;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupNames"></param>
+        /// <param name="path"></param>
+        /// <param name="clear"></param>
         private void SaveGroupNamesToJson(List<string> groupNames, string path, bool clear)
         {
             JsonManager.SaveToJson(groupNames, path, clearExisting: clear);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private List<string> ReadGroupNamesFromJson(string path)
         {
             List<string> loadedGroupNames = JsonManager.ReadFromJson<string>(path);
@@ -826,21 +932,29 @@ namespace ADsFusion
         }
 
         #region Open Detail forms
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenDetailsForm();
         }
 
-        private void listBox1_KeyDown(object sender, KeyEventArgs e)
-        {
-            
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listBox1_DoubleClick(object sender, EventArgs e)
         {
             OpenDetailsForm();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void OpenDetailsForm()
         {
             foreach (int index in listBox1.SelectedIndices)
@@ -904,6 +1018,9 @@ namespace ADsFusion
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void UpdateCountItemLabel()
         {
             int Totalcount = UpdateTotalCountItem();
@@ -912,11 +1029,19 @@ namespace ADsFusion
             label3.Text = "Selected items : " + SelectedCount + " | Total items : " + Totalcount;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private int UpdateTotalCountItem()
         {
             return listBox1.Items.Count;
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private int UpdateCountSelectedItem()
         {
             return listBox1.SelectedItems.Count;
@@ -927,7 +1052,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button8_Click(object sender, EventArgs e)
+        private void Button8_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
@@ -958,6 +1083,9 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void UpdateActualUserList()
         {
             if (CheckIfLogged() == 3)
@@ -989,7 +1117,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button10_Click(object sender, EventArgs e)
+        private void Button10_Click(object sender, EventArgs e)
         {
             // Change the state
             _isUserListsMerged = !_isUserListsMerged;
@@ -1002,7 +1130,7 @@ namespace ADsFusion
         }
 
         /// <summary>
-        /// 
+        /// ajoute un item dans listBox1 et met a jour le label avec le nombre d'item
         /// </summary>
         /// <param name="item"></param>
         private void AddItemToListBox(string item)
@@ -1026,7 +1154,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateCountItemLabel();
         }
@@ -1036,12 +1164,15 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void impressionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ImpressionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            printAccountInfo();
+            PrintAccountInfo();
         }
 
-        private void printAccountInfo()
+        /// <summary>
+        /// 
+        /// </summary>
+        private void PrintAccountInfo()
         {
             foreach (int index in listBox1.SelectedIndices)
             {
@@ -1173,7 +1304,8 @@ namespace ADsFusion
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    //return;
+                    _printAccountInfoFlag = true;
+                    return;
                 }
 
                 e.Handled = true;
@@ -1274,6 +1406,20 @@ namespace ADsFusion
                 MessageBox.Show("Please wait for the background process to finish \nbefore closing the application.");
                 // Cancel the form closing event to prevent the application from closing
                 e.Cancel = true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (_printAccountInfoFlag)
+            {
+                PrintAccountInfo();
+                _printAccountInfoFlag = false;
             }
         }
     }
