@@ -62,7 +62,7 @@ namespace ADsFusion
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(296, 25);
             this.textBox1.TabIndex = 0;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.textBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
             // 
             // contextMenuStrip1
             // 
@@ -81,7 +81,7 @@ namespace ADsFusion
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(223, 26);
             this.toolStripMenuItem1.Text = "Détails";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.ToolStripMenuItem1_Click);
             // 
             // impressionToolStripMenuItem
             // 
@@ -108,7 +108,7 @@ namespace ADsFusion
             this.supprimerToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
             this.supprimerToolStripMenuItem.Text = "Supprimer";
-            this.supprimerToolStripMenuItem.Click += new System.EventHandler(this.supprimerToolStripMenuItem_Click);
+            this.supprimerToolStripMenuItem.Click += new System.EventHandler(this.SupprimerToolStripMenuItem_Click);
             // 
             // listBox1
             // 
@@ -121,10 +121,9 @@ namespace ADsFusion
             this.listBox1.Size = new System.Drawing.Size(457, 328);
             this.listBox1.TabIndex = 2;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
-            this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
-            this.listBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox1_KeyDown);
+            this.listBox1.DoubleClick += new System.EventHandler(this.ListBox1_DoubleClick);
             this.listBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ListBox1_KeyUp);
-            this.listBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseUp);
+            this.listBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ListBox1_MouseUp);
             // 
             // label1
             // 
@@ -199,7 +198,7 @@ namespace ADsFusion
             this.button9.Size = new System.Drawing.Size(30, 30);
             this.button9.TabIndex = 8;
             this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.button9.Click += new System.EventHandler(this.Button9_Click);
             // 
             // button8
             // 
@@ -219,7 +218,7 @@ namespace ADsFusion
             this.button6.Size = new System.Drawing.Size(30, 30);
             this.button6.TabIndex = 5;
             this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.button6.Click += new System.EventHandler(this.Button6_Click);
             // 
             // button4
             // 
@@ -249,7 +248,7 @@ namespace ADsFusion
             this.button2.Size = new System.Drawing.Size(30, 30);
             this.button2.TabIndex = 9;
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // button3
             // 

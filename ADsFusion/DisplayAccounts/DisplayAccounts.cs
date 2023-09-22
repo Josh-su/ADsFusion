@@ -19,6 +19,7 @@ using System.DirectoryServices.ActiveDirectory;
 using ADsFusion;
 using System.Threading;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace ADsFusion
 {
@@ -35,14 +36,16 @@ namespace ADsFusion
         private readonly string _repositoryUserListsFilesPath;
         private readonly string _repositoryGroupsListsListsPath;
 
-        private readonly string _domain1;
-        private readonly string _domain2;
-        private readonly string _serverLogin1;
-        private readonly string _serverLogin2;
-        private readonly string _serverPassword1;
-        private readonly string _serverPassword2;
-        private readonly string _adminGroup1;
-        private readonly string _adminGroup2;
+        private string _domain1;
+        private string _domain2;
+
+        /*
+        private string _serverLogin1;
+        private string _serverLogin2;
+        private string _serverPassword1;
+        private string _serverPassword2;
+        private string _adminGroup1;
+        private string _adminGroup2;*/
 
         private List<string> _groupList1;
         private List<string> _groupList2;
@@ -298,7 +301,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void TextBox1_TextChanged(object sender, EventArgs e)
         {
             DisplayUserList();
         }
@@ -464,7 +467,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void listBox1_MouseUp(object sender, MouseEventArgs e)
+        private void ListBox1_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -483,7 +486,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void button2_Click(object sender, EventArgs e)
+        private async void Button2_Click(object sender, EventArgs e)
         {
             await UpdateAllAsync(CheckIfLogged());
         }
@@ -916,7 +919,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button6_Click(object sender, EventArgs e)
+        private void Button6_Click(object sender, EventArgs e)
         {
             string websiteUrl = "https://github.com/Josh-su/ADsFusion";
 
@@ -937,7 +940,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        private void ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenDetailsForm();
         }
@@ -947,7 +950,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void listBox1_DoubleClick(object sender, EventArgs e)
+        private void ListBox1_DoubleClick(object sender, EventArgs e)
         {
             OpenDetailsForm();
         }
@@ -1199,6 +1202,8 @@ namespace ADsFusion
                 {
                     //print logic...
                     MessageBox.Show(selectedUser.SAMAccountName1 + selectedUser.SAMAccountName2);
+
+
                 }
                 else
                 {
@@ -1208,16 +1213,29 @@ namespace ADsFusion
         }
 
         #region Delete
-        private void supprimerToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SupprimerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DeleteUserAccount();
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button9_Click(object sender, EventArgs e)
         {
             DeleteUserAccount();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void DeleteUserAccount()
         {
             foreach (int index in listBox1.SelectedIndices)

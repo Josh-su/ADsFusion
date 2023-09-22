@@ -25,7 +25,7 @@ namespace ADsFusion
             SetParameters();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             SetDefaultIfEmpty();
 
@@ -126,7 +126,7 @@ namespace ADsFusion
             if (string.IsNullOrEmpty(textBox8.Text)) textBox8.Text = "description";
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             Properties.CustomNames.Default.Reset();
             foreach (RadioButton radioButton in this.Controls.OfType<RadioButton>())

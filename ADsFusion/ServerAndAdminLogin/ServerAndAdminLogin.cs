@@ -17,15 +17,15 @@ namespace ADsFusion
 {
     public partial class ServerAndAdminLogin : Form
     {
-        private int _initialHeight;
+        private readonly int _initialHeight;
 
-        private List<System.Windows.Forms.TextBox> _allTextBoxesGroup1 = new List<System.Windows.Forms.TextBox>();
-        private List<System.Windows.Forms.TextBox> _allTextBoxesGroup2 = new List<System.Windows.Forms.TextBox>();
+        private readonly List<System.Windows.Forms.TextBox> _allTextBoxesGroup1 = new List<System.Windows.Forms.TextBox>();
+        private readonly List<System.Windows.Forms.TextBox> _allTextBoxesGroup2 = new List<System.Windows.Forms.TextBox>();
 
         private List<string> _groups1TextboxValues;
         private List<string> _groups2TextboxValues;
 
-        StringBuilder dynamicTextboxesData = new StringBuilder();
+        readonly StringBuilder dynamicTextboxesData = new StringBuilder();
 
         public ServerAndAdminLogin()
         {
@@ -63,10 +63,12 @@ namespace ADsFusion
             {
                 if (_allTextBoxesGroup1.Count > 1)
                 {
-                    System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
-                    newTextbox.Size = txtbGroups1.Size; // Set the size
-                    newTextbox.Location = new Point(txtbGroups1.Left, _allTextBoxesGroup1[_allTextBoxesGroup1.Count - 1].Bottom + 10);
-                    newTextbox.Text = value;
+                    System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox
+                    {
+                        Size = txtbGroups1.Size, // Set the size
+                        Location = new Point(txtbGroups1.Left, _allTextBoxesGroup1[_allTextBoxesGroup1.Count - 1].Bottom + 10),
+                        Text = value
+                    };
                     _allTextBoxesGroup1.Add(newTextbox);
                     Controls.Add(newTextbox);
                     AdjustFormLayout();
@@ -80,10 +82,12 @@ namespace ADsFusion
             {
                 if (_allTextBoxesGroup1.Count > 1)
                 {
-                    System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox();
-                    newTextbox.Size = txtbGroups2.Size; // Set the size
-                    newTextbox.Location = new Point(txtbGroups2.Left, _allTextBoxesGroup2[_allTextBoxesGroup2.Count - 1].Bottom + 10);
-                    newTextbox.Text = value;
+                    System.Windows.Forms.TextBox newTextbox = new System.Windows.Forms.TextBox
+                    {
+                        Size = txtbGroups2.Size, // Set the size
+                        Location = new Point(txtbGroups2.Left, _allTextBoxesGroup2[_allTextBoxesGroup2.Count - 1].Bottom + 10),
+                        Text = value
+                    };
                     _allTextBoxesGroup2.Add(newTextbox);
                     Controls.Add(newTextbox);
                     AdjustFormLayout();
@@ -100,7 +104,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnLogin_Click(object sender, EventArgs e)
+        private void BtnLogin_Click(object sender, EventArgs e)
         {
             List<string> server1Informations = new List<string>
             {
@@ -278,7 +282,7 @@ namespace ADsFusion
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnLogout_Click(object sender, EventArgs e)
+        private void BtnLogout_Click(object sender, EventArgs e)
         {
             // Clear all the saved information by resetting the user settings
             Properties.Settings.Default.Reset();
@@ -326,12 +330,14 @@ namespace ADsFusion
         }
 
         #region Add & toggle OU textbox
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             if (_allTextBoxesGroup1.Count < 5)
             {
-                System.Windows.Forms.TextBox newTextBox = new System.Windows.Forms.TextBox();
-                newTextBox.Size = txtbGroups1.Size; // Set the size
+                System.Windows.Forms.TextBox newTextBox = new System.Windows.Forms.TextBox
+                {
+                    Size = txtbGroups1.Size // Set the size
+                };
                 if (_allTextBoxesGroup1.Count > 0)
                 {
                     newTextBox.Location = new Point(txtbGroups1.Left, _allTextBoxesGroup1[_allTextBoxesGroup1.Count - 1].Bottom + 10);
@@ -347,7 +353,7 @@ namespace ADsFusion
             }
         }
 
-        private void button2_Click_1(object sender, EventArgs e)
+        private void Button2_Click_1(object sender, EventArgs e)
         {
             if (_allTextBoxesGroup1.Count > 1)
             {
@@ -358,12 +364,14 @@ namespace ADsFusion
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
             if (_allTextBoxesGroup2.Count < 5)
             {
-                System.Windows.Forms.TextBox newTextBox = new System.Windows.Forms.TextBox();
-                newTextBox.Size = txtbGroups2.Size; // Set the size
+                System.Windows.Forms.TextBox newTextBox = new System.Windows.Forms.TextBox
+                {
+                    Size = txtbGroups2.Size // Set the size
+                };
                 if (_allTextBoxesGroup2.Count > 0)
                 {
                     newTextBox.Location = new Point(txtbGroups2.Left, _allTextBoxesGroup2[_allTextBoxesGroup2.Count - 1].Bottom + 10);
@@ -379,7 +387,7 @@ namespace ADsFusion
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
             if (_allTextBoxesGroup2.Count > 1)
             {

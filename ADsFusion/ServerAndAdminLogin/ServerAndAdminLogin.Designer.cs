@@ -130,7 +130,7 @@
             this.btnLogin.TabIndex = 10;
             this.btnLogin.Text = "Se connecter";
             this.btnLogin.UseVisualStyleBackColor = true;
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            this.btnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
             // 
             // btnLogout
             // 
@@ -141,7 +141,7 @@
             this.btnLogout.TabIndex = 11;
             this.btnLogout.Text = "Se déconnecter";
             this.btnLogout.UseVisualStyleBackColor = true;
-            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            this.btnLogout.Click += new System.EventHandler(this.BtnLogout_Click);
             // 
             // label5
             // 
@@ -279,7 +279,7 @@
             this.button1.TabIndex = 40;
             this.button1.Text = "Ajouter";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // button2
             // 
@@ -289,7 +289,7 @@
             this.button2.TabIndex = 41;
             this.button2.Text = "Enlever";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            this.button2.Click += new System.EventHandler(this.Button2_Click_1);
             // 
             // button3
             // 
@@ -299,7 +299,7 @@
             this.button3.TabIndex = 43;
             this.button3.Text = "Enlever";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // button4
             // 
@@ -309,7 +309,7 @@
             this.button4.TabIndex = 42;
             this.button4.Text = "Ajouter";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // ServerAndAdminLogin
             // 
