@@ -921,7 +921,7 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void Button6_Click(object sender, EventArgs e)
         {
-            string websiteUrl = "https://github.com/Josh-su/ADsFusion";
+            string websiteUrl = "https://josh-su.github.io/ADsFusion/";
 
             try
             {
