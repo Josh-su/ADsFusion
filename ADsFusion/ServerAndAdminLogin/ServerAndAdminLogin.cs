@@ -15,6 +15,9 @@ using System.Reflection.Emit;
 
 namespace ADsFusion
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class ServerAndAdminLogin : Form
     {
         private readonly int _initialHeight;
@@ -27,6 +30,9 @@ namespace ADsFusion
 
         readonly StringBuilder dynamicTextboxesData = new StringBuilder();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ServerAndAdminLogin()
         {
             InitializeComponent();

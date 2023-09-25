@@ -13,20 +13,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.Remoting.Contexts;
-using System.Reflection;
-using System.DirectoryServices.ActiveDirectory;
-using ADsFusion;
 using System.Threading;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace ADsFusion
 {
     public partial class DisplayAccounts : Form
     {
         private readonly Settings _settings;
-        private readonly ServerAndAdminLogin _login;
+        private readonly ServersList _servers;
         private readonly FilterForm _filterForm;
 
         // Define dictionarys to store instances of AccountDetails forms.
@@ -38,14 +32,6 @@ namespace ADsFusion
 
         private string _domain1;
         private string _domain2;
-
-        /*
-        private string _serverLogin1;
-        private string _serverLogin2;
-        private string _serverPassword1;
-        private string _serverPassword2;
-        private string _adminGroup1;
-        private string _adminGroup2;*/
 
         private List<string> _groupList1;
         private List<string> _groupList2;
@@ -95,7 +81,7 @@ namespace ADsFusion
             _allGroupsList = new List<string>();
 
             _settings = new Settings();
-            _login = new ServerAndAdminLogin();
+            _servers = new ServersList();
             _filterForm = new FilterForm();
 
             _mergedAccountsDetailsForms = new Dictionary<User, MergedAccountDetails>();
@@ -129,9 +115,9 @@ namespace ADsFusion
             };
 
             // Check and create each file if it doesn't exist
-            foreach (var file in files)
+            foreach (var (filePath, defaultContent) in files)
             {
-                CheckAndCreateFile(file.filePath, file.defaultContent);
+                CheckAndCreateFile(filePath, defaultContent);
             }
         }
 
@@ -368,7 +354,7 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void Button4_Click(object sender, EventArgs e)
         {
-            _login.ShowDialog();
+            _servers.ShowDialog();
         }
 
         /// <summary>
@@ -516,7 +502,7 @@ namespace ADsFusion
             switch (x)
             {
                 case 0:
-                    _login.ShowDialog();
+                    _servers.ShowDialog();
                     _settings.ShowDialog();
                     await UpdateAllAsync(CheckIfLogged());
                     break;

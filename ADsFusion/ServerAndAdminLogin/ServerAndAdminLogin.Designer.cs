@@ -1,5 +1,8 @@
 ﻿namespace ADsFusion
 {
+    /// <summary>
+    /// 
+    /// </summary>
     partial class ServerAndAdminLogin
     {
         /// <summary>

@@ -2,6 +2,9 @@
 
 namespace ADsFusion
 {
+    /// <summary>
+    /// 
+    /// </summary>
     partial class DisplayAccounts
     {
         /// <summary>
