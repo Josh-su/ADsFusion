@@ -50,7 +50,7 @@ namespace ADsFusion
         private List<User> _userList4;
         private List<User> _userList5;
         private List<User> _mergedUserList;
-        private List<User> _actualUserList;
+        private readonly List<User> _actualUserList;
         private List<User> _filteredUserList;
         private bool _isUserListsMerged = true; // Initial state is merged
 
@@ -178,13 +178,16 @@ namespace ADsFusion
         /// <param name="defaultContent"></param>
         private void CheckAndCreateFile(string filePath, string defaultContent)
         {
-            if (!File.Exists(filePath))
+            if (File.Exists(filePath))
             {
-                // Create the file with default content
-                using (StreamWriter writer = File.CreateText(filePath))
-                {
-                    writer.Write(defaultContent);
-                }
+                // File exists, delete it
+                File.Delete(filePath);
+            }
+
+            // Create the file with default content
+            using (StreamWriter writer = File.CreateText(filePath))
+            {
+                writer.Write(defaultContent);
             }
         }
         #endregion
@@ -267,7 +270,7 @@ namespace ADsFusion
                     // The file doesn't exist or is empty, create an empty list
                     _mergedUserList = new List<User>();
                 }
-                UpdateActualUserList();
+                UpdateActualUserList(ints);
                 UpdateGroupsListAndSaveToJson(_actualUserList, _groupListPath);
                 _allGroupsList = ReadGroupNamesFromJson(_groupListPath);
                 _filterForm.ListGroups.Clear();
@@ -320,10 +323,66 @@ namespace ADsFusion
             {
                 string samAccountName1 = user.SAMAccountName1;
                 string samAccountName2 = user.SAMAccountName2;
+                string samAccountName3 = user.SAMAccountName3;
+                string samAccountName4 = user.SAMAccountName4;
+                string samAccountName5 = user.SAMAccountName5;
                 string displayName1 = user.DisplayName1;
                 string displayName2 = user.DisplayName2;
+                string displayName3 = user.DisplayName3;
+                string displayName4 = user.DisplayName4;
+                string displayName5 = user.DisplayName5;
 
-                if (_isUserListsMerged && CheckIfLogged().Count > 1)
+                List<string> parts = new List<string>();
+
+                if (!string.IsNullOrEmpty(samAccountName1))
+                {
+                    parts.Add(samAccountName1);
+                }
+                if (!string.IsNullOrEmpty(samAccountName2))
+                {
+                    parts.Add(samAccountName2);
+                }
+                if (!string.IsNullOrEmpty(samAccountName3))
+                {
+                    parts.Add(samAccountName3);
+                }
+                if (!string.IsNullOrEmpty(samAccountName4))
+                {
+                    parts.Add(samAccountName4);
+                }
+                if (!string.IsNullOrEmpty(samAccountName5))
+                {
+                    parts.Add(samAccountName5);
+                }
+                if (!string.IsNullOrEmpty(displayName1))
+                {
+                    parts.Add(displayName1);
+                }
+                if (!string.IsNullOrEmpty(displayName2))
+                {
+                    parts.Add(displayName2);
+                }
+                if (!string.IsNullOrEmpty(displayName3))
+                {
+                    parts.Add(displayName3);
+                }
+                if (!string.IsNullOrEmpty(displayName4))
+                {
+                    parts.Add(displayName4);
+                }
+                if (!string.IsNullOrEmpty(displayName5))
+                {
+                    parts.Add(displayName5);
+                }
+
+                string displayText = string.Join(", ", parts);
+
+                if (displayText.Normalize().Trim().ToLower().Contains(searchText))
+                {
+                    AddItemToListBox(displayText);
+                }
+
+                /*if (_isUserListsMerged && CheckIfLogged().Count > 1)
                 {
                     string displayText = $"{(string.IsNullOrEmpty(samAccountName1) ? "n/a" : samAccountName1)} / {(string.IsNullOrEmpty(samAccountName2) ? "n/a" : samAccountName2)}";
                     if (displayText.Normalize().Trim().ToLower().Contains(searchText))
@@ -358,7 +417,7 @@ namespace ADsFusion
                     {
                         AddItemToListBox(displayText);
                     }
-                }
+                }*/
             }
         }
 
@@ -547,7 +606,7 @@ namespace ADsFusion
                 }
                 //MergeUserList();
             }
-            if (ints.Count == 2)
+            if (ints.Count != 0)
             {
                 progressBar1.Visible = false;
                 SetUserListFromJson(ints);
@@ -754,7 +813,6 @@ namespace ADsFusion
 
             foreach (User user in userList)
             {
-
                 if (user.UserGroups1 != null)
                 {
                     foreach (string group in user.UserGroups1)
@@ -765,6 +823,27 @@ namespace ADsFusion
                 if (user.UserGroups2 != null)
                 {
                     foreach (string group in user.UserGroups2)
+                    {
+                        _allGroupsList.Add(group);
+                    }
+                }
+                if (user.UserGroups3 != null)
+                {
+                    foreach (string group in user.UserGroups3)
+                    {
+                        _allGroupsList.Add(group);
+                    }
+                }
+                if (user.UserGroups4 != null)
+                {
+                    foreach (string group in user.UserGroups4)
+                    {
+                        _allGroupsList.Add(group);
+                    }
+                }
+                if (user.UserGroups5 != null)
+                {
+                    foreach (string group in user.UserGroups5)
                     {
                         _allGroupsList.Add(group);
                     }
@@ -1138,7 +1217,7 @@ namespace ADsFusion
         /// <summary>
         /// 
         /// </summary>
-        private void UpdateActualUserList()
+        private void UpdateActualUserList(List<int> ints)
         {
             /*if (CheckIfLogged().Count > 1)
             {
@@ -1162,7 +1241,31 @@ namespace ADsFusion
                 button10.Image = Properties.Resources.merge_20; // Set to merge image
 
             }*/
-            _actualUserList = _userList1.Concat(_userList2).Concat(_userList3).Concat(_userList4).Concat(_userList5).ToList();
+            _actualUserList.Clear();
+            foreach (int i in ints)
+            {
+                switch (i)
+                {
+                    case 1:
+                        _actualUserList.AddRange(_userList1);
+                        break;
+                    case 2:
+                        _actualUserList.AddRange(_userList2);
+                        break;
+                    case 3:
+                        _actualUserList.AddRange(_userList3);
+                        break;
+                    case 4:
+                        _actualUserList.AddRange(_userList4);
+                        break;
+                    case 5:
+                        _actualUserList.AddRange(_userList5);
+                        break;
+                    default:
+                        // Handle the case where 'i' is out of range.
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -1175,7 +1278,7 @@ namespace ADsFusion
             // Change the state
             _isUserListsMerged = !_isUserListsMerged;
 
-            UpdateActualUserList();
+            //UpdateActualUserList();
 
             // Update your user interface or perform any other necessary actions
             UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
@@ -1395,7 +1498,7 @@ namespace ADsFusion
                         // Change the state
                         _isUserListsMerged = true;
 
-                        UpdateActualUserList();
+                        //UpdateActualUserList();
 
                         // Update your user interface or perform any other necessary actions
                         UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
@@ -1414,7 +1517,7 @@ namespace ADsFusion
                     {
                         // Change the state
                         _isUserListsMerged = false;
-                        UpdateActualUserList();
+                        //UpdateActualUserList();
 
                         // Update your user interface or perform any other necessary actions
                         UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
