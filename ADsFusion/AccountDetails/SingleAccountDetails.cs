@@ -15,6 +15,9 @@ namespace ADsFusion
     {
         private User _user; // Declare a class-level variable to store the User object
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SingleAccountDetails()
         {
             InitializeComponent();

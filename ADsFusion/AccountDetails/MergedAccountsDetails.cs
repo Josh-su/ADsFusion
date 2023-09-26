@@ -11,6 +11,9 @@ using System.Xml;
 
 namespace ADsFusion
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class MergedAccountDetails : Form
     {
         public MergedAccountDetails()

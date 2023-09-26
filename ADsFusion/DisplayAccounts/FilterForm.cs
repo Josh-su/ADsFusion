@@ -94,7 +94,7 @@ namespace ADsFusion
             }
         }
 
-        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void CheckedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             string itemName = checkedListBox1.Items[e.Index].ToString();
 
@@ -122,7 +122,7 @@ namespace ADsFusion
             if (radioButton1.Checked) SelectAllMatchingGroups = true;
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton2.Checked) SelectAllMatchingGroups = false;
         }

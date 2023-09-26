@@ -15,9 +15,6 @@ namespace ADsFusion
     /// </summary>
     public partial class ServersList : Form
     {
-        /// <summary>
-        /// 
-        /// </summary>
         private ServerCredentials _serverCredentials;
 
         /// <summary>
@@ -31,6 +28,11 @@ namespace ADsFusion
         }
 
         private void ServersList_Load(object sender, EventArgs e)
+        {
+            LoadList();
+        }
+
+        private void LoadList()
         {
             listBox1.Items.Clear();
             // Assuming you have a maximum number of credentials, e.g., 5
@@ -51,20 +53,7 @@ namespace ADsFusion
         private void Button1_Click(object sender, EventArgs e)
         {
             _serverCredentials.ShowDialog();
-            listBox1.Items.Clear();
-            // Assuming you have a maximum number of credentials, e.g., 5
-            int maxCredentials = 5;
-
-            for (int i = 1; i <= maxCredentials; i++)
-            {
-                string domain = Properties.Credentials.Default[$"Domain{i}"].ToString();
-                string username = Properties.Credentials.Default[$"Username{i}"].ToString();
-
-                if (!string.IsNullOrEmpty(domain) && !string.IsNullOrEmpty(username))
-                {
-                    listBox1.Items.Add($"{domain}, {username}");
-                }
-            }
+            LoadList();
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -106,8 +95,10 @@ namespace ADsFusion
         {
             if(listBox1.SelectedItems.Count > 0)
             {
+                _serverCredentials.Modifying = true;
                 _serverCredentials.InitializeCredential(listBox1.SelectedItem.ToString());
                 _serverCredentials.ShowDialog();
+                LoadList();
             }
         }
     }

@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace ADsFusion
 {
@@ -32,13 +33,22 @@ namespace ADsFusion
 
         private string _domain1;
         private string _domain2;
+        private string _domain3;
+        private string _domain4;
+        private string _domain5;
 
         private List<string> _groupList1;
         private List<string> _groupList2;
+        private List<string> _groupList3;
+        private List<string> _groupList4;
+        private List<string> _groupList5;
         private List<string> _allGroupsList;
 
         private List<User> _userList1;
         private List<User> _userList2;
+        private List<User> _userList3;
+        private List<User> _userList4;
+        private List<User> _userList5;
         private List<User> _mergedUserList;
         private List<User> _actualUserList;
         private List<User> _filteredUserList;
@@ -46,6 +56,9 @@ namespace ADsFusion
 
         private readonly string _userList1Path;
         private readonly string _userList2Path;
+        private readonly string _userList3Path;
+        private readonly string _userList4Path;
+        private readonly string _userList5Path;
         private readonly string _mergedUserListPath;
         private readonly string _groupListPath;
 
@@ -72,12 +85,18 @@ namespace ADsFusion
 
             _userList1 = new List<User>();
             _userList2 = new List<User>();
+            _userList3 = new List<User>();
+            _userList4 = new List<User>();
+            _userList5 = new List<User>();
             _mergedUserList = new List<User>();
             _actualUserList = new List<User>();
             _filteredUserList = new List<User>();
 
             _groupList1 = new List<string>();
             _groupList2 = new List<string>();
+            _groupList3 = new List<string>();
+            _groupList4 = new List<string>();
+            _groupList5 = new List<string>();
             _allGroupsList = new List<string>();
 
             _settings = new Settings();
@@ -101,6 +120,9 @@ namespace ADsFusion
             // Save the path of the files
             _userList1Path = Path.Combine(_repositoryUserListsFilesPath, "UserList1.json");
             _userList2Path = Path.Combine(_repositoryUserListsFilesPath, "UserList2.json");
+            _userList3Path = Path.Combine(_repositoryUserListsFilesPath, "UserList3.json");
+            _userList4Path = Path.Combine(_repositoryUserListsFilesPath, "UserList4.json");
+            _userList5Path = Path.Combine(_repositoryUserListsFilesPath, "UserList5.json");
             _mergedUserListPath = Path.Combine(_repositoryUserListsFilesPath, "MergedUserList.json");
             _groupListPath = Path.Combine(_repositoryGroupsListsListsPath, "GroupList.json");
 
@@ -109,6 +131,9 @@ namespace ADsFusion
             {
                 (_userList1Path, ""),
                 (_userList2Path, ""),
+                (_userList3Path, ""),
+                (_userList4Path, ""),
+                (_userList5Path, ""),
                 (_mergedUserListPath, ""),
                 (_groupListPath, ""),
                 // Add more files here if needed
@@ -177,109 +202,99 @@ namespace ADsFusion
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="x"></param>
-        private void SetUserListFromJson(int x)
+        /// <param name="ints"></param>
+        private void SetUserListFromJson(List<int> ints)
         {
-            switch (x)
+            if (ints.Count > 0)
             {
-                case 1:
-                    if (File.Exists(_userList1Path))
-                    {
-                        _userList1 = ReadUsersFromJson(_userList1Path);
-                        _userList1 = _userList1.Distinct().ToList();
-                        _userList2 = new List<User>();
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _userList1 = new List<User>();
-                    }
-                    break;
-                case 2:
-                    if (File.Exists(_userList2Path))
-                    {
-                        _userList2 = ReadUsersFromJson(_userList2Path);
-                        _userList2 = _userList2.Distinct().ToList();
-                        _userList1 = new List<User>();
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _userList2 = new List<User>();
-                    }
-                    break;
-                case 3:
-                    if (File.Exists(_userList1Path))
-                    {
-                        _userList1 = ReadUsersFromJson(_userList1Path);
-                        _userList1 = _userList1.Distinct().ToList();
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _userList1 = new List<User>();
-                    }
-                    if (File.Exists(_userList2Path))
-                    {
-                        _userList2 = ReadUsersFromJson(_userList2Path);
-                        _userList2 = _userList2.Distinct().ToList();
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _userList2 = new List<User>();
-                    }
-                    if (File.Exists(_mergedUserListPath))
-                    {
-                        _mergedUserList = ReadUsersFromJson(_mergedUserListPath);
-                        _mergedUserList = _mergedUserList.Distinct().ToList();
-                    }
-                    else
-                    {
-                        // The file doesn't exist or is empty, create an empty list
-                        _mergedUserList = new List<User>();
-                    }
-                    break;
+                if (File.Exists(_userList1Path))
+                {
+                    _userList1 = ReadUsersFromJson(_userList1Path);
+                    _userList1 = _userList1.Distinct().ToList();
+                }
+                else
+                {
+                    // The file doesn't exist or is empty, create an empty list
+                    _userList1 = new List<User>();
+                }
+                if (File.Exists(_userList2Path))
+                {
+                    _userList2 = ReadUsersFromJson(_userList2Path);
+                    _userList2 = _userList2.Distinct().ToList();
+                }
+                else
+                {
+                    // The file doesn't exist or is empty, create an empty list
+                    _userList2 = new List<User>();
+                }
+                if (File.Exists(_userList3Path))
+                {
+                    _userList3 = ReadUsersFromJson(_userList3Path);
+                    _userList3 = _userList3.Distinct().ToList();
+                }
+                else
+                {
+                    // The file doesn't exist or is empty, create an empty list
+                    _userList3 = new List<User>();
+                }
+                if (File.Exists(_userList4Path))
+                {
+                    _userList4 = ReadUsersFromJson(_userList3Path);
+                    _userList4 = _userList4.Distinct().ToList();
+                }
+                else
+                {
+                    // The file doesn't exist or is empty, create an empty list
+                    _userList4 = new List<User>();
+                }
+                if (File.Exists(_userList5Path))
+                {
+                    _userList5 = ReadUsersFromJson(_userList3Path);
+                    _userList5 = _userList5.Distinct().ToList();
+                }
+                else
+                {
+                    // The file doesn't exist or is empty, create an empty list
+                    _userList5 = new List<User>();
+                }
+                if (File.Exists(_mergedUserListPath))
+                {
+                    _mergedUserList = ReadUsersFromJson(_mergedUserListPath);
+                    _mergedUserList = _mergedUserList.Distinct().ToList();
+                }
+                else
+                {
+                    // The file doesn't exist or is empty, create an empty list
+                    _mergedUserList = new List<User>();
+                }
+                UpdateActualUserList();
+                UpdateGroupsListAndSaveToJson(_actualUserList, _groupListPath);
+                _allGroupsList = ReadGroupNamesFromJson(_groupListPath);
+                _filterForm.ListGroups.Clear();
+                _filterForm.ListGroups = _allGroupsList;
+                _filterForm.UpdateGroups();
             }
-
-            UpdateActualUserList();
-            UpdateGroupsListAndSaveToJson(_actualUserList, _groupListPath);
-            _allGroupsList = ReadGroupNamesFromJson(_groupListPath);
-            _filterForm.ListGroups.Clear();
-            _filterForm.ListGroups = _allGroupsList;
-            _filterForm.UpdateGroups();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        private int CheckIfLogged()
+        private List<int> CheckIfLogged()
         {
-            if (string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
+            List<int> ints = new List<int>();
+
+            for (int i = 1; i <= 5; i++) // Assuming you have 5 settings
             {
-                label2.Visible = true;
-                return 0;
+                string domain = Properties.Credentials.Default[$"Domain{i}"].ToString();
+
+                if (!string.IsNullOrEmpty(domain))
+                {
+                    ints.Add(i);
+                }
             }
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
-            {
-                label2.Visible = false;
-                UpdateLastUpdateTime(_userList1Path);
-                return 1;
-            }
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain2) && string.IsNullOrEmpty(Properties.Settings.Default.Domain1))
-            {
-                label2.Visible = false;
-                UpdateLastUpdateTime(_userList2Path);
-                return 2;
-            }
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.Domain1) && !string.IsNullOrEmpty(Properties.Settings.Default.Domain2))
-            {
-                label2.Visible = false;
-                UpdateLastUpdateTime(_mergedUserListPath);
-                return 3;
-            }
-            return 0;
+            UpdateLastUpdateTime(_mergedUserListPath);
+            return ints;
         }
 
         /// <summary>
@@ -308,7 +323,7 @@ namespace ADsFusion
                 string displayName1 = user.DisplayName1;
                 string displayName2 = user.DisplayName2;
 
-                if (_isUserListsMerged && CheckIfLogged() == 3)
+                if (_isUserListsMerged && CheckIfLogged().Count > 1)
                 {
                     string displayText = $"{(string.IsNullOrEmpty(samAccountName1) ? "n/a" : samAccountName1)} / {(string.IsNullOrEmpty(samAccountName2) ? "n/a" : samAccountName2)}";
                     if (displayText.Normalize().Trim().ToLower().Contains(searchText))
@@ -480,54 +495,62 @@ namespace ADsFusion
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="x"></param>
+        /// <param name="ints"></param>
         /// <returns></returns>
-        private async Task UpdateAllAsync(int x)
+        private async Task UpdateAllAsync(List<int> ints)
         {
-            _domain1 = Properties.Settings.Default.Domain1;
-            _domain2 = Properties.Settings.Default.Domain2;
-            /*
-            _serverLogin1 = Properties.Settings.Default.Username1;
-            _serverLogin2 = Properties.Settings.Default.Username2;
-            _serverPassword1 = Properties.Settings.Default.Password1;
-            _serverPassword2 = Properties.Settings.Default.Password2;
-            _adminGroup1 = Properties.Settings.Default.GroupAdmin1;
-            _adminGroup2 = Properties.Settings.Default.GroupAdmin2;
-            */
-            _groupList1 = Properties.Settings.Default.Groups1.Split('|').ToList();
-            _groupList1.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
-            _groupList2 = Properties.Settings.Default.Groups2.Split('|').ToList();
-            _groupList2.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
+            _domain1 = Properties.Credentials.Default.Domain1;
+            _domain2 = Properties.Credentials.Default.Domain2;
+            _domain3 = Properties.Credentials.Default.Domain3;
+            _domain4 = Properties.Credentials.Default.Domain4;
+            _domain5 = Properties.Credentials.Default.Domain5;
 
-            switch (x)
+            _groupList1 = Properties.Credentials.Default.Groups1.Split('|').ToList();
+            _groupList1.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
+            _groupList2 = Properties.Credentials.Default.Groups2.Split('|').ToList();
+            _groupList2.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
+            _groupList3 = Properties.Credentials.Default.Groups3.Split('|').ToList();
+            _groupList3.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
+            _groupList4 = Properties.Credentials.Default.Groups4.Split('|').ToList();
+            _groupList4.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
+            _groupList5 = Properties.Credentials.Default.Groups5.Split('|').ToList();
+            _groupList5.RemoveAll(group => string.IsNullOrWhiteSpace(group)); // remove all the empty entry
+
+            if (ints.Count == 0)
             {
-                case 0:
-                    _servers.ShowDialog();
-                    _settings.ShowDialog();
-                    await UpdateAllAsync(CheckIfLogged());
-                    break;
-                case 1:
-                    progressBar1.Visible = true;
-                    _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, 1));
-                    //UpdateGroupsListAndSaveToJson(_userList1, _groupListPath);
-                    break;
-                case 2:
-                    progressBar1.Visible = true;
-                    _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, 2));
-                    //UpdateGroupsListAndSaveToJson(_userList2, _groupListPath);
-                    break;
-                case 3:
-                    progressBar1.Visible = true;
-                    _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, 1));
-                    _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, 2));
-                    MergeUserList();
-                    //UpdateGroupsListAndSaveToJson(_mergedUserList, _groupListPath);
-                    break;
+                _servers.ShowDialog();
+                _settings.ShowDialog();
+                await UpdateAllAsync(CheckIfLogged());
             }
-            if (x != 0)
+            else if (ints.Count == 1)
+            {
+                progressBar1.Visible = true;
+                foreach (int i in ints)
+                {
+                    if (i == 1) _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, 1));
+                    if (i == 2) _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, 2));
+                    if (i == 3) _userList3 = await Task.Run(() => UpdateUserListAsync(_userList3Path, _domain3, _groupList3, 3));
+                    if (i == 4) _userList4 = await Task.Run(() => UpdateUserListAsync(_userList4Path, _domain4, _groupList4, 4));
+                    if (i == 5) _userList5 = await Task.Run(() => UpdateUserListAsync(_userList5Path, _domain5, _groupList5, 5));
+                }
+            }
+            else
+            {
+                progressBar1.Visible = true;
+                foreach (int i in ints)
+                {
+                    if (i == 1) _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, 1));
+                    if (i == 2) _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, 2));
+                    if (i == 3) _userList3 = await Task.Run(() => UpdateUserListAsync(_userList3Path, _domain3, _groupList3, 3));
+                    if (i == 4) _userList4 = await Task.Run(() => UpdateUserListAsync(_userList4Path, _domain4, _groupList4, 4));
+                    if (i == 5) _userList5 = await Task.Run(() => UpdateUserListAsync(_userList5Path, _domain5, _groupList5, 5));
+                }
+                //MergeUserList();
+            }
+            if (ints.Count == 2)
             {
                 progressBar1.Visible = false;
-                SetUserListFromJson(x);
+                SetUserListFromJson(ints);
                 UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
                 DisplayUserList();
             }
@@ -628,34 +651,65 @@ namespace ADsFusion
                                     // Get the underlying DirectoryEntry object.
                                     var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
 
-                                    User userToAdd = new User(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                                    User userToAdd = new User();
 
-                                    if (selectedList == 1)
+                                    switch (selectedList)
                                     {
-                                        userToAdd = new User(
-                                            Convert.ToString(userPrincipal.SamAccountName),
-                                            Convert.ToString(userPrincipal.DisplayName),
-                                            Convert.ToString(userPrincipal.GivenName),
-                                            Convert.ToString(userPrincipal.Surname),
-                                            Convert.ToString(userPrincipal.EmailAddress),
-                                            Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
-                                            Convert.ToString(userPrincipal.Description),
-                                            groups,
-                                            null, null, null, null, null, null, null, null);
-
-                                    }
-                                    if (selectedList == 2)
-                                    {
-                                        userToAdd = new User(
-                                        null, null, null, null, null, null, null, null,
-                                        Convert.ToString(userPrincipal.SamAccountName),
-                                        Convert.ToString(userPrincipal.DisplayName),
-                                        Convert.ToString(userPrincipal.GivenName),
-                                        Convert.ToString(userPrincipal.Surname),
-                                        Convert.ToString(userPrincipal.EmailAddress),
-                                        Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
-                                        Convert.ToString(userPrincipal.Description),
-                                        groups);
+                                        case 1:
+                                            userToAdd = new User(
+                                                sAMAccountName1: Convert.ToString(userPrincipal.SamAccountName),
+                                                displayName1: Convert.ToString(userPrincipal.DisplayName),
+                                                givenName1: Convert.ToString(userPrincipal.GivenName),
+                                                sn1: Convert.ToString(userPrincipal.Surname),
+                                                mail1: Convert.ToString(userPrincipal.EmailAddress),
+                                                title1: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                                description1: Convert.ToString(userPrincipal.Description),
+                                                userGroups1: groups);
+                                            break;
+                                        case 2:
+                                            userToAdd = new User(
+                                                sAMAccountName2: Convert.ToString(userPrincipal.SamAccountName),
+                                                displayName2: Convert.ToString(userPrincipal.DisplayName),
+                                                givenName2: Convert.ToString(userPrincipal.GivenName),
+                                                sn2: Convert.ToString(userPrincipal.Surname),
+                                                mail2: Convert.ToString(userPrincipal.EmailAddress),
+                                                title2: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                                description2: Convert.ToString(userPrincipal.Description),
+                                                userGroups2: groups);
+                                            break;
+                                        case 3:
+                                            userToAdd = new User(
+                                                sAMAccountName3: Convert.ToString(userPrincipal.SamAccountName),
+                                                displayName3: Convert.ToString(userPrincipal.DisplayName),
+                                                givenName3: Convert.ToString(userPrincipal.GivenName),
+                                                sn3: Convert.ToString(userPrincipal.Surname),
+                                                mail3: Convert.ToString(userPrincipal.EmailAddress),
+                                                title3: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                                description3: Convert.ToString(userPrincipal.Description),
+                                                userGroups3: groups);
+                                            break;
+                                        case 4:
+                                            userToAdd = new User(
+                                                sAMAccountName4: Convert.ToString(userPrincipal.SamAccountName),
+                                                displayName4: Convert.ToString(userPrincipal.DisplayName),
+                                                givenName4: Convert.ToString(userPrincipal.GivenName),
+                                                sn4: Convert.ToString(userPrincipal.Surname),
+                                                mail4: Convert.ToString(userPrincipal.EmailAddress),
+                                                title4: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                                description4: Convert.ToString(userPrincipal.Description),
+                                                userGroups4: groups);
+                                            break;
+                                        case 5:
+                                            userToAdd = new User(
+                                                sAMAccountName5: Convert.ToString(userPrincipal.SamAccountName),
+                                                displayName5: Convert.ToString(userPrincipal.DisplayName),
+                                                givenName5: Convert.ToString(userPrincipal.GivenName),
+                                                sn5: Convert.ToString(userPrincipal.Surname),
+                                                mail5: Convert.ToString(userPrincipal.EmailAddress),
+                                                title5: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                                description5: Convert.ToString(userPrincipal.Description),
+                                                userGroups5: groups);
+                                            break;
                                     }
 
                                     // Add the user to the list of active users within a lock
@@ -772,7 +826,16 @@ namespace ADsFusion
                     if (!isMerged)
                     {
                         // Create a new User instance with properties from list2
-                        User newUser = new User(null, null, null, null, null, null, null, null, user2.SAMAccountName2, user2.DisplayName2, user2.GivenName2, user2.Sn2, user2.Mail2, user2.Title2, user2.Description2, user2.UserGroups2);
+                        User newUser = new User(
+                            sAMAccountName2: user2.SAMAccountName2,
+                            displayName2: user2.DisplayName2,
+                            givenName2: user2.GivenName2,
+                            sn2: user2.Sn2,
+                            mail2: user2.Mail2,
+                            title2: user2.Title2,
+                            description2: user2.Description2,
+                            userGroups2: user2.UserGroups2
+                        );
 
                         _mergedUserList.Add(newUser);
                     }
@@ -1077,7 +1140,7 @@ namespace ADsFusion
         /// </summary>
         private void UpdateActualUserList()
         {
-            if (CheckIfLogged() == 3)
+            /*if (CheckIfLogged().Count > 1)
             {
                 button10.Enabled = true;
                 // Update the button image based on the state
@@ -1097,8 +1160,9 @@ namespace ADsFusion
             {
                 button10.Enabled = false;
                 button10.Image = Properties.Resources.merge_20; // Set to merge image
-                _actualUserList = _userList1.Concat(_userList2).ToList();
-            }
+
+            }*/
+            _actualUserList = _userList1.Concat(_userList2).Concat(_userList3).Concat(_userList4).Concat(_userList5).ToList();
         }
 
         /// <summary>

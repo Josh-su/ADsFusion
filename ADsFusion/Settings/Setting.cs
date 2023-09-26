@@ -12,8 +12,14 @@ using System.Windows.Forms;
 
 namespace ADsFusion
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class Settings : Form
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Settings()
         {
             InitializeComponent();
@@ -92,19 +98,6 @@ namespace ADsFusion
             if (string.IsNullOrEmpty(textBox10.Text)) textBox10.Text = "mail";
             if (string.IsNullOrEmpty(textBox9.Text)) textBox9.Text = "title";
             if (string.IsNullOrEmpty(textBox8.Text)) textBox8.Text = "description";
-
-            foreach (RadioButton radioButton in this.Controls.OfType<RadioButton>())
-            {
-                // The Tag property of each radio button should be set to the corresponding parameter value
-                if (radioButton.Tag != null && radioButton.Tag.ToString() == Properties.CustomNames.Default.MergeParameter)
-                {
-                    radioButton.Checked = true;
-                }
-                else
-                {
-                    radioButton.Checked = false;
-                }
-            }
         }
 
         private void SetDefaultIfEmpty()

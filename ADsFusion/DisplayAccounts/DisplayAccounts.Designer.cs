@@ -184,6 +184,7 @@ namespace ADsFusion
             // 
             // button10
             // 
+            this.button10.Enabled = false;
             this.button10.Image = global::ADsFusion.Properties.Resources.split_20;
             this.button10.Location = new System.Drawing.Point(120, 6);
             this.button10.Name = "button10";

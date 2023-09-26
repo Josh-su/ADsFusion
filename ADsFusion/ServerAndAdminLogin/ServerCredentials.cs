@@ -5,6 +5,7 @@ using System.Data;
 using System.DirectoryServices.AccountManagement;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -21,7 +22,11 @@ namespace ADsFusion
 
         private List<string> _groups1TextboxValues;
 
-        readonly StringBuilder dynamicTextboxesData = new StringBuilder();
+        private readonly StringBuilder dynamicTextboxesData = new StringBuilder();
+
+        private int _index;
+
+        public bool Modifying;
 
         /// <summary>
         /// 
@@ -35,6 +40,8 @@ namespace ADsFusion
             _groups1TextboxValues = new List<string>();
 
             _allTextBoxesGroup1.Add(txtbGroups);
+
+            Modifying = false;
         }
 
         /// <summary>
@@ -56,11 +63,11 @@ namespace ADsFusion
             {
                 LoadCredentials(3);
             }
-            else if (itemText == Properties.Credentials.Default.Domain4 + ", " + Properties.Credentials.Default.Username4)
+            else if (itemText == $"{Properties.Credentials.Default.Domain4}, {Properties.Credentials.Default.Username4}")
             {
                 LoadCredentials(4);
             }
-            else if (itemText == Properties.Credentials.Default.Domain5 + ", " + Properties.Credentials.Default.Username5)
+            else if (itemText == $"{Properties.Credentials.Default.Domain5}, {Properties.Credentials.Default.Username5}")
             {
                 LoadCredentials(5);
             }
@@ -68,6 +75,8 @@ namespace ADsFusion
 
         private void LoadCredentials(int index)
         {
+            _index = index;
+
             string domain = Properties.Credentials.Default[$"Domain{index}"].ToString();
             string username = Properties.Credentials.Default[$"Username{index}"].ToString();
             string password = Properties.Credentials.Default[$"Password{index}"].ToString();
@@ -102,6 +111,28 @@ namespace ADsFusion
                     txtbGroups.Text = value;
                 }
             }
+        }
+
+        private void SaveModifiedCredentials(string domain, string username, string password, string adminGroup)
+        {
+            Properties.Credentials.Default[$"Domain{_index}"] = domain;
+            Properties.Credentials.Default[$"Username{_index}"] = username;
+            Properties.Credentials.Default[$"Password{_index}"] = password;
+            Properties.Credentials.Default[$"GroupAdmin{_index}"] = adminGroup;
+
+            // Save dynamic textbox data
+            StringBuilder dynamicTextboxesData = new StringBuilder();
+            foreach (TextBox textBox in _allTextBoxesGroup1)
+            {
+                if (!string.IsNullOrEmpty(textBox.Text))
+                {
+                    dynamicTextboxesData.Append(textBox.Text);
+                    dynamicTextboxesData.Append("|"); // Use a separator between values
+                }
+            }
+            Properties.Credentials.Default[$"Groups{_index}"] = dynamicTextboxesData.ToString();
+
+            Properties.Credentials.Default.Save(); // Save changes to settings
         }
 
         /// <summary>
@@ -376,8 +407,9 @@ namespace ADsFusion
             // Check if at least one domain's login is successful before saving credentials
             if (LoginSuccess)
             {
-                SaveCredentials(txtbDomain.Text, txtbUsername.Text, txtbPassword.Text, txtbGroup.Text);
-                ClearAllTextBoxes();
+                if (Modifying) SaveModifiedCredentials(txtbDomain.Text, txtbUsername.Text, txtbPassword.Text, txtbGroup.Text);
+                else SaveCredentials(txtbDomain.Text, txtbUsername.Text, txtbPassword.Text, txtbGroup.Text);
+
                 this.Close();
             }
         }
@@ -401,6 +433,7 @@ namespace ADsFusion
 
         private void ServerCredentials_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Modifying = false;
             ClearAllTextBoxes();
         }
     }
