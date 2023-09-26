@@ -81,6 +81,12 @@
     <Compile Include="AccountDetails\MergedAccountsDetails.Designer.cs">
       <DependentUpon>MergedAccountsDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="ServerAndAdminLogin\CustomNames.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServerAndAdminLogin\CustomNames.Designer.cs">
+      <DependentUpon>CustomNames.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisplayAccounts\Utilities\User.cs" />
     <Compile Include="DisplayAccounts\Utilities\JsonManager.cs" />
     <Compile Include="DisplayAccounts\FilterForm.cs">

@@ -862,7 +862,7 @@ namespace ADsFusion
         /// </summary>
         private void MergeUserList()
         {
-            _mergedUserList.Clear();
+            /*_mergedUserList.Clear();
 
             if (!string.IsNullOrEmpty(Properties.CustomNames.Default.MergeParameter))
             {
@@ -928,7 +928,7 @@ namespace ADsFusion
                 MessageBox.Show("Veuillez sélectionner quel sera l'attribut commun afin de poursuivre la fusion des deux listes d'utilisateurs");
                 _settings.ShowDialog();
                 MergeUserList();
-            }
+            }*/
         }
 
         /// <summary>

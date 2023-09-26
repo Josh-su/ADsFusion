@@ -12,7 +12,7 @@ namespace ADsFusion.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
     internal sealed partial class CustomNames : global::System.Configuration.ApplicationSettingsBase {
         
         private static CustomNames defaultInstance = ((CustomNames)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new CustomNames())));
@@ -38,36 +38,12 @@ namespace ADsFusion.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string sAMAccountName2 {
-            get {
-                return ((string)(this["sAMAccountName2"]));
-            }
-            set {
-                this["sAMAccountName2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string displayName1 {
             get {
                 return ((string)(this["displayName1"]));
             }
             set {
                 this["displayName1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string displayName2 {
-            get {
-                return ((string)(this["displayName2"]));
-            }
-            set {
-                this["displayName2"] = value;
             }
         }
         
@@ -86,36 +62,12 @@ namespace ADsFusion.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string givenName2 {
-            get {
-                return ((string)(this["givenName2"]));
-            }
-            set {
-                this["givenName2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string sn1 {
             get {
                 return ((string)(this["sn1"]));
             }
             set {
                 this["sn1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string sn2 {
-            get {
-                return ((string)(this["sn2"]));
-            }
-            set {
-                this["sn2"] = value;
             }
         }
         
@@ -134,36 +86,12 @@ namespace ADsFusion.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string mail2 {
-            get {
-                return ((string)(this["mail2"]));
-            }
-            set {
-                this["mail2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string title1 {
             get {
                 return ((string)(this["title1"]));
             }
             set {
                 this["title1"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string title2 {
-            get {
-                return ((string)(this["title2"]));
-            }
-            set {
-                this["title2"] = value;
             }
         }
         
@@ -182,6 +110,78 @@ namespace ADsFusion.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sAMAccountName2 {
+            get {
+                return ((string)(this["sAMAccountName2"]));
+            }
+            set {
+                this["sAMAccountName2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string displayName2 {
+            get {
+                return ((string)(this["displayName2"]));
+            }
+            set {
+                this["displayName2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string givenName2 {
+            get {
+                return ((string)(this["givenName2"]));
+            }
+            set {
+                this["givenName2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sn2 {
+            get {
+                return ((string)(this["sn2"]));
+            }
+            set {
+                this["sn2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string mail2 {
+            get {
+                return ((string)(this["mail2"]));
+            }
+            set {
+                this["mail2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string title2 {
+            get {
+                return ((string)(this["title2"]));
+            }
+            set {
+                this["title2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string description2 {
             get {
                 return ((string)(this["description2"]));
@@ -194,12 +194,252 @@ namespace ADsFusion.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MergeParameter {
+        public string sAMAccountName3 {
             get {
-                return ((string)(this["MergeParameter"]));
+                return ((string)(this["sAMAccountName3"]));
             }
             set {
-                this["MergeParameter"] = value;
+                this["sAMAccountName3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string displayName3 {
+            get {
+                return ((string)(this["displayName3"]));
+            }
+            set {
+                this["displayName3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string givenName3 {
+            get {
+                return ((string)(this["givenName3"]));
+            }
+            set {
+                this["givenName3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sn3 {
+            get {
+                return ((string)(this["sn3"]));
+            }
+            set {
+                this["sn3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string mail3 {
+            get {
+                return ((string)(this["mail3"]));
+            }
+            set {
+                this["mail3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string title3 {
+            get {
+                return ((string)(this["title3"]));
+            }
+            set {
+                this["title3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string description3 {
+            get {
+                return ((string)(this["description3"]));
+            }
+            set {
+                this["description3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sAMAccountName4 {
+            get {
+                return ((string)(this["sAMAccountName4"]));
+            }
+            set {
+                this["sAMAccountName4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string displayName4 {
+            get {
+                return ((string)(this["displayName4"]));
+            }
+            set {
+                this["displayName4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string givenName4 {
+            get {
+                return ((string)(this["givenName4"]));
+            }
+            set {
+                this["givenName4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sn4 {
+            get {
+                return ((string)(this["sn4"]));
+            }
+            set {
+                this["sn4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string mail4 {
+            get {
+                return ((string)(this["mail4"]));
+            }
+            set {
+                this["mail4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string title4 {
+            get {
+                return ((string)(this["title4"]));
+            }
+            set {
+                this["title4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string description4 {
+            get {
+                return ((string)(this["description4"]));
+            }
+            set {
+                this["description4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sAMAccountName5 {
+            get {
+                return ((string)(this["sAMAccountName5"]));
+            }
+            set {
+                this["sAMAccountName5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string displayName5 {
+            get {
+                return ((string)(this["displayName5"]));
+            }
+            set {
+                this["displayName5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string givenName5 {
+            get {
+                return ((string)(this["givenName5"]));
+            }
+            set {
+                this["givenName5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sn5 {
+            get {
+                return ((string)(this["sn5"]));
+            }
+            set {
+                this["sn5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string mail5 {
+            get {
+                return ((string)(this["mail5"]));
+            }
+            set {
+                this["mail5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string title5 {
+            get {
+                return ((string)(this["title5"]));
+            }
+            set {
+                this["title5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string description5 {
+            get {
+                return ((string)(this["description5"]));
+            }
+            set {
+                this["description5"] = value;
             }
         }
     }

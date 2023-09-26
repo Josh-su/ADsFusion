@@ -38,7 +38,7 @@ namespace ADsFusion
             {
                 label1.Text = _user.SAMAccountName1 != null
                     ? Properties.CustomNames.Default.sAMAccountName1
-                    : Properties.CustomNames.Default.sAMAccountName2;
+                    : Properties.CustomNames.Default.displayName12;
 
                 label2.Text = _user.SAMAccountName1 != null
                     ? Properties.CustomNames.Default.displayName1
