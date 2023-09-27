@@ -42,7 +42,7 @@ namespace ADsFusion
                     ints.Add(i);
                 }
             }
-            SetParameters(ints);
+            //SetParameters(ints);
         }
 
         private void Button1_Click(object sender, EventArgs e)

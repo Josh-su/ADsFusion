@@ -32,7 +32,7 @@ namespace ADsFusion
         private void AccountDetails_Load(object sender, EventArgs e)
         {
             if (Properties.CustomNames.Default.sAMAccountName1.ToString() != null) label1.Text = Properties.CustomNames.Default.sAMAccountName1;
-            if (Properties.CustomNames.Default.displayName12.ToString() != null) label18.Text = Properties.CustomNames.Default.displayName12;
+            if (Properties.CustomNames.Default.sAMAccountName2.ToString() != null) label1.Text = Properties.CustomNames.Default.sAMAccountName2;
             if (Properties.CustomNames.Default.displayName1.ToString() != null) label2.Text = Properties.CustomNames.Default.displayName1;
             if (Properties.CustomNames.Default.displayName2.ToString() != null) label17.Text = Properties.CustomNames.Default.displayName2;
             if (Properties.CustomNames.Default.givenName1.ToString() != null) label3.Text = Properties.CustomNames.Default.givenName1;

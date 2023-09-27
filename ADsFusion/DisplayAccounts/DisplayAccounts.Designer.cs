@@ -36,10 +36,6 @@ namespace ADsFusion
             this.components = new System.ComponentModel.Container();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.impressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.motDePasseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.supprimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label1 = new System.Windows.Forms.Label();
@@ -55,6 +51,10 @@ namespace ADsFusion
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.impressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.motDePasseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.supprimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,41 +77,6 @@ namespace ADsFusion
             this.supprimerToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(224, 108);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Image = global::ADsFusion.Properties.Resources.search_file_20;
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(223, 26);
-            this.toolStripMenuItem1.Text = "Détails";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.ToolStripMenuItem1_Click);
-            // 
-            // impressionToolStripMenuItem
-            // 
-            this.impressionToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.printer_20;
-            this.impressionToolStripMenuItem.Name = "impressionToolStripMenuItem";
-            this.impressionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
-            this.impressionToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
-            this.impressionToolStripMenuItem.Text = "Impression";
-            this.impressionToolStripMenuItem.Click += new System.EventHandler(this.ImpressionToolStripMenuItem_Click);
-            // 
-            // motDePasseToolStripMenuItem
-            // 
-            this.motDePasseToolStripMenuItem.Enabled = false;
-            this.motDePasseToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.reset_password_20;
-            this.motDePasseToolStripMenuItem.Name = "motDePasseToolStripMenuItem";
-            this.motDePasseToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
-            this.motDePasseToolStripMenuItem.Text = "Réinitialiser le mot de passe";
-            // 
-            // supprimerToolStripMenuItem
-            // 
-            this.supprimerToolStripMenuItem.Enabled = false;
-            this.supprimerToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.poubelle_de_recyclage_20;
-            this.supprimerToolStripMenuItem.Name = "supprimerToolStripMenuItem";
-            this.supprimerToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
-            this.supprimerToolStripMenuItem.Text = "Supprimer";
-            this.supprimerToolStripMenuItem.Click += new System.EventHandler(this.SupprimerToolStripMenuItem_Click);
             // 
             // listBox1
             // 
@@ -226,7 +191,7 @@ namespace ADsFusion
             // 
             // button4
             // 
-            this.button4.Image = global::ADsFusion.Properties.Resources.profil_20;
+            this.button4.Image = global::ADsFusion.Properties.Resources.data_storage_20;
             this.button4.Location = new System.Drawing.Point(12, 6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(30, 30);
@@ -256,13 +221,49 @@ namespace ADsFusion
             // 
             // button3
             // 
-            this.button3.Image = global::ADsFusion.Properties.Resources.reglages_20;
+            this.button3.Enabled = false;
+            this.button3.Image = global::ADsFusion.Properties.Resources.printer_20;
             this.button3.Location = new System.Drawing.Point(48, 6);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(30, 30);
             this.button3.TabIndex = 4;
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Image = global::ADsFusion.Properties.Resources.search_file_20;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(223, 26);
+            this.toolStripMenuItem1.Text = "Détails";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.ToolStripMenuItem1_Click);
+            // 
+            // impressionToolStripMenuItem
+            // 
+            this.impressionToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.printer_20;
+            this.impressionToolStripMenuItem.Name = "impressionToolStripMenuItem";
+            this.impressionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
+            this.impressionToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.impressionToolStripMenuItem.Text = "Impression";
+            this.impressionToolStripMenuItem.Click += new System.EventHandler(this.ImpressionToolStripMenuItem_Click);
+            // 
+            // motDePasseToolStripMenuItem
+            // 
+            this.motDePasseToolStripMenuItem.Enabled = false;
+            this.motDePasseToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.reset_password_20;
+            this.motDePasseToolStripMenuItem.Name = "motDePasseToolStripMenuItem";
+            this.motDePasseToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.motDePasseToolStripMenuItem.Text = "Réinitialiser le mot de passe";
+            // 
+            // supprimerToolStripMenuItem
+            // 
+            this.supprimerToolStripMenuItem.Enabled = false;
+            this.supprimerToolStripMenuItem.Image = global::ADsFusion.Properties.Resources.poubelle_de_recyclage_20;
+            this.supprimerToolStripMenuItem.Name = "supprimerToolStripMenuItem";
+            this.supprimerToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.supprimerToolStripMenuItem.Size = new System.Drawing.Size(223, 26);
+            this.supprimerToolStripMenuItem.Text = "Supprimer";
+            this.supprimerToolStripMenuItem.Click += new System.EventHandler(this.SupprimerToolStripMenuItem_Click);
             // 
             // DisplayAccounts
             // 

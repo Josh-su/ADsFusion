@@ -43,6 +43,7 @@
             this.txtbDomain = new System.Windows.Forms.TextBox();
             this.TestConnection = new System.Windows.Forms.Button();
             this.Connection = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button2
@@ -183,11 +184,22 @@
             this.Connection.UseVisualStyleBackColor = true;
             this.Connection.Click += new System.EventHandler(this.Connection_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(189, 17);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(146, 23);
+            this.button3.TabIndex = 59;
+            this.button3.Text = "Noms d\'attributs customs...";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
+            // 
             // ServerCredentials
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(351, 237);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.Connection);
             this.Controls.Add(this.TestConnection);
             this.Controls.Add(this.button2);
@@ -228,5 +240,6 @@
         private System.Windows.Forms.TextBox txtbDomain;
         private System.Windows.Forms.Button TestConnection;
         private System.Windows.Forms.Button Connection;
+        private System.Windows.Forms.Button button3;
     }
 }

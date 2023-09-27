@@ -4,6 +4,8 @@ namespace ADsFusion
 {
     internal class User
     {
+        public string Domain { get; set; }
+
         public string SAMAccountName1 { get; set; }
         public string DisplayName1 { get; set; }
         public string GivenName1 { get; set; }
@@ -49,13 +51,16 @@ namespace ADsFusion
         public string Description5 { get; set; }
         public List<string> UserGroups5 { get; set; }
 
-        public User (
+        public User(
+            string domain = null,
             string sAMAccountName1 = null, string displayName1 = null, string givenName1 = null, string sn1 = null, string mail1 = null, string title1 = null, string description1 = null, List<string> userGroups1 = null,
             string sAMAccountName2 = null, string displayName2 = null, string givenName2 = null, string sn2 = null, string mail2 = null, string title2 = null, string description2 = null, List<string> userGroups2 = null,
             string sAMAccountName3 = null, string displayName3 = null, string givenName3 = null, string sn3 = null, string mail3 = null, string title3 = null, string description3 = null, List<string> userGroups3 = null,
             string sAMAccountName4 = null, string displayName4 = null, string givenName4 = null, string sn4 = null, string mail4 = null, string title4 = null, string description4 = null, List<string> userGroups4 = null,
             string sAMAccountName5 = null, string displayName5 = null, string givenName5 = null, string sn5 = null, string mail5 = null, string title5 = null, string description5 = null, List<string> userGroups5 = null)
         {
+            Domain = domain;
+
             SAMAccountName1 = sAMAccountName1;
             DisplayName1 = displayName1;
             GivenName1 = givenName1;

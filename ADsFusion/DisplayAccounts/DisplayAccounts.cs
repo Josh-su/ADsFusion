@@ -315,7 +315,7 @@ namespace ADsFusion
         /// </summary>
         private void DisplayUserList()
         {
-            listBox1.Items.Clear();
+            ClearItemFromListBox();
 
             string searchText = textBox1.Text.Normalize().Trim().ToLower(); // Convert to lowercase once
 
@@ -377,7 +377,7 @@ namespace ADsFusion
 
                 string displayText = string.Join(", ", parts);
 
-                if (displayText.Normalize().Trim().ToLower().Contains(searchText))
+                if ((searchText.Length >= 3 || searchText.Length == 0) && displayText.Normalize().Trim().ToLower().Contains(searchText))
                 {
                     AddItemToListBox(displayText);
                 }
@@ -480,8 +480,13 @@ namespace ADsFusion
                     bool hasMatchingGroup = false;
                     if (selectAllMatchingGroups)
                     {
-                        // Combine UserGroups1 and UserGroups2 into a single list
-                        List<string> allUserGroups = (user.UserGroups1 ?? new List<string>()).Concat(user.UserGroups2 ?? new List<string>()).ToList();
+                        // Combine UserGroups1, UserGroups2, UserGroups3, UserGroups4, and UserGroups5 into a single list
+                        List<string> allUserGroups = (user.UserGroups1 ?? new List<string>())
+                            .Concat(user.UserGroups2 ?? new List<string>())
+                            .Concat(user.UserGroups3 ?? new List<string>())
+                            .Concat(user.UserGroups4 ?? new List<string>())
+                            .Concat(user.UserGroups5 ?? new List<string>())
+                            .ToList();
 
                         // Check if all groups in 'groups' are present in allUserGroups
                         hasMatchingGroup = groups.All(group => allUserGroups.Contains(group));
@@ -499,6 +504,18 @@ namespace ADsFusion
                             hasMatchingGroup = true;
                         }
                         if (user.UserGroups2?.Intersect(groups).Any() ?? false)
+                        {
+                            hasMatchingGroup = true;
+                        }
+                        if (user.UserGroups3?.Intersect(groups).Any() ?? false)
+                        {
+                            hasMatchingGroup = true;
+                        }
+                        if (user.UserGroups4?.Intersect(groups).Any() ?? false)
+                        {
+                            hasMatchingGroup = true;
+                        }
+                        if (user.UserGroups5?.Intersect(groups).Any() ?? false)
                         {
                             hasMatchingGroup = true;
                         }
@@ -716,6 +733,7 @@ namespace ADsFusion
                                     {
                                         case 1:
                                             userToAdd = new User(
+                                                domain: domain,
                                                 sAMAccountName1: Convert.ToString(userPrincipal.SamAccountName),
                                                 displayName1: Convert.ToString(userPrincipal.DisplayName),
                                                 givenName1: Convert.ToString(userPrincipal.GivenName),
@@ -727,6 +745,7 @@ namespace ADsFusion
                                             break;
                                         case 2:
                                             userToAdd = new User(
+                                                domain: domain,
                                                 sAMAccountName2: Convert.ToString(userPrincipal.SamAccountName),
                                                 displayName2: Convert.ToString(userPrincipal.DisplayName),
                                                 givenName2: Convert.ToString(userPrincipal.GivenName),
@@ -738,6 +757,7 @@ namespace ADsFusion
                                             break;
                                         case 3:
                                             userToAdd = new User(
+                                                domain: domain,
                                                 sAMAccountName3: Convert.ToString(userPrincipal.SamAccountName),
                                                 displayName3: Convert.ToString(userPrincipal.DisplayName),
                                                 givenName3: Convert.ToString(userPrincipal.GivenName),
@@ -749,6 +769,7 @@ namespace ADsFusion
                                             break;
                                         case 4:
                                             userToAdd = new User(
+                                                domain: domain,
                                                 sAMAccountName4: Convert.ToString(userPrincipal.SamAccountName),
                                                 displayName4: Convert.ToString(userPrincipal.DisplayName),
                                                 givenName4: Convert.ToString(userPrincipal.GivenName),
@@ -760,6 +781,7 @@ namespace ADsFusion
                                             break;
                                         case 5:
                                             userToAdd = new User(
+                                                domain: domain,
                                                 sAMAccountName5: Convert.ToString(userPrincipal.SamAccountName),
                                                 displayName5: Convert.ToString(userPrincipal.DisplayName),
                                                 givenName5: Convert.ToString(userPrincipal.GivenName),
@@ -1092,7 +1114,7 @@ namespace ADsFusion
             {
                 string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
                 User selectedUser = new User();
-                if (_isUserListsMerged)
+                /*if (_isUserListsMerged)
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
@@ -1101,13 +1123,13 @@ namespace ADsFusion
                     });
                 }
                 else
-                {
+                {*/
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
+                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2 ?? user.SAMAccountName3 ?? user.SAMAccountName4 ?? user.SAMAccountName5}, {user.DisplayName1 ?? user.DisplayName2 ?? user.DisplayName3 ?? user.DisplayName4 ?? user.DisplayName5}";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
-                }
+                /*}*/
 
                 if (selectedUser != null)
                 {
@@ -1302,6 +1324,15 @@ namespace ADsFusion
         private void RemoveItemFromListBox(string item)
         {
             listBox1.Items.Remove(item); // Remove an item from the ListBox
+            UpdateCountItemLabel(); // Update the count label
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ClearItemFromListBox()
+        {
+            listBox1.Items.Clear(); // Remove an item from the ListBox
             UpdateCountItemLabel(); // Update the count label
         }
 

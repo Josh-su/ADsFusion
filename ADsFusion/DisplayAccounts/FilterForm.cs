@@ -10,14 +10,20 @@ using System.Windows.Forms;
 
 namespace ADsFusion
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class FilterForm : Form
     {
         public List<string> ListGroups;
         public List<string> SelectedGroups;
         public bool SelectAllMatchingGroups;
 
-        private List<string> _checkedItems;
+        private readonly List<string> _checkedItems;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public FilterForm()
         {
             InitializeComponent();

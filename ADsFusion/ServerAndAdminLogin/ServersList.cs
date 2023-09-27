@@ -15,7 +15,7 @@ namespace ADsFusion
     /// </summary>
     public partial class ServersList : Form
     {
-        private ServerCredentials _serverCredentials;
+        private readonly Dictionary<string, ServerCredentials> _serverCredentialsForms;
 
         /// <summary>
         /// 
@@ -24,7 +24,7 @@ namespace ADsFusion
         {
             InitializeComponent();
 
-            _serverCredentials = new ServerCredentials();
+            _serverCredentialsForms = new Dictionary<string, ServerCredentials>();
         }
 
         private void ServersList_Load(object sender, EventArgs e)
@@ -52,8 +52,7 @@ namespace ADsFusion
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            _serverCredentials.ShowDialog();
-            LoadList();
+            OpenServerCrendentialForm();
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -93,18 +92,54 @@ namespace ADsFusion
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            if(listBox1.SelectedItems.Count > 0)
-            {
-                _serverCredentials.Modifying = true;
-                _serverCredentials.InitializeCredential(listBox1.SelectedItem.ToString());
-                _serverCredentials.ShowDialog();
-                LoadList();
-            }
+            OpenServerCrendentialForm(true);
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_DoubleClick(object sender, EventArgs e)
         {
+            OpenServerCrendentialForm(true);
+        }
 
+        private void OpenServerCrendentialForm(bool modifying = false)
+        {
+            string selectedItemText = null;
+            if (listBox1.SelectedItems.Count > 0)
+            {
+                selectedItemText = listBox1.SelectedItem.ToString();
+            }
+
+            switch (modifying)
+            {
+                case true:
+                    if(!string.IsNullOrEmpty(selectedItemText)) 
+                    {
+                        if (!_serverCredentialsForms.ContainsKey(selectedItemText))
+                        {
+                            ServerCredentials newForm = new ServerCredentials();
+                            _serverCredentialsForms.Add(selectedItemText, newForm);
+                            newForm.FormClosed += (s, args) => _serverCredentialsForms.Remove(selectedItemText);
+                            newForm.FormClosed += (s, args) => LoadList();
+                            if (modifying)
+                            {
+                                newForm.Modifying = true;
+                                newForm.InitializeCredential(selectedItemText);
+                            }
+                        }
+                        // Show the form, whether it's a new instance or an existing one.
+                        if (_serverCredentialsForms.ContainsKey(selectedItemText))
+                        {
+                            _serverCredentialsForms[selectedItemText].Show();
+                            _serverCredentialsForms[selectedItemText].BringToFront();
+                        }
+                    }
+                    break;
+                case false:
+                    ServerCredentials newForm1 = new ServerCredentials();
+                    newForm1.Show();
+                    newForm1.BringToFront();
+                    newForm1.FormClosed += (s, args) => LoadList();
+                    break;
+            }
         }
     }
 }
