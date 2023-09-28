@@ -47,10 +47,10 @@ namespace ADsFusion
             if (Properties.CustomNames.Default.description2.ToString() != null) label12.Text = Properties.CustomNames.Default.description2;
         }
 
-        internal void InitializeWithUser(User user)
+        internal void InitializeWithUsers()
         {
             // Populate the form's controls with the user's information
-            textBox1.Text = user.SAMAccountName1;
+            /*textBox1.Text = user.SAMAccountName1;
             textBox14.Text = user.SAMAccountName2;
             textBox2.Text = user.DisplayName1;
             textBox13.Text = user.DisplayName2;
@@ -65,7 +65,7 @@ namespace ADsFusion
             textBox7.Text = user.Description1;
             textBox8.Text = user.Description2;
             if (user.UserGroups1 != null) foreach (string group in user.UserGroups1) listBox1.Items.Add(group);
-            if (user.UserGroups2 != null) foreach (string group in user.UserGroups2) listBox2.Items.Add(group);
+            if (user.UserGroups2 != null) foreach (string group in user.UserGroups2) listBox2.Items.Add(group);*/
         }
 
         private void MergedAccountDetails_KeyDown(object sender, KeyEventArgs e)

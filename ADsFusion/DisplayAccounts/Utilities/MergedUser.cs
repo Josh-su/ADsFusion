@@ -10,6 +10,11 @@ namespace ADsFusion
     {
         public List<User> Users { get; set; }
 
+        public MergedUser()
+        {
+
+        }
+
         public MergedUser(List<User> users)
         {
             Users = users;

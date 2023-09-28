@@ -55,6 +55,18 @@ namespace ADsFusion
                     listBox1.Items.Add($"{domain}, {username}");
                 }
             }
+
+            // Check the number of items in the ListBox
+            if (listBox1.Items.Count >= 2)
+            {
+                // If there are 2 or more items, enable the button
+                button4.Enabled = true;
+            }
+            else
+            {
+                // If there are less than 2 items, disable the button
+                button4.Enabled = false;
+            }
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -154,18 +166,12 @@ namespace ADsFusion
             _mergeSettings.ShowDialog();
         }
 
-        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ServersList_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Check the number of items in the ListBox
-            if (listBox1.Items.Count >= 2)
+            // Don't close the form if the list is empty
+            if (listBox1.Items.Count <= 0)
             {
-                // If there are 2 or more items, enable the button
-                button4.Enabled = true;
-            }
-            else
-            {
-                // If there are less than 2 items, disable the button
-                button4.Enabled = false;
+                e.Cancel = true;
             }
         }
     }

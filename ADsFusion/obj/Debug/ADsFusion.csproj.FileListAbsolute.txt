@@ -67,3 +67,5 @@ C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.exe
 C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.pdb
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.CustomNames.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.MergeSettings.resources
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.CustomNames.resources
+C:\CPNV\ADsFusion\ADsFusion\obj\Debug\ADsFusion.MergeSettings.resources

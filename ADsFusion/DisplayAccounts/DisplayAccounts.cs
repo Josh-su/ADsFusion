@@ -92,14 +92,20 @@ namespace ADsFusion
             _actualUserList = new List<User>();
             _filteredUserList = new List<User>();
 
-            foreach(MergedUser mergedUser in _mergedUserList)
+            foreach (MergedUser mergedUser in _mergedUserList)
             {
                 string displayText = "";
-                foreach(User user in mergedUser.Users)
+                foreach (User user in mergedUser.Users)
                 {
-                    //displayText.(user.SAMAccountName);
+                    displayText += user.SAMAccountName + ", ";
                 }
-
+                if (!string.IsNullOrEmpty(displayText))
+                {
+                    // Remove the trailing ", " from the end of the displayText
+                    displayText = displayText.Substring(0, displayText.Length - 2);
+                }
+                // Now, displayText contains a comma-separated list of SAMAccountNames for the users in the mergedUser.
+                Console.WriteLine(displayText);
             }
 
 
@@ -456,7 +462,7 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void Button3_Click(object sender, EventArgs e)
         {
-            _settings.ShowDialog();
+            //_settings.ShowDialog();
             /*MergeUserList();
             SetUserListFromJson();*/
         }
@@ -621,7 +627,6 @@ namespace ADsFusion
             if (ints.Count == 0)
             {
                 _servers.ShowDialog();
-                _settings.ShowDialog();
                 await UpdateAllAsync(CheckIfLogged());
             }
             else if (ints.Count == 1)
@@ -1157,9 +1162,27 @@ namespace ADsFusion
             {
                 string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
                 User selectedUser = new User();
+                MergedUser selectMergedUsers = new MergedUser();
                 if (_isUserListsMerged)
                 {
-                    selectedUser = _actualUserList.FirstOrDefault(user =>
+                    /*foreach (MergedUser mergedUser in _mergedUserList)
+                    {
+                        foreach (User user in mergedUser.Users)
+                        {
+                            displayText += user.SAMAccountName + ", ";
+                        }
+                        if (!string.IsNullOrEmpty(displayText))
+                        {
+                            // Remove the trailing ", " from the end of the displayText
+                            displayText = displayText.Substring(0, displayText.Length - 2);
+                        }
+                        foreach (var item in listBox1.SelectedItems)
+                        {
+                            
+                        }
+                    }*/
+
+                    selectMergedUsers = _mergedUserList.FirstOrDefault(user =>
                     {
                         string userDisplayText = $"";
                         return userDisplayText.ToLower() == displayText.ToLower();
@@ -1180,11 +1203,13 @@ namespace ADsFusion
                     // Check if a form for this index already exists.
                     if (_isUserListsMerged && !_mergedAccountsDetailsForms.ContainsKey(selectedUser))
                     {
-                        MergedAccountDetails newForm = new MergedAccountDetails();
-                        newForm.InitializeWithUser(selectedUser); // Pass the selected user to the form
+                        
+
+                        /*MergedAccountDetails newForm = new MergedAccountDetails();
+                        newForm.InitializeWithUsers(); // Pass the selected user to the form
 
                         _mergedAccountsDetailsForms.Add(selectedUser, newForm);
-                        newForm.FormClosed += (s, args) => _mergedAccountsDetailsForms.Remove(selectedUser);
+                        newForm.FormClosed += (s, args) => _mergedAccountsDetailsForms.Remove(selectedUser);*/
                     }
                     else if (!_isUserListsMerged && !_singleAccountsDetailsForms.ContainsKey(selectedUser))
                     {
