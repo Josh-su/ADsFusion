@@ -142,6 +142,7 @@
             // description1
             // 
             this.description1.Location = new System.Drawing.Point(123, 230);
+            this.description1.MaxLength = 14;
             this.description1.Name = "description1";
             this.description1.Size = new System.Drawing.Size(121, 20);
             this.description1.TabIndex = 70;
@@ -149,6 +150,7 @@
             // title1
             // 
             this.title1.Location = new System.Drawing.Point(123, 204);
+            this.title1.MaxLength = 14;
             this.title1.Name = "title1";
             this.title1.Size = new System.Drawing.Size(121, 20);
             this.title1.TabIndex = 69;
@@ -156,6 +158,7 @@
             // mail1
             // 
             this.mail1.Location = new System.Drawing.Point(123, 178);
+            this.mail1.MaxLength = 14;
             this.mail1.Name = "mail1";
             this.mail1.Size = new System.Drawing.Size(121, 20);
             this.mail1.TabIndex = 68;
@@ -163,6 +166,7 @@
             // sn1
             // 
             this.sn1.Location = new System.Drawing.Point(123, 152);
+            this.sn1.MaxLength = 14;
             this.sn1.Name = "sn1";
             this.sn1.Size = new System.Drawing.Size(121, 20);
             this.sn1.TabIndex = 67;
@@ -170,6 +174,7 @@
             // givenName1
             // 
             this.givenName1.Location = new System.Drawing.Point(123, 126);
+            this.givenName1.MaxLength = 14;
             this.givenName1.Name = "givenName1";
             this.givenName1.Size = new System.Drawing.Size(121, 20);
             this.givenName1.TabIndex = 66;
@@ -177,6 +182,7 @@
             // displayName1
             // 
             this.displayName1.Location = new System.Drawing.Point(123, 100);
+            this.displayName1.MaxLength = 14;
             this.displayName1.Name = "displayName1";
             this.displayName1.Size = new System.Drawing.Size(121, 20);
             this.displayName1.TabIndex = 65;
@@ -194,6 +200,7 @@
             // sAMAccountName1
             // 
             this.sAMAccountName1.Location = new System.Drawing.Point(123, 74);
+            this.sAMAccountName1.MaxLength = 14;
             this.sAMAccountName1.Name = "sAMAccountName1";
             this.sAMAccountName1.Size = new System.Drawing.Size(121, 20);
             this.sAMAccountName1.TabIndex = 63;

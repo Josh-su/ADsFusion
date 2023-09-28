@@ -16,7 +16,7 @@ namespace ADsFusion
     {
         private User _user; // Declare a class-level variable to store the User object
 
-        private List<List<string>> _userData;
+        //private List<List<string>> _userData;
         private List<List<string>> _CustomNamesData;
 
         /// <summary>
@@ -37,14 +37,14 @@ namespace ADsFusion
 
         private void SingleAccountDetails_Load(object sender, EventArgs e)
         {
-            _userData = new List<List<string>>
+            /*_userData = new List<List<string>>
             {
                 new List<string> { _user.SAMAccountName1, _user.DisplayName1, _user.GivenName1, _user.Sn1, _user.Mail1, _user.Title1, _user.Description1 },
                 new List<string> { _user.SAMAccountName2, _user.DisplayName2, _user.GivenName2, _user.Sn2, _user.Mail2, _user.Title2, _user.Description2 },
                 new List<string> { _user.SAMAccountName3, _user.DisplayName3, _user.GivenName3, _user.Sn3, _user.Mail3, _user.Title3, _user.Description3 },
                 new List<string> { _user.SAMAccountName4, _user.DisplayName4, _user.GivenName4, _user.Sn4, _user.Mail4, _user.Title4, _user.Description4 },
                 new List<string> { _user.SAMAccountName5, _user.DisplayName5, _user.GivenName5, _user.Sn5, _user.Mail5, _user.Title5, _user.Description5 }
-            };
+            };*/
 
             _CustomNamesData = new List<List<string>> { };
             for (int i = 1; i <= 5; i++)
@@ -66,9 +66,9 @@ namespace ADsFusion
             int domainIndex = GetDomainIndex(_user.Domain);
             if (domainIndex >= 0)
             {
-                LoadTextBoxes(domainIndex);
                 LoadLabels(domainIndex);
-                LoadListBox(domainIndex);
+                LoadTextBoxes();
+                LoadListBox();
             }
         }
 
@@ -100,9 +100,9 @@ namespace ADsFusion
             }
         }
 
-        private void LoadTextBoxes(int index)
+        private void LoadTextBoxes()
         {
-            List<string> userData = _userData[index];
+            List<string> userData = new List<string> { _user.SAMAccountName, _user.DisplayName, _user.GivenName, _user.Sn, _user.Mail, _user.Title, _user.Description };
 
             TextBox[] textBoxes = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7 };
 
@@ -112,9 +112,11 @@ namespace ADsFusion
             }
         }
 
-        private void LoadListBox(int index)
+        private void LoadListBox()
         {
-            switch (index)
+            foreach (string group in _user.UserGroups) listBox1.Items.Add(group);
+
+            /*switch (index)
             {
                 case 0:
                     foreach (string group in _user.UserGroups1) listBox1.Items.Add(group);
@@ -131,11 +133,12 @@ namespace ADsFusion
                 case 4:
                     foreach (string group in _user.UserGroups5) listBox1.Items.Add(group);
                     break;
-            }
+            }*/
         }
 
         private void LoadLabels(int index)
         {
+            label9.Text = _user.Domain;
             label1.Text = _CustomNamesData[index][0];
             label2.Text = _CustomNamesData[index][1];
             label3.Text = _CustomNamesData[index][2];

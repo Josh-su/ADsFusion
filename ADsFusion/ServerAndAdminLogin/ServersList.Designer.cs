@@ -65,6 +65,7 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(225, 84);
             this.listBox1.TabIndex = 2;
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             this.listBox1.DoubleClick += new System.EventHandler(this.ListBox1_DoubleClick);
             // 
             // label1
@@ -95,6 +96,7 @@
             this.button4.TabIndex = 5;
             this.button4.Text = "Paramètre de fusion";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // ServersList
             // 

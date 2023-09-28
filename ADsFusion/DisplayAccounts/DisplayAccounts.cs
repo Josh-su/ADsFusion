@@ -49,10 +49,10 @@ namespace ADsFusion
         private List<User> _userList3;
         private List<User> _userList4;
         private List<User> _userList5;
-        private List<User> _mergedUserList;
+        private List<MergedUser> _mergedUserList;
         private readonly List<User> _actualUserList;
         private List<User> _filteredUserList;
-        private bool _isUserListsMerged = true; // Initial state is merged
+        private bool _isUserListsMerged = false; // Initial state is merged
 
         private readonly string _userList1Path;
         private readonly string _userList2Path;
@@ -88,9 +88,20 @@ namespace ADsFusion
             _userList3 = new List<User>();
             _userList4 = new List<User>();
             _userList5 = new List<User>();
-            _mergedUserList = new List<User>();
+            _mergedUserList = new List<MergedUser>();
             _actualUserList = new List<User>();
             _filteredUserList = new List<User>();
+
+            foreach(MergedUser mergedUser in _mergedUserList)
+            {
+                string displayText = "";
+                foreach(User user in mergedUser.Users)
+                {
+                    //displayText.(user.SAMAccountName);
+                }
+
+            }
+
 
             _groupList1 = new List<string>();
             _groupList2 = new List<string>();
@@ -262,13 +273,13 @@ namespace ADsFusion
                 }
                 if (File.Exists(_mergedUserListPath))
                 {
-                    _mergedUserList = ReadUsersFromJson(_mergedUserListPath);
-                    _mergedUserList = _mergedUserList.Distinct().ToList();
+                    //_mergedUserList = ReadUsersFromJson(_mergedUserListPath);
+                    //_mergedUserList = _mergedUserList.Distinct().ToList();
                 }
                 else
                 {
                     // The file doesn't exist or is empty, create an empty list
-                    _mergedUserList = new List<User>();
+                    //_mergedUserList = new List<User>();
                 }
                 UpdateActualUserList(ints);
                 UpdateGroupsListAndSaveToJson(_actualUserList, _groupListPath);
@@ -321,7 +332,14 @@ namespace ADsFusion
 
             foreach (User user in _filteredUserList)
             {
-                string samAccountName1 = user.SAMAccountName1;
+                string displayText = $"{user.Domain ?? "n/a"} || {user.SAMAccountName ?? "n/a"}, {user.DisplayName ?? "n/a"}";
+
+                if ((searchText.Length >= 3 || searchText.Length == 0) && displayText.Normalize().Trim().ToLower().Contains(searchText))
+                {
+                    AddItemToListBox(displayText);
+                }
+
+                /*string samAccountName1 = user.SAMAccountName1;
                 string samAccountName2 = user.SAMAccountName2;
                 string samAccountName3 = user.SAMAccountName3;
                 string samAccountName4 = user.SAMAccountName4;
@@ -380,7 +398,7 @@ namespace ADsFusion
                 if ((searchText.Length >= 3 || searchText.Length == 0) && displayText.Normalize().Trim().ToLower().Contains(searchText))
                 {
                     AddItemToListBox(displayText);
-                }
+                }*/
 
                 /*if (_isUserListsMerged && CheckIfLogged().Count > 1)
                 {
@@ -481,12 +499,14 @@ namespace ADsFusion
                     if (selectAllMatchingGroups)
                     {
                         // Combine UserGroups1, UserGroups2, UserGroups3, UserGroups4, and UserGroups5 into a single list
-                        List<string> allUserGroups = (user.UserGroups1 ?? new List<string>())
+                        /*List<string> allUserGroups = (user.UserGroups1 ?? new List<string>())
                             .Concat(user.UserGroups2 ?? new List<string>())
                             .Concat(user.UserGroups3 ?? new List<string>())
                             .Concat(user.UserGroups4 ?? new List<string>())
                             .Concat(user.UserGroups5 ?? new List<string>())
-                            .ToList();
+                            .ToList();*/
+                        List<string> allUserGroups = (user.UserGroups ?? new List<string>());
+
 
                         // Check if all groups in 'groups' are present in allUserGroups
                         hasMatchingGroup = groups.All(group => allUserGroups.Contains(group));
@@ -499,7 +519,13 @@ namespace ADsFusion
                     else
                     {
                         // Check if any group in UserGroups1 or UserGroups2 exists in the provided 'groups' list
-                        if (user.UserGroups1?.Intersect(groups).Any() ?? false)
+
+                        if (user.UserGroups?.Intersect(groups).Any() ?? false)
+                        {
+                            hasMatchingGroup = true;
+                        }
+
+                        /*if (user.UserGroups1?.Intersect(groups).Any() ?? false)
                         {
                             hasMatchingGroup = true;
                         }
@@ -518,7 +544,7 @@ namespace ADsFusion
                         if (user.UserGroups5?.Intersect(groups).Any() ?? false)
                         {
                             hasMatchingGroup = true;
-                        }
+                        }*/
 
                         if (hasMatchingGroup)
                         {
@@ -727,9 +753,18 @@ namespace ADsFusion
                                     // Get the underlying DirectoryEntry object.
                                     var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
 
-                                    User userToAdd = new User();
+                                    User userToAdd = new User(
+                                        domain: domain,
+                                        sAMAccountName: Convert.ToString(userPrincipal.SamAccountName),
+                                        displayName: Convert.ToString(userPrincipal.DisplayName),
+                                        givenName: Convert.ToString(userPrincipal.GivenName),
+                                        sn: Convert.ToString(userPrincipal.Surname),
+                                        mail: Convert.ToString(userPrincipal.EmailAddress),
+                                        title: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                        description: Convert.ToString(userPrincipal.Description),
+                                        userGroups: groups);
 
-                                    switch (selectedList)
+                                    /*switch (selectedList)
                                     {
                                         case 1:
                                             userToAdd = new User(
@@ -791,7 +826,7 @@ namespace ADsFusion
                                                 description5: Convert.ToString(userPrincipal.Description),
                                                 userGroups5: groups);
                                             break;
-                                    }
+                                    }*/
 
                                     // Add the user to the list of active users within a lock
                                     lock (activeUsersLock)
@@ -835,7 +870,15 @@ namespace ADsFusion
 
             foreach (User user in userList)
             {
-                if (user.UserGroups1 != null)
+                if (user.UserGroups != null)
+                {
+                    foreach (string group in user.UserGroups)
+                    {
+                        _allGroupsList.Add(group);
+                    }
+                }
+
+                /*if (user.UserGroups1 != null)
                 {
                     foreach (string group in user.UserGroups1)
                     {
@@ -869,7 +912,7 @@ namespace ADsFusion
                     {
                         _allGroupsList.Add(group);
                     }
-                }
+                }*/
             }
 
             // Remove duplicate group names by applying Distinct() and updating _groupList.
@@ -884,11 +927,11 @@ namespace ADsFusion
         /// </summary>
         private void MergeUserList()
         {
-            /*_mergedUserList.Clear();
+            _mergedUserList.Clear();
 
-            if (!string.IsNullOrEmpty(Properties.CustomNames.Default.MergeParameter))
+            if (!string.IsNullOrEmpty(""))
             {
-                string matchingParameter = Properties.CustomNames.Default.MergeParameter;
+                string matchingParameter = "";
 
                 foreach (User user1 in _userList1)
                 {
@@ -907,13 +950,13 @@ namespace ADsFusion
 
                     if (matchingUser != null)
                     {
-                        User mergedUser = new User(user1.SAMAccountName1, user1.DisplayName1, user1.GivenName1, user1.Sn1, user1.Mail1, user1.Title1, user1.Description1, user1.UserGroups1, matchingUser.SAMAccountName2, matchingUser.DisplayName2, matchingUser.GivenName2, matchingUser.Sn2, matchingUser.Mail2, matchingUser.Title2, matchingUser.Description2, matchingUser.UserGroups2);
+                        //MergedUser mergedUser = new MergedUser(user1.SAMAccountName1, user1.DisplayName1, user1.GivenName1, user1.Sn1, user1.Mail1, user1.Title1, user1.Description1, user1.UserGroups1, matchingUser.SAMAccountName2, matchingUser.DisplayName2, matchingUser.GivenName2, matchingUser.Sn2, matchingUser.Mail2, matchingUser.Title2, matchingUser.Description2, matchingUser.UserGroups2);
 
-                        _mergedUserList.Add(mergedUser);
+                        //_mergedUserList.Add(mergedUser);
                     }
                     else
                     {
-                        _mergedUserList.Add(user1);
+                        //_mergedUserList.Add(user1);
                     }
                 }
 
@@ -922,12 +965,12 @@ namespace ADsFusion
                 {
                     string matchingValue2 = (SelectMatchingValue(user2, matchingParameter));
 
-                    bool isMerged = _mergedUserList.Any(mergedUser => SelectMatchingValue(mergedUser, matchingParameter).Equals(matchingValue2));
+                    //bool isMerged = _mergedUserList.Any(mergedUser => SelectMatchingValue(mergedUser, matchingParameter).Equals(matchingValue2));
 
-                    if (!isMerged)
-                    {
+                    /*if (!isMerged)
+                    {*/
                         // Create a new User instance with properties from list2
-                        User newUser = new User(
+                        /*User newUser = new User(
                             sAMAccountName2: user2.SAMAccountName2,
                             displayName2: user2.DisplayName2,
                             givenName2: user2.GivenName2,
@@ -938,19 +981,19 @@ namespace ADsFusion
                             userGroups2: user2.UserGroups2
                         );
 
-                        _mergedUserList.Add(newUser);
-                    }
+                        _mergedUserList.Add(newUser);*/
+                    /*}*/
                 }
 
                 // Save the merged list to a JSON file, clearing existing content
-                SaveUsersToJson(_mergedUserList, _mergedUserListPath, true);
+                /*SaveUsersToJson(_mergedUserList, _mergedUserListPath, true);*/
             }
             else
             {
                 MessageBox.Show("Veuillez sélectionner quel sera l'attribut commun afin de poursuivre la fusion des deux listes d'utilisateurs");
                 _settings.ShowDialog();
                 MergeUserList();
-            }*/
+            }
         }
 
         /// <summary>
@@ -961,7 +1004,7 @@ namespace ADsFusion
         /// <returns></returns>
         private string SelectMatchingValue(User user, string matchingParameter)
         {
-            if (user.SAMAccountName1 != null)
+            /*if (user.SAMAccountName1 != null)
             {
                 switch (matchingParameter)
                 {
@@ -1000,7 +1043,7 @@ namespace ADsFusion
                     case "Description":
                         return user.Description2?.ToLower() ?? string.Empty;
                 }
-            }
+            }*/
             return string.Empty;
         }
         #endregion
@@ -1114,22 +1157,23 @@ namespace ADsFusion
             {
                 string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
                 User selectedUser = new User();
-                /*if (_isUserListsMerged)
+                if (_isUserListsMerged)
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? "n/a"} / {user.SAMAccountName2 ?? "n/a"}";
+                        string userDisplayText = $"";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
                 else
-                {*/
+                {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2 ?? user.SAMAccountName3 ?? user.SAMAccountName4 ?? user.SAMAccountName5}, {user.DisplayName1 ?? user.DisplayName2 ?? user.DisplayName3 ?? user.DisplayName4 ?? user.DisplayName5}";
+                        string userDisplayText = $"{user.Domain ?? "n/a"} || {user.SAMAccountName ?? "n/a"}, {user.DisplayName ?? "n/a"}";
+                        //string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2 ?? user.SAMAccountName3 ?? user.SAMAccountName4 ?? user.SAMAccountName5}, {user.DisplayName1 ?? user.DisplayName2 ?? user.DisplayName3 ?? user.DisplayName4 ?? user.DisplayName5}";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
-                /*}*/
+                }
 
                 if (selectedUser != null)
                 {
@@ -1298,7 +1342,7 @@ namespace ADsFusion
         private void Button10_Click(object sender, EventArgs e)
         {
             // Change the state
-            _isUserListsMerged = !_isUserListsMerged;
+            /*_isUserListsMerged = !_isUserListsMerged;*/
 
             //UpdateActualUserList();
 
@@ -1369,7 +1413,7 @@ namespace ADsFusion
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? "n/a"} / {user.SAMAccountName2 ?? "n/a"}";
+                        string userDisplayText = $"";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
@@ -1377,7 +1421,7 @@ namespace ADsFusion
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
+                        string userDisplayText = $"{user.Domain ?? "n/a"} || {user.SAMAccountName ?? "n/a"}, {user.DisplayName ?? "n/a"}";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
@@ -1385,7 +1429,7 @@ namespace ADsFusion
                 if (selectedUser != null)
                 {
                     //print logic...
-                    MessageBox.Show(selectedUser.SAMAccountName1 + selectedUser.SAMAccountName2);
+                    MessageBox.Show(selectedUser.SAMAccountName + selectedUser.SAMAccountName);
 
 
                 }
@@ -1430,7 +1474,7 @@ namespace ADsFusion
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? "n/a"} / {user.SAMAccountName2 ?? "n/a"}";
+                        string userDisplayText = $"";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
@@ -1438,14 +1482,14 @@ namespace ADsFusion
                 {
                     selectedUser = _actualUserList.FirstOrDefault(user =>
                     {
-                        string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2}, {user.DisplayName1 ?? user.DisplayName2}";
+                        string userDisplayText = $"{user.Domain ?? "n/a"} || {user.SAMAccountName ?? "n/a"}, {user.DisplayName ?? "n/a"}";
                         return userDisplayText.ToLower() == displayText.ToLower();
                     });
                 }
 
                 if (selectedUser != null)
                 {
-                    MessageBox.Show(selectedUser.SAMAccountName1 + " " + selectedUser.SAMAccountName2);
+                    MessageBox.Show(selectedUser.SAMAccountName + " " + selectedUser.SAMAccountName);
                 }
                 else
                 {
@@ -1519,7 +1563,7 @@ namespace ADsFusion
             if (e.Alt)
             {
                 // Handle Alt+M for merge user list
-                if (e.KeyCode == Keys.M)
+                /*if (e.KeyCode == Keys.M)
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -1536,10 +1580,10 @@ namespace ADsFusion
                         DisplayUserList();
                     }
                     return;
-                }
+                }*/
 
                 // Handle Alt+S for split user list
-                if (e.KeyCode == Keys.S)
+                /*if (e.KeyCode == Keys.S)
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -1555,7 +1599,7 @@ namespace ADsFusion
                         DisplayUserList();
                     }
                     return;
-                }
+                }*/
 
                 e.Handled = true;
                 e.SuppressKeyPress = true;

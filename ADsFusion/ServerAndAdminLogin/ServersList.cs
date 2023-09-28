@@ -16,6 +16,8 @@ namespace ADsFusion
     public partial class ServersList : Form
     {
         private readonly Dictionary<string, ServerCredentials> _serverCredentialsForms;
+        
+        private MergeSettings _mergeSettings;
 
         /// <summary>
         /// 
@@ -24,7 +26,12 @@ namespace ADsFusion
         {
             InitializeComponent();
 
+            // Set the initial state of the Button button4 to disabled
+            button4.Enabled = false;
+
             _serverCredentialsForms = new Dictionary<string, ServerCredentials>();
+
+            _mergeSettings = new MergeSettings();
         }
 
         private void ServersList_Load(object sender, EventArgs e)
@@ -139,6 +146,26 @@ namespace ADsFusion
                     newForm1.BringToFront();
                     newForm1.FormClosed += (s, args) => LoadList();
                     break;
+            }
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            _mergeSettings.ShowDialog();
+        }
+
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Check the number of items in the ListBox
+            if (listBox1.Items.Count >= 2)
+            {
+                // If there are 2 or more items, enable the button
+                button4.Enabled = true;
+            }
+            else
+            {
+                // If there are less than 2 items, disable the button
+                button4.Enabled = false;
             }
         }
     }
