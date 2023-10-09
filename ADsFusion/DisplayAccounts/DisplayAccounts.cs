@@ -63,7 +63,12 @@ namespace ADsFusion
         private readonly string _groupListPath;
 
         private bool _isBackgroundProcessRunning = false;
-        private bool _printAccountInfoFlag = false; // Using the word "Flag" in the variable name is a common convention to indicate that it's a boolean flag used for controlling a specific behavior
+
+        // Using the word "Flag" in the variable name is a common convention to indicate that it's a boolean flag used for controlling a specific behavior
+        private bool _printAccountInfoFlag = false;
+        private bool _openDetailsFormFlag = false;
+        private bool _selectAllItemsFlag = false;
+
 
         private readonly object activeUsersLock = new object(); // Lock object
         private readonly List<Task> _userTasks = new List<Task>();
@@ -1539,35 +1544,38 @@ namespace ADsFusion
                 {
                     if (listBox1.Items.Count > 0)
                     {
+                        foreach(int index in listBox1.SelectedIndices)
+                        {
+                            listBox1.SetSelected(index, false);
+                        }
                         listBox1.SetSelected(0, true);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    return;
                 }
 
                 // Handle Ctrl+Down: Select the last item
                 if (e.KeyCode == Keys.Down)
                 {
                     int lastIndex = listBox1.Items.Count - 1;
-                    if (lastIndex >= 0)
+                    if (listBox1.Items.Count > 0)
                     {
+                        foreach (int index in listBox1.SelectedIndices)
+                        {
+                            listBox1.SetSelected(index, false);
+                        }
                         listBox1.SetSelected(lastIndex, true);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    return;
                 }
 
                 // Handle Ctrl+A for selecting all items
                 if (e.KeyCode == Keys.A)
                 {
-                    for (int i = 0; i < listBox1.Items.Count; i++)
-                    {
-                        listBox1.SetSelected(i, true);
-                    }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
+                    _selectAllItemsFlag = true;
                     return;
                 }
 
@@ -1584,62 +1592,12 @@ namespace ADsFusion
                 return;
             }
 
-            // Check if Alt key is pressed
-            if (e.Alt)
-            {
-                // Handle Alt+M for merge user list
-                /*if (e.KeyCode == Keys.M)
-                {
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-
-                    if (!_isUserListsMerged)
-                    {
-                        // Change the state
-                        _isUserListsMerged = true;
-
-                        //UpdateActualUserList();
-
-                        // Update your user interface or perform any other necessary actions
-                        UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
-                        DisplayUserList();
-                    }
-                    return;
-                }*/
-
-                // Handle Alt+S for split user list
-                /*if (e.KeyCode == Keys.S)
-                {
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-
-                    if (_isUserListsMerged)
-                    {
-                        // Change the state
-                        _isUserListsMerged = false;
-                        //UpdateActualUserList();
-
-                        // Update your user interface or perform any other necessary actions
-                        UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
-                        DisplayUserList();
-                    }
-                    return;
-                }*/
-
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                return;
-            }
-
             // Handle Enter key
             if (e.KeyCode == Keys.Enter)
             {
                 e.Handled = true;
-
                 e.SuppressKeyPress = true;
-
-                OpenDetailsForm();
-
+                _openDetailsFormFlag = true;
                 return;
             }
 
@@ -1647,19 +1605,23 @@ namespace ADsFusion
             if (e.KeyCode == Keys.Escape)
             {
                 e.Handled = true;
-
                 e.SuppressKeyPress = true;
+                this.Close();
+            }
+        }
 
-                // Display a confirmation dialog
-                DialogResult result = MessageBox.Show("Are you sure you want to close the form?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                // Check the user's response
-                if (result == DialogResult.Yes)
+        private void DisplayAccounts_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (_printAccountInfoFlag) PrintAccountInfo(); _printAccountInfoFlag = false;
+            if (_openDetailsFormFlag) OpenDetailsForm(); _openDetailsFormFlag = false;
+            if (_selectAllItemsFlag)
+            {
+                // Select all items in the ListBox
+                for (int i = 0; i < listBox1.Items.Count; i++)
                 {
-                    // Close the form
-                    this.Close();
+                    listBox1.SetSelected(i, true);
                 }
-                return;
+                _selectAllItemsFlag = false;
             }
         }
 
@@ -1670,6 +1632,16 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void DisplayAccounts_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Display a confirmation dialog
+            DialogResult result = MessageBox.Show("Are you sure you want to close the form?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Check the user's response
+            if (result == DialogResult.No)
+            {
+                // Cancel the form closing event to prevent the application from closing
+                e.Cancel = true;
+            }
+
             // Check if the background process is running
             if (_isBackgroundProcessRunning)
             {
@@ -1677,20 +1649,6 @@ namespace ADsFusion
                 MessageBox.Show("Please wait for the background process to finish \nbefore closing the application.");
                 // Cancel the form closing event to prevent the application from closing
                 e.Cancel = true;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListBox1_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (_printAccountInfoFlag)
-            {
-                PrintAccountInfo();
-                _printAccountInfoFlag = false;
             }
         }
     }
