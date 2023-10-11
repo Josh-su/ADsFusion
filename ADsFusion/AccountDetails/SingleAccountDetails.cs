@@ -37,15 +37,6 @@ namespace ADsFusion
 
         private void SingleAccountDetails_Load(object sender, EventArgs e)
         {
-            /*_userData = new List<List<string>>
-            {
-                new List<string> { _user.SAMAccountName1, _user.DisplayName1, _user.GivenName1, _user.Sn1, _user.Mail1, _user.Title1, _user.Description1 },
-                new List<string> { _user.SAMAccountName2, _user.DisplayName2, _user.GivenName2, _user.Sn2, _user.Mail2, _user.Title2, _user.Description2 },
-                new List<string> { _user.SAMAccountName3, _user.DisplayName3, _user.GivenName3, _user.Sn3, _user.Mail3, _user.Title3, _user.Description3 },
-                new List<string> { _user.SAMAccountName4, _user.DisplayName4, _user.GivenName4, _user.Sn4, _user.Mail4, _user.Title4, _user.Description4 },
-                new List<string> { _user.SAMAccountName5, _user.DisplayName5, _user.GivenName5, _user.Sn5, _user.Mail5, _user.Title5, _user.Description5 }
-            };*/
-
             _CustomNamesData = new List<List<string>> { };
             for (int i = 1; i <= 5; i++)
             {
@@ -115,25 +106,6 @@ namespace ADsFusion
         private void LoadListBox()
         {
             foreach (string group in _user.UserGroups) listBox1.Items.Add(group);
-
-            /*switch (index)
-            {
-                case 0:
-                    foreach (string group in _user.UserGroups1) listBox1.Items.Add(group);
-                    break;
-                case 1:
-                    foreach (string group in _user.UserGroups2) listBox1.Items.Add(group);
-                    break;
-                case 2:
-                    foreach (string group in _user.UserGroups3) listBox1.Items.Add(group);
-                    break;
-                case 3:
-                    foreach (string group in _user.UserGroups4) listBox1.Items.Add(group);
-                    break;
-                case 4:
-                    foreach (string group in _user.UserGroups5) listBox1.Items.Add(group);
-                    break;
-            }*/
         }
 
         private void LoadLabels(int index)

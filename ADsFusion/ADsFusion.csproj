@@ -75,13 +75,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountDetails\MergedAccountsDetails.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Properties\Links.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Links.settings</DependentUpon>
     </Compile>
-    <Compile Include="AccountDetails\MergedAccountsDetails.Designer.cs">
-      <DependentUpon>MergedAccountsDetails.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DisplayAccounts\Utilities\MergedUser.cs" />
     <Compile Include="ServerAndAdminLogin\MergeSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +136,12 @@
     <Compile Include="ServerAndAdminLogin\ServersList.Designer.cs">
       <DependentUpon>ServersList.cs</DependentUpon>
     </Compile>
+    <Compile Include="ServerAndAdminLogin\ServerLink.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServerAndAdminLogin\ServerLink.Designer.cs">
+      <DependentUpon>ServerLink.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Settings\Setting.cs">
       <SubType>Form</SubType>
@@ -151,9 +155,6 @@
     <Compile Include="AccountDetails\SingleAccountDetails.Designer.cs">
       <DependentUpon>SingleAccountDetails.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AccountDetails\MergedAccountsDetails.resx">
-      <DependentUpon>MergedAccountsDetails.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="AccountDetails\SingleAccountDetails.resx">
       <DependentUpon>SingleAccountDetails.cs</DependentUpon>
     </EmbeddedResource>
@@ -185,6 +186,9 @@
     <EmbeddedResource Include="ServerAndAdminLogin\ServerCredentials.resx">
       <DependentUpon>ServerCredentials.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ServerAndAdminLogin\ServerLink.resx">
+      <DependentUpon>ServerLink.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ServerAndAdminLogin\ServersList.resx">
       <DependentUpon>ServersList.cs</DependentUpon>
     </EmbeddedResource>
@@ -198,6 +202,10 @@
     <None Include="Properties\Credentials.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Credentials.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Properties\Links.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Links.Designer.cs</LastGenOutput>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

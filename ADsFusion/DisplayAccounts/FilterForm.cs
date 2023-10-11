@@ -51,6 +51,32 @@ namespace ADsFusion
             UpdateGroups();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public event ItemCheckEventHandler CheckedItemChanged
+        {
+            add { checkedListBox1.ItemCheck += value; }
+            remove { checkedListBox1.ItemCheck -= value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler RadioButtonsCheckedChanged
+        {
+            add 
+            {
+                radioButton1.CheckedChanged += value;
+                radioButton2.CheckedChanged += value;
+            }
+            remove
+            {
+                radioButton1.CheckedChanged -= value;
+                radioButton2.CheckedChanged -= value;
+            }
+        }
+
         private void FilterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Cancel the close operation to prevent the form from closing
@@ -89,6 +115,9 @@ namespace ADsFusion
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void UpdateGroups()
         {
             // Clear existing items in the CheckedListBox 
@@ -123,7 +152,7 @@ namespace ADsFusion
             SelectedGroups = _checkedItems; // Update the SelectedGroups property with the new list
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton1_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton1.Checked) SelectAllMatchingGroups = true;
         }
