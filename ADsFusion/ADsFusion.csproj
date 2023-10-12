@@ -86,11 +86,11 @@
     <Compile Include="ServerAndAdminLogin\MergeSettings.Designer.cs">
       <DependentUpon>MergeSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="ServerAndAdminLogin\CustomNames.cs">
+    <Compile Include="ServerAndAdminLogin\CustomName.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ServerAndAdminLogin\CustomNames.Designer.cs">
-      <DependentUpon>CustomNames.cs</DependentUpon>
+    <Compile Include="ServerAndAdminLogin\CustomName.Designer.cs">
+      <DependentUpon>CustomName.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayAccounts\Utilities\User.cs" />
     <Compile Include="DisplayAccounts\Utilities\JsonManager.cs" />
@@ -117,12 +117,6 @@
       <DependentUpon>Credentials.settings</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="ServerAndAdminLogin\ServerAndAdminLogin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ServerAndAdminLogin\ServerAndAdminLogin.Designer.cs">
-      <DependentUpon>ServerAndAdminLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="ServerAndAdminLogin\ServerCredentials.cs">
       <SubType>Form</SubType>
@@ -174,14 +168,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ServerAndAdminLogin\CustomNames.resx">
-      <DependentUpon>CustomNames.cs</DependentUpon>
+    <EmbeddedResource Include="ServerAndAdminLogin\CustomName.resx">
+      <DependentUpon>CustomName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ServerAndAdminLogin\MergeSettings.resx">
       <DependentUpon>MergeSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ServerAndAdminLogin\ServerAndAdminLogin.resx">
-      <DependentUpon>ServerAndAdminLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ServerAndAdminLogin\ServerCredentials.resx">
       <DependentUpon>ServerCredentials.cs</DependentUpon>
@@ -302,6 +293,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\data-storage_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\no-wifi_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wifi_20.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

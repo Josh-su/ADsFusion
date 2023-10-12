@@ -15,12 +15,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.DirectoryServices.ActiveDirectory;
+using System.Net.Http;
+using System.Net;
 
 namespace ADsFusion
 {
     public partial class DisplayAccounts : Form
     {
-        private readonly Settings _settings;
+        private readonly Setting _settings;
         private readonly ServersList _servers;
         private readonly FilterForm _filterForm;
         private readonly MergeSettings _mergeSettings;
@@ -100,7 +102,7 @@ namespace ADsFusion
             _groupList5 = new List<string>();
             _allGroupsList = new List<string>();
 
-            _settings = new Settings();
+            _settings = new Setting();
             _servers = new ServersList();
             _filterForm = new FilterForm();
             _filterForm.CheckedItemChanged += (s, args) => 
@@ -151,6 +153,16 @@ namespace ADsFusion
             {
                 CheckAndCreateFile(filePath, defaultContent);
             }
+        }        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void DisplayAccounts_LoadAsync(object sender, EventArgs e)
+        {
+            await UpdateAllAsync(CheckIfLogged());
         }
 
         /// <summary>
@@ -198,16 +210,6 @@ namespace ADsFusion
             }
         }
         #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void DisplayAccounts_Load(object sender, EventArgs e)
-        {
-            await UpdateAllAsync(CheckIfLogged());
-        }
 
         /// <summary>
         /// 
@@ -479,6 +481,7 @@ namespace ADsFusion
                 progressBar1.Visible = true;
                 foreach (int i in ints)
                 {
+                    CheckNetwork();
                     if (i == 1) _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1));
                     if (i == 2) _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2));
                     if (i == 3) _userList3 = await Task.Run(() => UpdateUserListAsync(_userList3Path, _domain3, _groupList3));
@@ -519,6 +522,7 @@ namespace ADsFusion
 
                 Parallel.ForEach(groupList, groupName =>
                 {
+                    CheckNetwork();
                     GetADUsers(groupName, ActiveUsersAD, userListPath, domain);
                 });
 
@@ -552,6 +556,8 @@ namespace ADsFusion
             // Create the PrincipalContext for the domain.
             var context = new PrincipalContext(ContextType.Domain, domain);
 
+            CheckNetwork();
+
             // Find the group by its name.
             using (var groupPrincipal = GroupPrincipal.FindByIdentity(context, IdentityType.Name, groupName))
             {
@@ -565,65 +571,86 @@ namespace ADsFusion
 
                     var totalActiveUserPrincipal = 0;
 
-                    // Loop through the group members to process each user.
-                    foreach (var member in groupMembers)
+                    try
                     {
-                        if (member is UserPrincipal userPrincipal)
+                        // Loop through the group members to process each user.
+                        foreach (var member in groupMembers)
                         {
-                            // Check if the user is active in Active Directory.
-                            if (userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value && userPrincipal.SamAccountName != null)
+                            try
                             {
-                                _userTasks.Add(Task.Run(() =>
+                                if (member is UserPrincipal userPrincipal)
                                 {
-                                    // The user is active. You can now proceed to retrieve user data and create User objects.
-                                    var groupsMembership = userPrincipal.GetGroups();
-                                    List<string> groups = new List<string>();
-
-                                    foreach (var groupMembership in groupsMembership)
+                                    // Check if the user is active in Active Directory.
+                                    if (userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value && userPrincipal.SamAccountName != null)
                                     {
-                                        groups.Add(groupMembership.Name);
-                                    }
-
-                                    // Get the underlying DirectoryEntry object.
-                                    var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
-
-                                    User userToAdd = new User(
-                                        domain: domain,
-                                        sAMAccountName: Convert.ToString(userPrincipal.SamAccountName),
-                                        displayName: Convert.ToString(userPrincipal.DisplayName),
-                                        givenName: Convert.ToString(userPrincipal.GivenName),
-                                        sn: Convert.ToString(userPrincipal.Surname),
-                                        mail: Convert.ToString(userPrincipal.EmailAddress),
-                                        title: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
-                                        description: Convert.ToString(userPrincipal.Description),
-                                        userGroups: groups);
-
-                                    // Add the user to the list of active users within a lock
-                                    lock (activeUsersLock)
-                                    {
-                                        ActiveUsersAD.Add(userToAdd);
-
-                                        // Check if the batch size is reached or if we processed all users.
-                                        if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalActiveUserPrincipal - 1)
+                                        _userTasks.Add(Task.Run(() =>
                                         {
-                                            // Save the current batch to the JSON file.
-                                            JsonManager.SaveToJson(ActiveUsersAD, userListPath, false);
+                                            try
+                                            {
+                                                // The user is active. You can now proceed to retrieve user data and create User objects.
+                                                var groupsMembership = userPrincipal.GetGroups();
+                                                List<string> groups = new List<string>();
 
-                                            // Clear the list to free up memory for the next batch.
-                                            ActiveUsersAD.Clear();
-                                        }
+                                                foreach (var groupMembership in groupsMembership)
+                                                {
+                                                    groups.Add(groupMembership.Name);
+                                                }
+
+                                                // Get the underlying DirectoryEntry object.
+                                                var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
+
+                                                User userToAdd = new User(
+                                                    domain: domain,
+                                                    sAMAccountName: Convert.ToString(userPrincipal.SamAccountName),
+                                                    displayName: Convert.ToString(userPrincipal.DisplayName),
+                                                    givenName: Convert.ToString(userPrincipal.GivenName),
+                                                    sn: Convert.ToString(userPrincipal.Surname),
+                                                    mail: Convert.ToString(userPrincipal.EmailAddress),
+                                                    title: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
+                                                    description: Convert.ToString(userPrincipal.Description),
+                                                    userGroups: groups);
+
+                                                // Add the user to the list of active users within a lock
+                                                lock (activeUsersLock)
+                                                {
+                                                    ActiveUsersAD.Add(userToAdd);
+
+                                                    // Check if the batch size is reached or if we processed all users.
+                                                    if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalActiveUserPrincipal - 1)
+                                                    {
+                                                        // Save the current batch to the JSON file.
+                                                        JsonManager.SaveToJson(ActiveUsersAD, userListPath, false);
+
+                                                        // Clear the list to free up memory for the next batch.
+                                                        ActiveUsersAD.Clear();
+                                                    }
+                                                }
+                                                // Update the progress bar on the UI thread.
+                                                this.Invoke(new Action(() =>
+                                                {
+                                                    progressBar1.Value = (int)((double)progressCounter / totalActiveUserPrincipal * 100);
+                                                }));
+                                                // Increment progressCounter safely
+                                                Interlocked.Increment(ref progressCounter);
+                                            }
+                                            catch
+                                            {
+                                                CheckNetwork();
+                                            }
+                                        }));
+                                        totalActiveUserPrincipal++;
                                     }
-                                    // Update the progress bar on the UI thread.
-                                    this.Invoke(new Action(() =>
-                                    {
-                                        progressBar1.Value = (int)((double)progressCounter / totalActiveUserPrincipal * 100);
-                                    }));
-                                    // Increment progressCounter safely
-                                    Interlocked.Increment(ref progressCounter);
-                                }));
-                                totalActiveUserPrincipal++;
+                                }
+                            }
+                            catch
+                            {
+                                CheckNetwork();
                             }
                         }
+                    }
+                    catch
+                    {
+                        CheckNetwork();
                     }
                 }
             }
@@ -1109,5 +1136,57 @@ namespace ADsFusion
                 e.Cancel = true;
             }
         }
+
+        #region Check Network Connection
+        private bool CheckNetwork()
+        {
+            bool isConnected = IsNetworkConnected();
+
+            // Set the label's image and show a message box based on network status
+            if (isConnected)
+            {
+                label2.Image = Properties.Resources.wifi_20;
+            }
+            else
+            {
+                label2.Image = Properties.Resources.no_wifi_20;
+                ShowNetworkErrorMessageBox();
+            }
+
+            return isConnected;
+        }
+
+        private bool IsNetworkConnected()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = client.GetAsync("http://example.com").Result; // You can use a different URL
+                    return response.StatusCode == HttpStatusCode.OK;
+                }
+            }
+            catch
+            {
+                return false; // An exception likely indicates no network connectivity
+            }
+        }
+
+        private void ShowNetworkErrorMessageBox()
+        {
+            const string message = "You are not connected to the network. Please connect and click 'Retry' to check again.";
+            const string caption = "Network Error";
+            var result = MessageBox.Show(message, caption, MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+            if (result == DialogResult.Retry)
+            {
+                CheckNetwork();
+            }
+            if (result == DialogResult.Cancel)
+            {
+                this.Close();
+            }
+        }
+        #endregion
     }
 }

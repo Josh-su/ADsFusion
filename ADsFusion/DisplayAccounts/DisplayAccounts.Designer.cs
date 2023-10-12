@@ -44,7 +44,6 @@ namespace ADsFusion
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label1 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label3 = new System.Windows.Forms.Label();
             this.button10 = new System.Windows.Forms.Button();
@@ -55,6 +54,7 @@ namespace ADsFusion
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -121,7 +121,7 @@ namespace ADsFusion
             this.listBox1.Location = new System.Drawing.Point(12, 78);
             this.listBox1.Name = "listBox1";
             this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBox1.Size = new System.Drawing.Size(457, 328);
+            this.listBox1.Size = new System.Drawing.Size(458, 328);
             this.listBox1.TabIndex = 2;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             this.listBox1.DoubleClick += new System.EventHandler(this.ListBox1_DoubleClick);
@@ -141,29 +141,16 @@ namespace ADsFusion
             // 
             this.button5.Location = new System.Drawing.Point(348, 42);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(121, 30);
+            this.button5.Size = new System.Drawing.Size(122, 30);
             this.button5.TabIndex = 11;
             this.button5.Text = "Create new Account";
             this.button5.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Red;
-            this.label2.Location = new System.Drawing.Point(79, 202);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(340, 31);
-            this.label2.TabIndex = 18;
-            this.label2.Text = "Veuillez vous connecter !!!!";
-            this.label2.Visible = false;
             // 
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(264, 9);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(205, 23);
+            this.progressBar1.Size = new System.Drawing.Size(206, 23);
             this.progressBar1.Step = 3;
             this.progressBar1.TabIndex = 19;
             this.progressBar1.Visible = false;
@@ -173,7 +160,7 @@ namespace ADsFusion
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 432);
+            this.label3.Location = new System.Drawing.Point(11, 428);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -263,14 +250,22 @@ namespace ADsFusion
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
+            // label2
+            // 
+            this.label2.Image = global::ADsFusion.Properties.Resources.no_wifi_20;
+            this.label2.Location = new System.Drawing.Point(444, 419);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(26, 26);
+            this.label2.TabIndex = 21;
+            // 
             // DisplayAccounts
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 454);
+            this.ClientSize = new System.Drawing.Size(482, 454);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
@@ -287,7 +282,7 @@ namespace ADsFusion
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DisplayAccounts";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DisplayAccounts_FormClosing);
-            this.Load += new System.EventHandler(this.DisplayAccounts_Load);
+            this.Load += new System.EventHandler(this.DisplayAccounts_LoadAsync);
             this.LocationChanged += new System.EventHandler(this.DisplayAccounts_LocationChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisplayAccounts_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DisplayAccounts_KeyUp);
@@ -315,10 +310,10 @@ namespace ADsFusion
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ProgressBar progressBar1;
         private Label label3;
         private ToolStripMenuItem impressionToolStripMenuItem;
+        private Label label2;
     }
 }
 

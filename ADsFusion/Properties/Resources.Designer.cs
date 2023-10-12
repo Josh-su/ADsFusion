@@ -133,6 +133,16 @@ namespace ADsFusion.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap no_wifi_20 {
+            get {
+                object obj = ResourceManager.GetObject("no-wifi_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap poubelle_de_recyclage_20 {
             get {
                 object obj = ResourceManager.GetObject("poubelle-de-recyclage_20", resourceCulture);
@@ -216,6 +226,16 @@ namespace ADsFusion.Properties {
         internal static System.Drawing.Bitmap split_20 {
             get {
                 object obj = ResourceManager.GetObject("split_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap wifi_20 {
+            get {
+                object obj = ResourceManager.GetObject("wifi_20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

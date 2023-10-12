@@ -18,7 +18,7 @@ namespace ADsFusion
     /// </summary>
     public partial class ServerCredentials : Form
     {
-        private CustomNames _customNames;
+        private CustomName _customNames;
 
         private readonly int _initialHeight;
 
@@ -39,7 +39,7 @@ namespace ADsFusion
         {
             InitializeComponent();
 
-            _customNames = new CustomNames();
+            _customNames = new CustomName();
 
             _initialHeight = this.Height;
 

@@ -1,53 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using ADsFusion.Properties;
 
 namespace ADsFusion
 {
     /// <summary>
     /// 
     /// </summary>
-    public partial class CustomNames : Form
+    public partial class CustomName : Form
     {
         private int _index;
 
         /// <summary>
         /// 
         /// </summary>
-        public CustomNames()
+        public CustomName()
         {
             InitializeComponent();
         }
 
-        private void CustomNames_Load(object sender, EventArgs e)
+        private void CustomName_Load(object sender, EventArgs e)
         {
             switch (_index)
             {
                 case 1:
-                    LoadCustomNames(1);
+                    LoadCustomName(1);
                     break;
                 case 2:
-                    LoadCustomNames(2);
+                    LoadCustomName(2);
                     break;
                 case 3:
-                    LoadCustomNames(3);
+                    LoadCustomName(3);
                     break;
                 case 4:
-                    LoadCustomNames(4);
+                    LoadCustomName(4);
                     break;
                 case 5:
-                    LoadCustomNames(5);
+                    LoadCustomName(5);
                     break;
             }
         }
 
-        private void LoadCustomNames(int index)
+        private void LoadCustomName(int index)
         {
             sAMAccountName1.Text = Properties.CustomNames.Default[$"sAMAccountName{index}"].ToString();
             displayName1.Text = Properties.CustomNames.Default[$"displayName{index}"].ToString();
@@ -82,16 +76,16 @@ namespace ADsFusion
 
         private void SaveProperties()
         {
-            Properties.CustomNames.Default[$"sAMAccountName{_index}"] = sAMAccountName1.Text;
-            Properties.CustomNames.Default[$"displayName{_index}"] = displayName1.Text;
-            Properties.CustomNames.Default[$"givenName{_index}"] = givenName1.Text;
-            Properties.CustomNames.Default[$"sn{_index}"] = sn1.Text;
-            Properties.CustomNames.Default[$"mail{_index}"] = mail1.Text;
-            Properties.CustomNames.Default[$"title{_index}"] = title1.Text;
-            Properties.CustomNames.Default[$"description{_index}"] = description1.Text;
+            CustomNames.Default[$"sAMAccountName{_index}"] = sAMAccountName1.Text;
+            CustomNames.Default[$"displayName{_index}"] = displayName1.Text;
+            CustomNames.Default[$"givenName{_index}"] = givenName1.Text;
+            CustomNames.Default[$"sn{_index}"] = sn1.Text;
+            CustomNames.Default[$"mail{_index}"] = mail1.Text;
+            CustomNames.Default[$"title{_index}"] = title1.Text;
+            CustomNames.Default[$"description{_index}"] = description1.Text;
 
             // Save the changes
-            Properties.CustomNames.Default.Save();
+            CustomNames.Default.Save();
         }
 
         /// <summary>
@@ -103,12 +97,12 @@ namespace ADsFusion
             _index = index;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             SetDefault();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             SetDefaultIfEmpty();
             SaveProperties();

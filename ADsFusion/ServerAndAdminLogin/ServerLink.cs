@@ -57,29 +57,31 @@ namespace ADsFusion
 
             nonEmptyServers = _servers.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 
+            comboBox1.Items.Add(string.Empty);//add an empty item
             comboBox1.Items.AddRange(nonEmptyServers);
+            comboBox2.Items.Add(string.Empty);//add an empty item
             comboBox2.Items.AddRange(nonEmptyServers);
             comboBox3.Items.AddRange(_attributs);
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedServer = comboBox1.SelectedItem?.ToString();
 
             // If a server is selected in comboBox1, disable it in comboBox2
             if (!string.IsNullOrEmpty(selectedServer))
             {
-                comboBox2.SelectedIndexChanged -= comboBox2_SelectedIndexChanged; // Unsubscribe temporarily
+                comboBox2.SelectedIndexChanged -= ComboBox2_SelectedIndexChanged; // Unsubscribe temporarily
                 string selecteditem = comboBox2.SelectedItem?.ToString();
                 comboBox2.Items.Clear();
                 comboBox2.Items.AddRange(nonEmptyServers);
                 comboBox2.Items.Remove(selectedServer);
                 comboBox2.SelectedItem = selecteditem;
-                comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged; // Re-subscribe
+                comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged; // Re-subscribe
             }
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedServer = comboBox2.SelectedItem?.ToString();
 
@@ -88,12 +90,12 @@ namespace ADsFusion
             {
                 string selecteditem = comboBox1.SelectedItem?.ToString();
 
-                comboBox1.SelectedIndexChanged -= comboBox1_SelectedIndexChanged; // Unsubscribe temporarily
+                comboBox1.SelectedIndexChanged -= ComboBox1_SelectedIndexChanged; // Unsubscribe temporarily
                 comboBox1.Items.Clear();
                 comboBox1.Items.AddRange(nonEmptyServers);
                 comboBox1.Items.Remove(selectedServer);
                 comboBox1.SelectedItem = selecteditem;
-                comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged; // Re-subscribe
+                comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged; // Re-subscribe
             }
         }
 

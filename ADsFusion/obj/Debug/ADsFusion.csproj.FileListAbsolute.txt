@@ -57,15 +57,14 @@ C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADs
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.DisplayAccounts.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.FilterForm.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Properties.Resources.resources
-C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.CustomNames.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.MergeSettings.resources
-C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.ServerAndAdminLogin.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.ServerCredentials.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.ServersList.resources
-C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Settings.resources
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.GenerateResource.cache
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.CoreCompileInputs.cache
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.csproj.CopyComplete
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.exe
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.pdb
 C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.ServerLink.resources
+C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.CustomName.resources
+C:\Users\sur\source\repos\ProjectCPNVPersoGYRE\ADsFusion\ADsFusion\obj\Debug\ADsFusion.Setting.resources

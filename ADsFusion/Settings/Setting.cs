@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.DirectoryServices.ActiveDirectory;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ADsFusion.Properties;
 using System.Windows.Forms;
 
 namespace ADsFusion
@@ -15,15 +7,28 @@ namespace ADsFusion
     /// <summary>
     /// 
     /// </summary>
-    public partial class Settings : Form
+    public partial class Setting : Form
     {
         /// <summary>
         /// 
         /// </summary>
-        public Settings()
+        public Setting()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Links.Default.Reset();
+            CustomNames.Default.Reset();
+            Credentials.Default.Reset();
+            Settings.Default.Reset();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ADsFusion
 {
-    partial class CustomNames
+    partial class CustomName
     {
         /// <summary>
         /// Required designer variable.
@@ -213,7 +213,7 @@
             this.button1.TabIndex = 80;
             this.button1.Text = "Par défaut";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // button2
             // 
@@ -223,7 +223,7 @@
             this.button2.TabIndex = 81;
             this.button2.Text = "Sauvegardé";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // CustomNames
             // 
@@ -251,7 +251,7 @@
             this.Controls.Add(this.sAMAccountName1);
             this.Name = "CustomNames";
             this.Text = "CustomNames";
-            this.Load += new System.EventHandler(this.CustomNames_Load);
+            this.Load += new System.EventHandler(this.CustomName_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
