@@ -10,14 +10,17 @@ using System.Windows.Forms;
 
 namespace ADsFusion
 {
-    public partial class MergeSettings : Form
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class ServersLinksList : Form
     {
         private readonly Dictionary<string, ServerLink> _serverLinkForms;
 
         /// <summary>
         /// 
         /// </summary>
-        public MergeSettings()
+        public ServersLinksList()
         {
             InitializeComponent();
 

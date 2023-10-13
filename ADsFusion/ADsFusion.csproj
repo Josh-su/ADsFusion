@@ -80,11 +80,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Links.settings</DependentUpon>
     </Compile>
-    <Compile Include="ServerAndAdminLogin\MergeSettings.cs">
+    <Compile Include="ServerAndAdminLogin\ServersLinksList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ServerAndAdminLogin\MergeSettings.Designer.cs">
-      <DependentUpon>MergeSettings.cs</DependentUpon>
+    <Compile Include="ServerAndAdminLogin\ServersLinksList.Designer.cs">
+      <DependentUpon>ServersLinksList.cs</DependentUpon>
     </Compile>
     <Compile Include="ServerAndAdminLogin\CustomName.cs">
       <SubType>Form</SubType>
@@ -171,8 +171,8 @@
     <EmbeddedResource Include="ServerAndAdminLogin\CustomName.resx">
       <DependentUpon>CustomName.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ServerAndAdminLogin\MergeSettings.resx">
-      <DependentUpon>MergeSettings.cs</DependentUpon>
+    <EmbeddedResource Include="ServerAndAdminLogin\ServersLinksList.resx">
+      <DependentUpon>ServersLinksList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ServerAndAdminLogin\ServerCredentials.resx">
       <DependentUpon>ServerCredentials.cs</DependentUpon>
@@ -299,6 +299,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wifi_20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\connection_20.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

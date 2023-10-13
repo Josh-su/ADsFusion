@@ -17,7 +17,7 @@ namespace ADsFusion
     {
         private readonly Dictionary<string, ServerCredentials> _serverCredentialsForms;
         
-        private MergeSettings _mergeSettings;
+        private ServersLinksList _mergeSettings;
 
         /// <summary>
         /// 
@@ -31,7 +31,7 @@ namespace ADsFusion
 
             _serverCredentialsForms = new Dictionary<string, ServerCredentials>();
 
-            _mergeSettings = new MergeSettings();
+            _mergeSettings = new ServersLinksList();
         }
 
         private void ServersList_Load(object sender, EventArgs e)

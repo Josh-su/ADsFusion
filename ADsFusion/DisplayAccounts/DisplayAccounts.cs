@@ -17,6 +17,7 @@ using System.Threading;
 using System.DirectoryServices.ActiveDirectory;
 using System.Net.Http;
 using System.Net;
+using static System.Windows.Forms.LinkLabel;
 
 namespace ADsFusion
 {
@@ -25,7 +26,6 @@ namespace ADsFusion
         private readonly Setting _settings;
         private readonly ServersList _servers;
         private readonly FilterForm _filterForm;
-        private readonly MergeSettings _mergeSettings;
 
         // Define dictionarys to store instances of AccountDetails forms.
         private readonly Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
@@ -38,6 +38,8 @@ namespace ADsFusion
         private string _domain3;
         private string _domain4;
         private string _domain5;
+
+        private int _nextLinkID;
 
         private List<string> _groupList1;
         private List<string> _groupList2;
@@ -67,7 +69,6 @@ namespace ADsFusion
         private bool _printAccountInfoFlag = false;
         private bool _openDetailsFormFlag = false;
         private bool _selectAllItemsFlag = false;
-
 
         private readonly object activeUsersLock = new object(); // Lock object
         private readonly List<Task> _userTasks = new List<Task>();
@@ -113,7 +114,6 @@ namespace ADsFusion
             {
                 if(_filterForm.SelectedGroups.Count >= 1) UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
             };
-            _mergeSettings = new MergeSettings();
 
             _singleAccountsDetailsForms = new Dictionary<User, SingleAccountDetails>();
 
@@ -494,6 +494,7 @@ namespace ADsFusion
                 progressBar1.Visible = false;
                 SetUserListFromJson(ints);
                 UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
+                LinkUsers();
             }
         }
 
@@ -682,6 +683,96 @@ namespace ADsFusion
             // Save the list of group names to a JSON file.
             JsonManager.SaveToJson(_allGroupsList, groupListPath, true);
         }
+
+        private void LinkUsers()
+        {
+            int maxCredentials = 10;
+
+            for (int i = 1; i <= maxCredentials; i++)
+            {
+                string link = Properties.Links.Default[$"Link{i}"].ToString();
+
+                if (!string.IsNullOrEmpty(link))
+                {
+                    FoundLinkedUsers(link);
+                }
+            }
+        }
+
+        private void FoundLinkedUsers(string link)
+        {
+            // Split the link into its parts
+            string[] parts = link.Split(':');
+            string[] domainParts = parts[0].Split(',');
+            string domain1 = domainParts[0].Trim();
+            string domain2 = domainParts[1].Trim();
+            string linkparam = parts[1].Trim();
+
+            // Create a dictionary to map attribute names to comparison functions
+            Dictionary<string, Func<User, User, bool>> attributeComparisons = new Dictionary<string, Func<User, User, bool>>
+            {
+                {"sAMAccountName", (user1, user2) => user1.SAMAccountName == user2.SAMAccountName},
+                {"displayName", (user1, user2) => user1.DisplayName == user2.DisplayName},
+                {"givenName", (user1, user2) => user1.GivenName == user2.GivenName},
+                {"sn", (user1, user2) => user1.Sn == user2.Sn},
+                {"mail", (user1, user2) => user1.Mail == user2.Mail},
+                {"title", (user1, user2) => user1.Title == user2.Title},
+                {"description", (user1, user2) => user1.Description == user2.Description},
+            };
+
+            foreach (User user1 in _actualUserList)
+            {
+                if(user1.Domain == domain1)
+                {
+                    foreach(User user2 in _actualUserList)
+                    {
+                        if (user2.Domain == domain2)
+                        {
+                            if (attributeComparisons.ContainsKey(linkparam) && attributeComparisons[linkparam](user1, user2))
+                            {
+                                // Match found based on the selected attribute
+                                AssignUniqueLinkID(user1, user2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void AssignUniqueLinkID(User user1, User user2)
+        {
+            if (user1.LinkIDs == null)
+            {
+                user1.LinkIDs = new List<int>();
+            }
+            if (user2.LinkIDs == null)
+            {
+                user2.LinkIDs = new List<int>();
+            }
+
+            int uniqueID;
+            do
+            {
+                // Generate a unique ID
+                uniqueID = GenerateUniqueLinkID();
+            } while (user1.LinkIDs.Contains(uniqueID) || user2.LinkIDs.Contains(uniqueID));
+
+            // Assign the unique ID to both users
+            user1.LinkIDs.Add(uniqueID);
+            user2.LinkIDs.Add(uniqueID);
+        }
+
+        private int GenerateUniqueLinkID()
+        {
+            // You can implement a method to generate unique IDs as per your requirements.
+            // This could involve generating random IDs, using a counter, or other strategies.
+            // Here's a simple example using a counter:
+
+            int newLinkID = _nextLinkID;
+            _nextLinkID++; // Increment for the next unique ID
+
+            return newLinkID;
+        }
         #endregion
 
         /// <summary>
@@ -723,7 +814,7 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            OpenDetailsForm();
+            OpenUserDetailsForm();
         }
 
         /// <summary>
@@ -733,13 +824,13 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void ListBox1_DoubleClick(object sender, EventArgs e)
         {
-            OpenDetailsForm();
+            OpenUserDetailsForm();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        private void OpenDetailsForm()
+        private void OpenUserDetailsForm()
         {
             foreach (int index in listBox1.SelectedIndices)
             {
@@ -827,13 +918,8 @@ namespace ADsFusion
 
                     foreach (var item in listBox1.Items)
                     {
-                        // Extract SAMAccountName1 and SAMAccountName2 from the list item
-                        string[] parts = item.ToString().Split(new string[] { " / " }, StringSplitOptions.None);
-                        string samAccountName1 = parts[0].Trim();
-                        string samAccountName2 = parts.Length > 1 ? parts[1].Trim() : "";
-
                         // Append the values to the CSV content
-                        csvContent.AppendLine($"{samAccountName1},{samAccountName2}");
+                        csvContent.AppendLine(item.ToString());
                     }
 
                     // Write the CSV content to the selected file
@@ -1098,7 +1184,7 @@ namespace ADsFusion
         private void DisplayAccounts_KeyUp(object sender, KeyEventArgs e)
         {
             if (_printAccountInfoFlag) PrintAccountInfo(); _printAccountInfoFlag = false;
-            if (_openDetailsFormFlag) OpenDetailsForm(); _openDetailsFormFlag = false;
+            if (_openDetailsFormFlag) OpenUserDetailsForm(); _openDetailsFormFlag = false;
             if (_selectAllItemsFlag)
             {
                 // Select all items in the ListBox
@@ -1142,16 +1228,7 @@ namespace ADsFusion
         {
             bool isConnected = IsNetworkConnected();
 
-            // Set the label's image and show a message box based on network status
-            if (isConnected)
-            {
-                label2.Image = Properties.Resources.wifi_20;
-            }
-            else
-            {
-                label2.Image = Properties.Resources.no_wifi_20;
-                ShowNetworkErrorMessageBox();
-            }
+            if (!isConnected) ShowNetworkErrorMessageBox();
 
             return isConnected;
         }
@@ -1188,5 +1265,80 @@ namespace ADsFusion
             }
         }
         #endregion
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("y a rien pour l'instant");
+        }
+
+        private void DétailsComptesLiéToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (int index in listBox1.SelectedIndices)
+            {
+                string displayText = listBox1.Items[index].ToString(); // Get the display text from the selected item
+                User selectedUser = new User();
+
+                selectedUser = _actualUserList.FirstOrDefault(user =>
+                {
+                    string userDisplayText = $"{user.Domain ?? "n/a"} || {user.SAMAccountName ?? "n/a"}, {user.DisplayName ?? "n/a"}";
+                    //string userDisplayText = $"{user.SAMAccountName1 ?? user.SAMAccountName2 ?? user.SAMAccountName3 ?? user.SAMAccountName4 ?? user.SAMAccountName5}, {user.DisplayName1 ?? user.DisplayName2 ?? user.DisplayName3 ?? user.DisplayName4 ?? user.DisplayName5}";
+                    return userDisplayText.ToLower() == displayText.ToLower();
+                });
+
+                if (selectedUser != null)
+                {
+                    if (!_singleAccountsDetailsForms.ContainsKey(selectedUser))
+                    {
+                        SingleAccountDetails newForm = new SingleAccountDetails();
+                        newForm.InitializeWithUser(selectedUser); // Pass the selected user to the form
+
+                        _singleAccountsDetailsForms.Add(selectedUser, newForm);
+                        newForm.FormClosed += (s, args) => _singleAccountsDetailsForms.Remove(selectedUser);
+                    }
+
+                    // Show the form, whether it's a new instance or an existing one.
+                    if (_singleAccountsDetailsForms.ContainsKey(selectedUser))
+                    {
+                        _singleAccountsDetailsForms[selectedUser].Show();
+                        _singleAccountsDetailsForms[selectedUser].BringToFront();
+                    }
+
+                    if (selectedUser.LinkIDs != null)
+                    {
+                        foreach (int id in selectedUser.LinkIDs)
+                        {
+                            foreach (User user in _actualUserList)
+                            {
+                                if (user.LinkIDs != null)
+                                {
+                                    if (user.LinkIDs.Contains(id))
+                                    {
+                                        if (!_singleAccountsDetailsForms.ContainsKey(user))
+                                        {
+                                            SingleAccountDetails newForm = new SingleAccountDetails();
+                                            newForm.InitializeWithUser(user); // Pass the selected user to the form
+
+                                            _singleAccountsDetailsForms.Add(user, newForm);
+                                            newForm.FormClosed += (s, args) => _singleAccountsDetailsForms.Remove(user);
+                                        }
+
+                                        // Show the form, whether it's a new instance or an existing one.
+                                        if (_singleAccountsDetailsForms.ContainsKey(user))
+                                        {
+                                            _singleAccountsDetailsForms[user].Show();
+                                            _singleAccountsDetailsForms[user].BringToFront();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Tu n'as sélectionné aucun utilisateur !!");
+                }
+            }
+        }
     }
 }

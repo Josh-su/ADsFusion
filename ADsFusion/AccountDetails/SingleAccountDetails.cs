@@ -1,14 +1,7 @@
 ﻿using ADsFusion.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace ADsFusion
 {
@@ -25,7 +18,7 @@ namespace ADsFusion
         public SingleAccountDetails()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
 
             // Set the MaximumSize and MinimumSize to the initial size of your form
             this.MaximumSize = this.Size;
@@ -42,13 +35,13 @@ namespace ADsFusion
             {
                 List<string> data = new List<string>
                 {
-                    Properties.CustomNames.Default[$"sAMAccountName{i}"].ToString(),
-                    Properties.CustomNames.Default[$"displayName{i}"].ToString(),
-                    Properties.CustomNames.Default[$"givenName{i}"].ToString(),
-                    Properties.CustomNames.Default[$"sn{i}"].ToString(),
-                    Properties.CustomNames.Default[$"mail{i}"].ToString(),
-                    Properties.CustomNames.Default[$"title{i}"].ToString(),
-                    Properties.CustomNames.Default[$"description{i}"].ToString()
+                    CustomNames.Default[$"sAMAccountName{i}"].ToString(),
+                    CustomNames.Default[$"displayName{i}"].ToString(),
+                    CustomNames.Default[$"givenName{i}"].ToString(),
+                    CustomNames.Default[$"sn{i}"].ToString(),
+                    CustomNames.Default[$"mail{i}"].ToString(),
+                    CustomNames.Default[$"title{i}"].ToString(),
+                    CustomNames.Default[$"description{i}"].ToString()
                 };
                 _CustomNamesData.Add(data);
             }
@@ -122,7 +115,7 @@ namespace ADsFusion
 
         internal void InitializeWithUser(User user)
         {
-            this._user = user; // Store the user object in the class-level variable
+            _user = user; // Store the user object in the class-level variable
         }
 
         private void SingleAccountDetails_KeyDown(object sender, KeyEventArgs e)

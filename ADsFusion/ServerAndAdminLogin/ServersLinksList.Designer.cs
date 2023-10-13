@@ -1,6 +1,6 @@
 ﻿namespace ADsFusion
 {
-    partial class MergeSettings
+    partial class ServersLinksList
     {
         /// <summary>
         /// Required designer variable.

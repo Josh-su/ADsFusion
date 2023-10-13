@@ -124,9 +124,6 @@
   <data name="printer_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\printer_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="file_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\file_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="search-file_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\search-file_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -142,11 +139,14 @@
   <data name="check_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\check_12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="croix-supprimer-le-signe_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\croix-supprimer-le-signe_12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="split_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\split_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="poubelle-de-recyclage_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\poubelle-de-recyclage_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="file_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\file_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="rafraichir_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rafraichir_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -157,19 +157,22 @@
   <data name="merge_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\merge_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="no-wifi_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\no-wifi_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="filtre_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\filtre_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="split_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\split_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="croix-supprimer-le-signe_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\croix-supprimer-le-signe_12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wifi_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\wifi_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="bouton-supprimer_15" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bouton-supprimer_15.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="no-wifi_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\no-wifi_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="wifi_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\wifi_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="connection_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\connection_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

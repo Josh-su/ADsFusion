@@ -83,6 +83,16 @@ namespace ADsFusion.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap connection_20 {
+            get {
+                object obj = ResourceManager.GetObject("connection_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap croix_supprimer_le_signe_12 {
             get {
                 object obj = ResourceManager.GetObject("croix-supprimer-le-signe_12", resourceCulture);

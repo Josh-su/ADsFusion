@@ -4,6 +4,7 @@ namespace ADsFusion
 {
     internal class User
     {
+        public List<int> LinkIDs { get; set; }
         public string Domain { get; set; }
         public string SAMAccountName { get; set; }
         public string DisplayName { get; set; }
