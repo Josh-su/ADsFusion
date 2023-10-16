@@ -243,6 +243,16 @@ namespace ADsFusion.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap warning_20 {
+            get {
+                object obj = ResourceManager.GetObject("warning_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap wifi_20 {
             get {
                 object obj = ResourceManager.GetObject("wifi_20", resourceCulture);

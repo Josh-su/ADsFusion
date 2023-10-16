@@ -340,13 +340,13 @@ namespace ADsFusion
         }
 
         /// <summary>
-        /// impressions
+        /// Found Not Linked Users
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Button3_Click(object sender, EventArgs e)
         {
-
+            FoundNotLinkedUsers();
         }
 
         #region Account list filter
@@ -393,7 +393,6 @@ namespace ADsFusion
                     else
                     {
                         // Check if any group in UserGroups1 or UserGroups2 exists in the provided 'groups' list
-
                         if (user.UserGroups?.Intersect(groups).Any() ?? false)
                         {
                             hasMatchingGroup = true;
@@ -737,6 +736,16 @@ namespace ADsFusion
                     }
                 }
             }
+        }
+
+        private void FoundNotLinkedUsers()
+        {
+            _filteredUserList.Clear();
+            foreach (User user in _actualUserList)
+            {
+                if(user.LinkIDs == null) _filteredUserList.Add(user);
+            }
+            DisplayUserList();
         }
 
         private void AssignUniqueLinkID(User user1, User user2)
