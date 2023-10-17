@@ -707,16 +707,29 @@ namespace ADsFusion
             string domain2 = domainParts[1].Trim();
             string linkparam = parts[1].Trim();
 
-            // Create a dictionary to map attribute names to comparison functions
             Dictionary<string, Func<User, User, bool>> attributeComparisons = new Dictionary<string, Func<User, User, bool>>
             {
-                {"sAMAccountName", (user1, user2) => user1.SAMAccountName == user2.SAMAccountName},
-                {"displayName", (user1, user2) => user1.DisplayName == user2.DisplayName},
-                {"givenName", (user1, user2) => user1.GivenName == user2.GivenName},
-                {"sn", (user1, user2) => user1.Sn == user2.Sn},
-                {"mail", (user1, user2) => user1.Mail == user2.Mail},
-                {"title", (user1, user2) => user1.Title == user2.Title},
-                {"description", (user1, user2) => user1.Description == user2.Description},
+                {"sAMAccountName", (user1, user2) =>
+                    user1.SAMAccountName != null && user2.SAMAccountName != null &&
+                    user1.SAMAccountName.Normalize().ToLower() == user2.SAMAccountName.Normalize().ToLower()},
+                {"displayName", (user1, user2) =>
+                    user1.DisplayName != null && user2.DisplayName != null &&
+                    user1.DisplayName.Normalize().ToLower() == user2.DisplayName.Normalize().ToLower()},
+                {"givenName", (user1, user2) =>
+                    user1.GivenName != null && user2.GivenName != null &&
+                    user1.GivenName.Normalize().ToLower() == user2.GivenName.Normalize().ToLower()},
+                {"sn", (user1, user2) =>
+                    user1.Sn != null && user2.Sn != null &&
+                    user1.Sn.Normalize().ToLower() == user2.Sn.Normalize().ToLower()},
+                {"mail", (user1, user2) =>
+                    user1.Mail != null && user2.Mail != null &&
+                    user1.Mail.Normalize().ToLower() == user2.Mail.Normalize().ToLower()},
+                {"title", (user1, user2) =>
+                    user1.Title != null && user2.Title != null &&
+                    user1.Title.Normalize().ToLower() == user2.Title.Normalize().ToLower()},
+                {"description", (user1, user2) =>
+                    user1.Description != null && user2.Description != null &&
+                    user1.Description.Normalize().ToLower() == user2.Description.Normalize().ToLower()},
             };
 
             foreach (User user1 in _actualUserList)
