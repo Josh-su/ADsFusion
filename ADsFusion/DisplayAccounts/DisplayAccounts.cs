@@ -69,6 +69,7 @@ namespace ADsFusion
         private bool _printAccountInfoFlag = false;
         private bool _openDetailsFormFlag = false;
         private bool _selectAllItemsFlag = false;
+        private bool _foundNotLinkedUsersFlag = false;
 
         private readonly object activeUsersLock = new object(); // Lock object
         private readonly List<Task> _userTasks = new List<Task>();
@@ -322,7 +323,7 @@ namespace ADsFusion
             {
                 string displayText = $"{user.Domain ?? "n/a"} || {user.SAMAccountName ?? "n/a"}, {user.DisplayName ?? "n/a"}";
 
-                if ((searchText.Length >= 3 || searchText.Length == 0) && displayText.Normalize().Trim().ToLower().Contains(searchText))
+                if ((searchText.Length >= 1 || searchText.Length == 0) && displayText.Normalize().Trim().ToLower().Contains(searchText))
                 {
                     AddItemToListBox(displayText);
                 }
@@ -346,7 +347,19 @@ namespace ADsFusion
         /// <param name="e"></param>
         private void Button3_Click(object sender, EventArgs e)
         {
-            FoundNotLinkedUsers();
+            _foundNotLinkedUsersFlag = !_foundNotLinkedUsersFlag;
+            _filteredUserList.Clear();
+            if (_foundNotLinkedUsersFlag)
+            {
+                button3.Image = Properties.Resources.warning_20;
+                FoundNotLinkedUsers();
+            }
+            else
+            {
+                button3.Image = Properties.Resources.warning_20;
+                _filteredUserList = _actualUserList;
+            }
+            DisplayUserList();
         }
 
         #region Account list filter
@@ -753,12 +766,10 @@ namespace ADsFusion
 
         private void FoundNotLinkedUsers()
         {
-            _filteredUserList.Clear();
             foreach (User user in _actualUserList)
             {
                 if(user.LinkIDs == null) _filteredUserList.Add(user);
             }
-            DisplayUserList();
         }
 
         private void AssignUniqueLinkID(User user1, User user2)
