@@ -27,6 +27,8 @@ namespace ADsFusion
         private readonly ServersList _servers;
         private readonly FilterForm _filterForm;
 
+        private GetAD _getAD;
+
         // Define dictionarys to store instances of AccountDetails forms.
         private readonly Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
 
@@ -107,6 +109,9 @@ namespace ADsFusion
             _settings = new Setting();
             _servers = new ServersList();
             _filterForm = new FilterForm();
+
+            _getAD = new GetAD(this);
+
             _filterForm.CheckedItemChanged += (s, args) => 
             {
                 UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
@@ -493,12 +498,11 @@ namespace ADsFusion
                 progressBar1.Visible = true;
                 foreach (int i in ints)
                 {
-                    CheckNetwork();
-                    if (i == 1) _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1));
-                    if (i == 2) _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2));
-                    if (i == 3) _userList3 = await Task.Run(() => UpdateUserListAsync(_userList3Path, _domain3, _groupList3));
-                    if (i == 4) _userList4 = await Task.Run(() => UpdateUserListAsync(_userList4Path, _domain4, _groupList4));
-                    if (i == 5) _userList5 = await Task.Run(() => UpdateUserListAsync(_userList5Path, _domain5, _groupList5));
+                    if (i == 1) _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _groupList1, _getAD));
+                    if (i == 2) _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, _getAD));
+                    if (i == 3) _userList3 = await Task.Run(() => UpdateUserList(_userList3Path, _domain3, _groupList3, _getAD));
+                    if (i == 4) _userList4 = await Task.Run(() => UpdateUserList(_userList4Path, _domain4, _groupList4, _getAD));
+                    if (i == 5) _userList5 = await Task.Run(() => UpdateUserList(_userList5Path, _domain5, _groupList5, _getAD));
                 }
             }
             if (ints.Count != 0)
@@ -516,8 +520,9 @@ namespace ADsFusion
         /// <param name="userListPath"></param>
         /// <param name="domain"></param>
         /// <param name="groupList"></param>
+        /// <param name="getAD"></param>
         /// <returns></returns>
-        private async Task<List<User>> UpdateUserListAsync(string userListPath, string domain, List<string> groupList)
+        private List<User> UpdateUserList(string userListPath, string domain, List<string> groupList, GetAD getAD)
         {
             // Set the flag to true when the background process starts
             _isBackgroundProcessRunning = true;
@@ -533,14 +538,10 @@ namespace ADsFusion
                     File.Delete(userListPath);
                 }
 
-                Parallel.ForEach(groupList, groupName =>
+                Parallel.ForEach(groupList, async groupName =>
                 {
-                    CheckNetwork();
-                    GetADUsers(groupName, ActiveUsersAD, userListPath, domain);
+                    await getAD.GetADUsersAsync(groupName, ActiveUsersAD, userListPath, domain);
                 });
-
-                // Wait for all the tasks to complete before reading from the JSON file.
-                await Task.WhenAll(_userTasks);
 
                 // Read the data back from the JSON file into ActiveUsersAD.
                 List<User> userListToReturn = JsonManager.ReadFromJson<User>(userListPath);
@@ -550,122 +551,6 @@ namespace ADsFusion
             {
                 // Set the flag to false when the background process finishes
                 _isBackgroundProcessRunning = false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="groupName"></param>
-        /// <param name="ActiveUsersAD"></param>
-        /// <param name="userListPath"></param>
-        /// <param name="domain"></param>
-        private void GetADUsers(string groupName, List<User> ActiveUsersAD, string userListPath, string domain)
-        {
-            var progressCounter = 0;
-            // Define the batch size (e.g., 600 users at a time).
-            const int batchSize = 600;
-
-            // Create the PrincipalContext for the domain.
-            var context = new PrincipalContext(ContextType.Domain, domain);
-
-            CheckNetwork();
-
-            // Find the group by its name.
-            using (var groupPrincipal = GroupPrincipal.FindByIdentity(context, IdentityType.Name, groupName))
-            {
-                if (groupPrincipal != null)
-                {
-                    // Get the members of the group.
-                    var groupMembers = groupPrincipal.GetMembers();
-
-                    // Get the count of group members.
-                    var totalMembers = groupMembers.Count();
-
-                    var totalActiveUserPrincipal = 0;
-
-                    try
-                    {
-                        // Loop through the group members to process each user.
-                        foreach (var member in groupMembers)
-                        {
-                            try
-                            {
-                                if (member is UserPrincipal userPrincipal)
-                                {
-                                    // Check if the user is active in Active Directory.
-                                    if (userPrincipal.Enabled.HasValue && userPrincipal.Enabled.Value && userPrincipal.SamAccountName != null)
-                                    {
-                                        _userTasks.Add(Task.Run(() =>
-                                        {
-                                            try
-                                            {
-                                                // The user is active. You can now proceed to retrieve user data and create User objects.
-                                                var groupsMembership = userPrincipal.GetGroups();
-                                                List<string> groups = new List<string>();
-
-                                                foreach (var groupMembership in groupsMembership)
-                                                {
-                                                    groups.Add(groupMembership.Name);
-                                                }
-
-                                                // Get the underlying DirectoryEntry object.
-                                                var de = userPrincipal.GetUnderlyingObject() as DirectoryEntry;
-
-                                                User userToAdd = new User(
-                                                    domain: domain,
-                                                    sAMAccountName: Convert.ToString(userPrincipal.SamAccountName),
-                                                    displayName: Convert.ToString(userPrincipal.DisplayName),
-                                                    givenName: Convert.ToString(userPrincipal.GivenName),
-                                                    sn: Convert.ToString(userPrincipal.Surname),
-                                                    mail: Convert.ToString(userPrincipal.EmailAddress),
-                                                    title: Convert.ToString(de.Properties["extensionAttribute2"].Value?.ToString()),
-                                                    description: Convert.ToString(userPrincipal.Description),
-                                                    userGroups: groups);
-
-                                                // Add the user to the list of active users within a lock
-                                                lock (activeUsersLock)
-                                                {
-                                                    ActiveUsersAD.Add(userToAdd);
-
-                                                    // Check if the batch size is reached or if we processed all users.
-                                                    if (ActiveUsersAD.Count % batchSize == 0 || progressCounter == totalActiveUserPrincipal - 1)
-                                                    {
-                                                        // Save the current batch to the JSON file.
-                                                        JsonManager.SaveToJson(ActiveUsersAD, userListPath, false);
-
-                                                        // Clear the list to free up memory for the next batch.
-                                                        ActiveUsersAD.Clear();
-                                                    }
-                                                }
-                                                // Update the progress bar on the UI thread.
-                                                this.Invoke(new Action(() =>
-                                                {
-                                                    progressBar1.Value = (int)((double)progressCounter / totalActiveUserPrincipal * 100);
-                                                }));
-                                                // Increment progressCounter safely
-                                                Interlocked.Increment(ref progressCounter);
-                                            }
-                                            catch
-                                            {
-                                                CheckNetwork();
-                                            }
-                                        }));
-                                        totalActiveUserPrincipal++;
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                                CheckNetwork();
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        CheckNetwork();
-                    }
-                }
             }
         }
 
@@ -1255,49 +1140,6 @@ namespace ADsFusion
                 e.Cancel = true;
             }
         }
-
-        #region Check Network Connection
-        private bool CheckNetwork()
-        {
-            bool isConnected = IsNetworkConnected();
-
-            if (!isConnected) ShowNetworkErrorMessageBox();
-
-            return isConnected;
-        }
-
-        private bool IsNetworkConnected()
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var response = client.GetAsync("http://example.com").Result; // You can use a different URL
-                    return response.StatusCode == HttpStatusCode.OK;
-                }
-            }
-            catch
-            {
-                return false; // An exception likely indicates no network connectivity
-            }
-        }
-
-        private void ShowNetworkErrorMessageBox()
-        {
-            const string message = "You are not connected to the network. Please connect and click 'Retry' to check again.";
-            const string caption = "Network Error";
-            var result = MessageBox.Show(message, caption, MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-
-            if (result == DialogResult.Retry)
-            {
-                CheckNetwork();
-            }
-            if (result == DialogResult.Cancel)
-            {
-                this.Close();
-            }
-        }
-        #endregion
 
         private void Button5_Click(object sender, EventArgs e)
         {

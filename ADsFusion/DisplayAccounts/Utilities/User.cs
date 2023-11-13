@@ -20,7 +20,7 @@ namespace ADsFusion
             // Parameterless constructor
         }
 
-        public User(string domain, string sAMAccountName, string displayName, string givenName, string sn, string mail, string title, string description, List<string> userGroups)
+        public User(string domain, string sAMAccountName, string displayName, string givenName, string sn, string mail, string title, string description)
         {
             Domain = domain;
             SAMAccountName = sAMAccountName;
@@ -30,7 +30,6 @@ namespace ADsFusion
             Mail = mail;
             Title = title;
             Description = description;
-            UserGroups = userGroups;
         }
     }
 }

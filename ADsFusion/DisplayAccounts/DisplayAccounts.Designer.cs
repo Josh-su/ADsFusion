@@ -309,7 +309,7 @@ namespace ADsFusion
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        public System.Windows.Forms.ProgressBar progressBar1;
         private Label label3;
         private ToolStripMenuItem impressionToolStripMenuItem;
         private ToolStripMenuItem détailsComptesLiéToolStripMenuItem;

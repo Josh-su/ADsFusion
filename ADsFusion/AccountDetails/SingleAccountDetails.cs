@@ -98,7 +98,7 @@ namespace ADsFusion
 
         private void LoadListBox()
         {
-            foreach (string group in _user.UserGroups) listBox1.Items.Add(group);
+            foreach (string group in GetAD.GetADUserGroups(_user.Domain, _user.SAMAccountName)) listBox1.Items.Add(group);
         }
 
         private void LoadLabels(int index)
