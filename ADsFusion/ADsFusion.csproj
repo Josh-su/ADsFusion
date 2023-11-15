@@ -195,6 +195,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Credentials.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Properties\DataSources\User.datasource" />
     <None Include="Properties\Links.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Links.Designer.cs</LastGenOutput>

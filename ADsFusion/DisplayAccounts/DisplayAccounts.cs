@@ -18,6 +18,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Net.Http;
 using System.Net;
 using static System.Windows.Forms.LinkLabel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace ADsFusion
 {
@@ -27,7 +28,7 @@ namespace ADsFusion
         private readonly ServersList _servers;
         private readonly FilterForm _filterForm;
 
-        private GetAD _getAD;
+        private readonly GetAD _getAD;
 
         // Define dictionarys to store instances of AccountDetails forms.
         private readonly Dictionary<User, SingleAccountDetails> _singleAccountsDetailsForms;
@@ -76,6 +77,9 @@ namespace ADsFusion
         private readonly object activeUsersLock = new object(); // Lock object
         private readonly List<Task> _userTasks = new List<Task>();
 
+        BindingList<User> userList;
+        
+
         /// <summary>
         /// 
         /// </summary>
@@ -112,14 +116,7 @@ namespace ADsFusion
 
             _getAD = new GetAD(this);
 
-            _filterForm.CheckedItemChanged += (s, args) => 
-            {
-                UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
-            };
-            _filterForm.RadioButtonsCheckedChanged += (s, args) =>
-            {
-                if(_filterForm.SelectedGroups.Count >= 1) UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
-            };
+            
 
             _singleAccountsDetailsForms = new Dictionary<User, SingleAccountDetails>();
 
@@ -257,7 +254,7 @@ namespace ADsFusion
                 }
                 if (File.Exists(_userList4Path))
                 {
-                    _userList4 = JsonManager.ReadFromJson<User>(_userList3Path);
+                    _userList4 = JsonManager.ReadFromJson<User>(_userList4Path);
                     _userList4 = _userList4.Distinct().ToList();
                 }
                 else
@@ -267,7 +264,7 @@ namespace ADsFusion
                 }
                 if (File.Exists(_userList5Path))
                 {
-                    _userList5 = JsonManager.ReadFromJson<User>(_userList3Path);
+                    _userList5 = JsonManager.ReadFromJson<User>(_userList5Path);
                     _userList5 = _userList5.Distinct().ToList();
                 }
                 else
@@ -280,7 +277,6 @@ namespace ADsFusion
                 _allGroupsList = JsonManager.ReadFromJson<string>(_groupListPath);
                 _filterForm.ListGroups.Clear();
                 _filterForm.ListGroups = _allGroupsList;
-                _filterForm.UpdateGroups();
             }
         }
 
@@ -498,11 +494,11 @@ namespace ADsFusion
                 progressBar1.Visible = true;
                 foreach (int i in ints)
                 {
-                    if (i == 1) _userList1 = await Task.Run(() => UpdateUserList(_userList1Path, _domain1, _groupList1, _getAD));
-                    if (i == 2) _userList2 = await Task.Run(() => UpdateUserList(_userList2Path, _domain2, _groupList2, _getAD));
-                    if (i == 3) _userList3 = await Task.Run(() => UpdateUserList(_userList3Path, _domain3, _groupList3, _getAD));
-                    if (i == 4) _userList4 = await Task.Run(() => UpdateUserList(_userList4Path, _domain4, _groupList4, _getAD));
-                    if (i == 5) _userList5 = await Task.Run(() => UpdateUserList(_userList5Path, _domain5, _groupList5, _getAD));
+                    if (i == 1) _userList1 = await Task.Run(() => UpdateUserListAsync(_userList1Path, _domain1, _groupList1, _getAD));
+                    if (i == 2) _userList2 = await Task.Run(() => UpdateUserListAsync(_userList2Path, _domain2, _groupList2, _getAD));
+                    if (i == 3) _userList3 = await Task.Run(() => UpdateUserListAsync(_userList3Path, _domain3, _groupList3, _getAD));
+                    if (i == 4) _userList4 = await Task.Run(() => UpdateUserListAsync(_userList4Path, _domain4, _groupList4, _getAD));
+                    if (i == 5) _userList5 = await Task.Run(() => UpdateUserListAsync(_userList5Path, _domain5, _groupList5, _getAD));
                 }
             }
             if (ints.Count != 0)
@@ -511,6 +507,12 @@ namespace ADsFusion
                 SetUserListFromJson(ints);
                 UpdateFilteredUserList(_filterForm.SelectedGroups, _filterForm.SelectAllMatchingGroups);
                 LinkUsers();
+
+                // Set up the binding source
+                userList = new BindingList<User>(_actualUserList);
+                userBindingSource.DataSource = userList;
+                // Set the DataGridView DataSource
+                dataGridView1.DataSource = userBindingSource;
             }
         }
 
@@ -522,7 +524,7 @@ namespace ADsFusion
         /// <param name="groupList"></param>
         /// <param name="getAD"></param>
         /// <returns></returns>
-        private List<User> UpdateUserList(string userListPath, string domain, List<string> groupList, GetAD getAD)
+        private async Task<List<User>> UpdateUserListAsync(string userListPath, string domain, List<string> groupList, GetAD getAD)
         {
             // Set the flag to true when the background process starts
             _isBackgroundProcessRunning = true;
@@ -538,10 +540,18 @@ namespace ADsFusion
                     File.Delete(userListPath);
                 }
 
-                Parallel.ForEach(groupList, async groupName =>
+                Parallel.ForEach(groupList, (Action<string>)(groupName =>
                 {
-                    await getAD.GetADUsersAsync(groupName, ActiveUsersAD, userListPath, domain);
-                });
+                    Task task = Task.Run(async () =>
+                    {
+                        await getAD.GetADUsersAsync(groupName, ActiveUsersAD, userListPath, domain);
+                    });
+
+                    this._userTasks.Add(task);
+                }));
+
+                // Wait for all tasks to complete before proceeding
+                await Task.WhenAll(_userTasks);
 
                 // Read the data back from the JSON file into ActiveUsersAD.
                 List<User> userListToReturn = JsonManager.ReadFromJson<User>(userListPath);
@@ -1076,8 +1086,6 @@ namespace ADsFusion
                     return;
                 }
 
-                e.Handled = true;
-                e.SuppressKeyPress = true;
                 return;
             }
 

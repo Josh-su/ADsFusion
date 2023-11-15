@@ -55,7 +55,19 @@ namespace ADsFusion
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.userBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.domainDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sAMAccountNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.displayNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.givenNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.snDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mailDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.titleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.userBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
@@ -169,7 +181,7 @@ namespace ADsFusion
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 428);
+            this.label3.Location = new System.Drawing.Point(11, 432);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -258,11 +270,108 @@ namespace ADsFusion
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.AutoGenerateColumns = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dataGridView1.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.domainDataGridViewTextBoxColumn,
+            this.sAMAccountNameDataGridViewTextBoxColumn,
+            this.displayNameDataGridViewTextBoxColumn,
+            this.givenNameDataGridViewTextBoxColumn,
+            this.snDataGridViewTextBoxColumn,
+            this.mailDataGridViewTextBoxColumn,
+            this.titleDataGridViewTextBoxColumn,
+            this.descriptionDataGridViewTextBoxColumn});
+            this.dataGridView1.DataSource = this.userBindingSource;
+            this.dataGridView1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.dataGridView1.Location = new System.Drawing.Point(492, 78);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(858, 328);
+            this.dataGridView1.TabIndex = 21;
+            // 
+            // userBindingSource
+            // 
+            this.userBindingSource.DataSource = typeof(ADsFusion.User);
+            // 
+            // domainDataGridViewTextBoxColumn
+            // 
+            this.domainDataGridViewTextBoxColumn.DataPropertyName = "Domain";
+            this.domainDataGridViewTextBoxColumn.HeaderText = "Domain";
+            this.domainDataGridViewTextBoxColumn.Name = "domainDataGridViewTextBoxColumn";
+            this.domainDataGridViewTextBoxColumn.ReadOnly = true;
+            this.domainDataGridViewTextBoxColumn.Width = 68;
+            // 
+            // sAMAccountNameDataGridViewTextBoxColumn
+            // 
+            this.sAMAccountNameDataGridViewTextBoxColumn.DataPropertyName = "SAMAccountName";
+            this.sAMAccountNameDataGridViewTextBoxColumn.HeaderText = "SAMAccountName";
+            this.sAMAccountNameDataGridViewTextBoxColumn.Name = "sAMAccountNameDataGridViewTextBoxColumn";
+            this.sAMAccountNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.sAMAccountNameDataGridViewTextBoxColumn.Width = 123;
+            // 
+            // displayNameDataGridViewTextBoxColumn
+            // 
+            this.displayNameDataGridViewTextBoxColumn.DataPropertyName = "DisplayName";
+            this.displayNameDataGridViewTextBoxColumn.HeaderText = "DisplayName";
+            this.displayNameDataGridViewTextBoxColumn.Name = "displayNameDataGridViewTextBoxColumn";
+            this.displayNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.displayNameDataGridViewTextBoxColumn.Width = 94;
+            // 
+            // givenNameDataGridViewTextBoxColumn
+            // 
+            this.givenNameDataGridViewTextBoxColumn.DataPropertyName = "GivenName";
+            this.givenNameDataGridViewTextBoxColumn.HeaderText = "GivenName";
+            this.givenNameDataGridViewTextBoxColumn.Name = "givenNameDataGridViewTextBoxColumn";
+            this.givenNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.givenNameDataGridViewTextBoxColumn.Width = 88;
+            // 
+            // snDataGridViewTextBoxColumn
+            // 
+            this.snDataGridViewTextBoxColumn.DataPropertyName = "Sn";
+            this.snDataGridViewTextBoxColumn.HeaderText = "Sn";
+            this.snDataGridViewTextBoxColumn.Name = "snDataGridViewTextBoxColumn";
+            this.snDataGridViewTextBoxColumn.ReadOnly = true;
+            this.snDataGridViewTextBoxColumn.Width = 45;
+            // 
+            // mailDataGridViewTextBoxColumn
+            // 
+            this.mailDataGridViewTextBoxColumn.DataPropertyName = "Mail";
+            this.mailDataGridViewTextBoxColumn.HeaderText = "Mail";
+            this.mailDataGridViewTextBoxColumn.Name = "mailDataGridViewTextBoxColumn";
+            this.mailDataGridViewTextBoxColumn.ReadOnly = true;
+            this.mailDataGridViewTextBoxColumn.Width = 51;
+            // 
+            // titleDataGridViewTextBoxColumn
+            // 
+            this.titleDataGridViewTextBoxColumn.DataPropertyName = "Title";
+            this.titleDataGridViewTextBoxColumn.HeaderText = "Title";
+            this.titleDataGridViewTextBoxColumn.Name = "titleDataGridViewTextBoxColumn";
+            this.titleDataGridViewTextBoxColumn.ReadOnly = true;
+            this.titleDataGridViewTextBoxColumn.Width = 52;
+            // 
+            // descriptionDataGridViewTextBoxColumn
+            // 
+            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
+            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
+            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
+            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
+            this.descriptionDataGridViewTextBoxColumn.Width = 85;
+            // 
             // DisplayAccounts
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(482, 454);
+            this.ClientSize = new System.Drawing.Size(1449, 454);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button10);
@@ -286,6 +395,8 @@ namespace ADsFusion
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisplayAccounts_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DisplayAccounts_KeyUp);
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.userBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -313,6 +424,16 @@ namespace ADsFusion
         private Label label3;
         private ToolStripMenuItem impressionToolStripMenuItem;
         private ToolStripMenuItem détailsComptesLiéToolStripMenuItem;
+        private DataGridView dataGridView1;
+        private BindingSource userBindingSource;
+        private DataGridViewTextBoxColumn domainDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn sAMAccountNameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn displayNameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn givenNameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn snDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn mailDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn titleDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
     }
 }
 
